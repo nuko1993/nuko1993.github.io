@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Hexo添加Live2D看板娘</title>
+    <link href="/2023/12/03/hexo-add-live2d/"/>
+    <url>/2023/12/03/hexo-add-live2d/</url>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们在浏览别人的blog时，有时可以看到一个类似于下面这个萌萌哒的玩意，这其实是通过Live2D Widget插件实现的。方法也很简单，follow me~<br><img src="/../images/image-19.png" alt="Alt text"></p><h2 id="Step1-安装live-2d插件"><a href="#Step1-安装live-2d插件" class="headerlink" title="Step1 安装live 2d插件"></a>Step1 安装live 2d插件</h2><p>注意，下面的指令都是在Hexo项目目录中使用的</p><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">npm install <span class="hljs-comment">--save hexo-helper-live2d</span><br></code></pre></td></tr></table></figure><h2 id="Step2-下载live-2d模型"><a href="#Step2-下载live-2d模型" class="headerlink" title="Step2 下载live 2d模型"></a>Step2 下载live 2d模型</h2><p>通过下载不同的live 2d模型，就可以获得不同的看板娘啦，直接npm下载，贼方便</p><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-comment">// 下载的model会存放在node_modules中</span><br>npm install live2d-widget-<span class="hljs-keyword">model</span>-tororo<br></code></pre></td></tr></table></figure><h2 id="Step3-配置-config-yml"><a href="#Step3-配置-config-yml" class="headerlink" title="Step3 配置_config.yml"></a>Step3 配置_config.yml</h2><p>添加如下内容：</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># Live2D看板娘</span><br><span class="hljs-attr">live2d:</span><br>  <span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">pluginModelPath:</span> <span class="hljs-string">assets/</span><br>  <span class="hljs-attr">model:</span><br>    <span class="hljs-comment">#模板目录，在node_modules里</span><br>    <span class="hljs-attr">use:</span> <span class="hljs-string">live2d-widget-model-tororo</span><br>  <span class="hljs-attr">display:</span><br>    <span class="hljs-attr">position:</span> <span class="hljs-string">right</span><br>    <span class="hljs-attr">width:</span> <span class="hljs-number">300</span> <br>    <span class="hljs-attr">height:</span> <span class="hljs-number">600</span><br>  <span class="hljs-attr">mobile:</span><br>    <span class="hljs-comment"># 在手机端显示</span><br>    <span class="hljs-attr">show:</span> <span class="hljs-literal">false</span>   <br>  <span class="hljs-attr">rect:</span><br>    <span class="hljs-string">opacity:0.7</span><br></code></pre></td></tr></table></figure><h2 id="Step4-查看效果"><a href="#Step4-查看效果" class="headerlink" title="Step4 查看效果"></a>Step4 查看效果</h2><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">hexo g <span class="hljs-meta">&amp;&amp; hexo s</span><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>如何让Hexo被Google索引到</title>
     <link href="/2023/12/03/about-hexo-google-index/"/>
     <url>/2023/12/03/about-hexo-google-index/</url>
