@@ -4,19 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>第一篇正式的blog | Hexo</title>
+  <title>关于Hexo中资源路径问题 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="欢迎来到我的blog，从今天起，开始正式坚持写blog，记录下工作生活中遇到的一些问题，同时也希望分享一些有价值的经验。作为一个曾经幻想着推动人类文明进步的孩子，到现在休息日只想躺着的废柴，终究还是被现实磨平了棱角。那至少，希望用技术创造一些有价值的东西吧。emmm，虽然也很难就是了，但梦想还是要有的嘛，万一呢">
+  <meta name="description" content="在编写Hexo时，通常需要粘贴图片到markdown中。默认粘贴的path和咱们的md文件同级别，例如 1![Alt text](image-9.png) 虽然本地预览没有问题，但是在generate的时候，存在两个问题：1.Hexo会忽略_post下的图片资源2.Hexo会将md文件中的path转换为域名&#x2F;path，例如http:&#x2F;&#x2F;xxx.github.io&#x2F;xxx.png这两个问题">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第一篇正式的blog">
-<meta property="og:url" content="https://nuko1993.github.io/2023/12/03/first_blog/index.html">
+<meta property="og:title" content="关于Hexo中资源路径问题">
+<meta property="og:url" content="https://nuko1993.github.io/2023/12/03/about-hexo-aseet-path/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="欢迎来到我的blog，从今天起，开始正式坚持写blog，记录下工作生活中遇到的一些问题，同时也希望分享一些有价值的经验。作为一个曾经幻想着推动人类文明进步的孩子，到现在休息日只想躺着的废柴，终究还是被现实磨平了棱角。那至少，希望用技术创造一些有价值的东西吧。emmm，虽然也很难就是了，但梦想还是要有的嘛，万一呢">
+<meta property="og:description" content="在编写Hexo时，通常需要粘贴图片到markdown中。默认粘贴的path和咱们的md文件同级别，例如 1![Alt text](image-9.png) 虽然本地预览没有问题，但是在generate的时候，存在两个问题：1.Hexo会忽略_post下的图片资源2.Hexo会将md文件中的path转换为域名&#x2F;path，例如http:&#x2F;&#x2F;xxx.github.io&#x2F;xxx.png这两个问题">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-12-03T07:12:04.000Z">
-<meta property="article:modified_time" content="2023-12-03T10:31:27.220Z">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-10.png">
+<meta property="article:published_time" content="2023-12-03T10:34:23.000Z">
+<meta property="article:modified_time" content="2023-12-03T10:47:11.265Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nuko1993.github.io/images/image-10.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -71,10 +73,10 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-first_blog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-about-hexo-aseet-path" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2023/12/03/first_blog/" class="article-date">
-  <time class="dt-published" datetime="2023-12-03T07:12:04.000Z" itemprop="datePublished">2023-12-03</time>
+    <a href="/2023/12/03/about-hexo-aseet-path/" class="article-date">
+  <time class="dt-published" datetime="2023-12-03T10:34:23.000Z" itemprop="datePublished">2023-12-03</time>
 </a>
     
   </div>
@@ -85,7 +87,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      第一篇正式的blog
+      关于Hexo中资源路径问题
     </h1>
   
 
@@ -93,12 +95,16 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>欢迎来到我的blog，从今天起，开始正式坚持写blog，记录下工作生活中遇到的一些问题，同时也希望分享一些有价值的经验。<br>作为一个曾经幻想着推动人类文明进步的孩子，到现在休息日只想躺着的废柴，终究还是被现实磨平了棱角。<br>那至少，希望用技术创造一些有价值的东西吧。<br>emmm，虽然也很难就是了，但梦想还是要有的嘛，万一呢</p>
+        <p>在编写Hexo时，通常需要粘贴图片到markdown中。默认粘贴的path和咱们的md文件同级别，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![Alt text](image-9.png)</span><br></pre></td></tr></table></figure>
+<p>虽然本地预览没有问题，但是在generate的时候，存在两个问题：<br>1.Hexo会忽略_post下的图片资源<br>2.Hexo会将md文件中的path转换为域名&#x2F;path，例如<a target="_blank" rel="noopener" href="http://xxx.github.io/xxx.png">http://xxx.github.io/xxx.png</a><br>这两个问题都会导致无法正常看到我们blog中的图片。  </p>
+<p>问题解决：<br>1.在source下新建images文件夹，专门用来存放图片<br>2.Hexo中使用images&#x2F;xxx.png来引用该图片</p>
+<p>那么还是有问题，在使用VS Code粘贴图片时，还是默认粘贴到_posts下面，这样每次都要移动图片和修改路径，很麻烦。没错，贴心的VS Code可以自定义粘贴的路径，使用cmd+,打开设置，找到如下界面设置默认的粘贴路径：<br><img src="/../images/image-10.png" alt="Alt text"><br>完成！</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nuko1993.github.io/2023/12/03/first_blog/" data-id="clpp5nt3r0000yy9k6bcza2nj" data-title="第一篇正式的blog" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="https://nuko1993.github.io/2023/12/03/about-hexo-aseet-path/" data-id="clppcnh3f0000t99k9wc3bhut" data-title="关于Hexo中资源路径问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -108,19 +114,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2023/12/03/hexo-install-and-deploy/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Hexo的安装与部署
-        
-      </div>
-    </a>
   
-  
-    <a href="/2023/12/03/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2023/12/03/hexo-install-and-deploy/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
+      <div class="article-nav-title">Hexo的安装与部署</div>
     </a>
   
 </nav>

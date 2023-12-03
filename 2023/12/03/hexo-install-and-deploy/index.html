@@ -20,9 +20,10 @@
 <meta property="og:image" content="https://nuko1993.github.io/images/image-4.png">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-5.png">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-6.png">
-<meta property="og:image" content="https://nuko1993.github.io/images/image-7.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-12.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-11.png">
 <meta property="article:published_time" content="2023-12-03T07:27:35.000Z">
-<meta property="article:modified_time" content="2023-12-03T10:32:14.785Z">
+<meta property="article:modified_time" content="2023-12-03T10:50:46.955Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://nuko1993.github.io/images/image.png">
@@ -130,7 +131,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 当出现提示时回车即可</span><br><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
 <h2 id="配置Git个人信息"><a href="#配置Git个人信息" class="headerlink" title="配置Git个人信息"></a>配置Git个人信息</h2><p>上面的ssh密钥只是前提条件，GitHub在我们push文件时还会根据邮箱和用户名做校验，因而需要设置下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;此处填你的用户名&quot;</span><br><span class="line">git config --global user.email &quot;此处填你的邮箱&quot;</span><br></pre></td></tr></table></figure>
-<h2 id="将Hexo部署到GitHub-Page"><a href="#将Hexo部署到GitHub-Page" class="headerlink" title="将Hexo部署到GitHub Page"></a>将Hexo部署到GitHub Page</h2><p>首先，回到我们之前在GitHub上创建的仓库，复制我们仓库的ssh地址<br><img src="/../images/image-6.png" alt="Alt text"><br>打开我们创建的Hexo项目中的_config.yml文件(推荐Visual Studio Code，后续写blog也很方便)，找到如下入位置进行修改<br><img src="/../images/image-7.png" alt="Alt text"><br><strong>敲黑板！！注意branch不要填入master，要填入main。</strong> 分支填错会就看不到了页面了，GitHub Page使用默认分支部署。不知道啥时候开始，GitHub为了zzzq把默认分支的名称从master修改为main了QAQ  </p>
+<h2 id="将Hexo部署到GitHub-Page"><a href="#将Hexo部署到GitHub-Page" class="headerlink" title="将Hexo部署到GitHub Page"></a>将Hexo部署到GitHub Page</h2><p>首先，回到我们之前在GitHub上创建的仓库，复制我们仓库的ssh地址<br><img src="/../images/image-6.png" alt="Alt text"><br>打开我们创建的Hexo项目中的_config.yml文件(推荐Visual Studio Code，后续写blog也很方便)，找到如下入位置进行修改<br><img src="/../images/image-12.png" alt="Alt text"><br><img src="/../images/image-11.png" alt="Alt text"></p>
+<p><strong>敲黑板！！注意branch不要填入master，要填入main。</strong> 分支填错会就看不到了页面了，GitHub Page使用默认分支部署。不知道啥时候开始，GitHub为了zzzq把默认分支的名称从master修改为main了QAQ  </p>
 <p>我们还需要安装一个hexo部署到git的插件来完成最终部署，进入到我们之前创建的Hexo项目目录中，执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 这里--save是将该插件添加到Hexo项目的依赖中，记录到package.json</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
 <p>最后一步，激动人心的时刻就要到了，执行</p>
@@ -149,6 +151,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2023/12/03/about-hexo-aseet-path/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          关于Hexo中资源路径问题
+        
+      </div>
+    </a>
   
   
     <a href="/2023/12/03/first_blog/" id="article-nav-older" class="article-nav-link-wrap">
@@ -189,6 +200,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2023/12/03/about-hexo-aseet-path/">关于Hexo中资源路径问题</a>
+          </li>
         
           <li>
             <a href="/2023/12/03/hexo-install-and-deploy/">Hexo的安装与部署</a>
