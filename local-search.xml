@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>如何让Hexo被Google索引到</title>
+    <link href="/2023/12/03/about-hexo-google-index/"/>
+    <url>/2023/12/03/about-hexo-google-index/</url>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们写blog的目的是让自己的分享被别人看到，如果Google没有收录自己的网址，那么就没有意义了。 本篇文章主要介绍如何让咱们的blog被Google收录。</p><h2 id="Step1-检查收录"><a href="#Step1-检查收录" class="headerlink" title="Step1 检查收录"></a>Step1 检查收录</h2><p>首先检查咱们的blog有没有被Google索引，在搜索框输入site:xxx.github.io，不出意外的话，Google没有收录：<br><img src="/../images/image-13.png" alt="Alt text"></p><h2 id="Step2-验证网址所有权"><a href="#Step2-验证网址所有权" class="headerlink" title="Step2 验证网址所有权"></a>Step2 验证网址所有权</h2><p>按照提示，点击进入Google Search Console，Google会要求验证这个网址的归属权，这里由于采用的GitHub Page，所以按照第二种网址前缀的方式进行验证：<br><img src="/../images/image-14.png" alt="Alt text"><br>接下来，会看到有几种验证的方式，因为不想添加一个乱七八糟的html到网站目录中（强迫症犯了QAQ），所以我选择HTML标记的方式。这种方式会要求我们在index.html的head标签中添加一个meta标签，按照提示复制该标签。<br><img src="/../images/image-15.png" alt="Alt text"><br>接下来，找到Hexo项目的public文件夹下的index.html，将这个标签复制到head标签的末尾。<br><img src="/../images/image-16.png" alt="Alt text"><br>顺便说下，Hexo在部署的就是public文件夹下的内容。<br>我们直接发布，<strong>注意不要generate</strong>，因为generate会重新生成index.html，会将咱们之前的修改给覆盖掉。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 直接发布即可</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure><p>发布完成之后，稍等1min左右，等待GitHub Page部署完成，点击验证按钮。Congratulations，验证完成~~~<br><img src="/../images/image-17.png" alt="Alt text"></p><h2 id="Step3-添加sitemap-xml"><a href="#Step3-添加sitemap-xml" class="headerlink" title="Step3 添加sitemap.xml"></a>Step3 添加sitemap.xml</h2><p>到上面其实Google已经允许收录咱们的blog了，但是为了Google的蜘蛛机器人更好的爬取到网站的内容，我们可以在网站根目录下放一个sitemap.xml。<br>进入到Hexo项目目录中，安装插件：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-sitemap --save</span><br></pre></td></tr></table></figure><p>安装完毕之后，打开_config.yml，添加如下内容</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># automatically generate sitemap</span><br><span class="line">sitemap:</span><br><span class="line">  path: sitemap.xml</span><br></pre></td></tr></table></figure><p>重新生成部署，不再啰嗦啦，hexo g -d一把梭。<br>等待1min。进入到Google Search Console，提交我们的sitemap.xml，如下图，OK收工。<br>但我们这个时候再搜索还是搜不到的，需要等个几天，到时候再来更新~<br><img src="/../images/image-18.png" alt="Alt text"></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>关于Hexo中图片路径问题</title>
+    <link href="/2023/12/03/about-hexo-picture-path/"/>
+    <url>/2023/12/03/about-hexo-picture-path/</url>
+    
+    <content type="html"><![CDATA[<p>在编写Hexo时，通常需要粘贴图片到markdown中。默认粘贴的path和咱们的md文件同级别，例如</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![Alt text](image-9.png)</span><br></pre></td></tr></table></figure><p>虽然本地预览没有问题，但是在generate的时候，存在两个问题：<br>1.Hexo会忽略_post下的图片资源<br>2.Hexo会将md文件中的path转换为域名&#x2F;path，例如<a href="http://xxx.github.io/xxx.png">http://xxx.github.io/xxx.png</a><br>这两个问题都会导致无法正常看到我们blog中的图片。  </p><p>问题解决：<br>1.在source下新建images文件夹，专门用来存放图片<br>2.Hexo中使用images&#x2F;xxx.png来引用该图片</p><p>那么还是有问题，在使用VS Code粘贴图片时，还是默认粘贴到_posts下面，这样每次都要移动图片和修改路径，很麻烦。没错，贴心的VS Code可以自定义粘贴的路径，使用cmd+,打开设置，找到如下界面设置默认的粘贴路径：<br><img src="/../images/image-10.png" alt="Alt text"><br>完成！</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo的安装与部署</title>
+    <link href="/2023/12/03/hexo-install-and-deploy/"/>
+    <url>/2023/12/03/hexo-install-and-deploy/</url>
+    
+    <content type="html"><![CDATA[<p>一时间还没想好要写哪些东西，万事开头难嘛，既然这样，咱就先记录下烂大街的Hexo安装与部署吧。</p><h1 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h1><p>我们可以将我们的blog理解成一个app，Hexo项目就是这个app的框架工程源码，通过Node.js进行编译打包，最终生成产品发布到GitHub上被人查看使用。</p><h1 id="安装Git-注册GitHub账号"><a href="#安装Git-注册GitHub账号" class="headerlink" title="安装Git&amp;注册GitHub账号"></a>安装Git&amp;注册GitHub账号</h1><h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2><p>传送门：<a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a><br>作用：用于管理Hexo生成的文件，对接GitHub</p><h2 id="注册GitHub账号"><a href="#注册GitHub账号" class="headerlink" title="注册GitHub账号"></a>注册GitHub账号</h2><p>传送门：<a href="https://github.com/">https://github.com/</a><br>作用：托管Hexo生成的文件，并提供GitHub Page服务，让blog可以被别人浏览  </p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 校验安装</span><br><span class="line">git --version</span><br></pre></td></tr></table></figure><h1 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h1><p>传送门：<a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a><br>Node.js是一个跨平台的基于Chrome V8引擎的JavaScript运行环境，它可以让JS脚本可以脱离浏览器执行。这么说如果还是不太理解的话，把他理解成Python就可以<br>为啥需要Node.js呢，有两个原因：</p><ul><li>Hexo是基于Node.js作为构建系统来生成网页</li><li>Hexo可以使用npm来下载安装</li><li>等等，这里npm又是啥？别慌，npm是Node.js的包管理器，理解成pip之于Python。最近的Node.js在安装的时候已经会一起安装npm了</li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 校验安装</span><br><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure><h1 id="Hexo安装"><a href="#Hexo安装" class="headerlink" title="Hexo安装"></a>Hexo安装</h1><p>使用npm进行安装：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// -g参数表示将hexo-cli作为全局(global)包安装，hexo-cli中的二进制文件加入到PATH中，方便终端调用hexo命令</span><br><span class="line">// 全局安装还可以使得在创建其他Node.js项目的时候也方便引用到</span><br><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure><h1 id="创建Hexo项目"><a href="#创建Hexo项目" class="headerlink" title="创建Hexo项目"></a>创建Hexo项目</h1><p>1.在你喜欢的地方创建一个文件夹，例如桌面上，就叫做hexo_blog吧<br>2.cd到该目录<br>3.执行命令，创建Hexo项目</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 创建Hexo项目</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure><p>4.执行命令，在本地生成网页产物</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 生成网页产物</span><br><span class="line">hexo generate</span><br></pre></td></tr></table></figure><p>5.执行命令，启动本地服务器查看</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 启动本地server</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure><p>6.在浏览器中打开 <a href="http://localhost:4000/">http://localhost:4000/</a> 查看效果<br>不出意外的话，恭喜，已经曙光初现了，接下来就是将我们的blog发布到GitHub Page上供别人浏览了</p><h1 id="部署到GitHub-Page"><a href="#部署到GitHub-Page" class="headerlink" title="部署到GitHub Page"></a>部署到GitHub Page</h1><h2 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h2><p>之前我们创建了GitHub账号，我们新建一个仓库<br><img src="/../images/image.png" alt="Alt text"><br><img src="/../images/image-1.png" alt="Alt text"></p><h2 id="配置SSH密钥"><a href="#配置SSH密钥" class="headerlink" title="配置SSH密钥"></a>配置SSH密钥</h2><p>等等，啥是SSH，啥是密钥？我们要把本地的Hexo产物文件push到GitHub，是通过ssh的方式。那GitHub肯定需要鉴权把。鉴权我们可以使用账号密码，但是如果每次push都要输入账号密码，那想想都很痛苦。<br>那有没有更加轻松的方式呢？GitHub很贴心的为你想好啦，我们只要把我们的设备添加到GitHub的信任名单中，那就不用每次都输入账号密码了，so easy!<br>那么，GitHub是怎么信任咱们的设备呢，它需要一个凭证，这个凭证就是SSH密钥。通过SSH密钥能够唯一标识请求来自于这台设备。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 生成ssh密钥，引号中的内容是注释，可以写我们自己的邮箱账号</span><br><span class="line">// 一路回车即可，记录下保存密钥的文件，例如~/.ssh/id_rsa，对应的公钥就是~/.ssh/id_rsa.pub</span><br><span class="line">ssh-keygen -t rsa -C &quot;your email@example.com&quot;</span><br></pre></td></tr></table></figure><p>查看公钥并复制到剪切板中，然后按找到下面的位置将公钥粘贴进去<br><img src="/../images/image-2.png" alt="Alt text"><br><img src="/../images/image-3.png" alt="Alt text"><br><img src="/../images/image-4.png" alt="Alt text"><br><img src="/../images/image-5.png" alt="Alt text"><br>测试下添加是否成功</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 当出现提示时回车即可</span><br><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure><h2 id="配置Git个人信息"><a href="#配置Git个人信息" class="headerlink" title="配置Git个人信息"></a>配置Git个人信息</h2><p>上面的ssh密钥只是前提条件，GitHub在我们push文件时还会根据邮箱和用户名做校验，因而需要设置下</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;此处填你的用户名&quot;</span><br><span class="line">git config --global user.email &quot;此处填你的邮箱&quot;</span><br></pre></td></tr></table></figure><h2 id="将Hexo部署到GitHub-Page"><a href="#将Hexo部署到GitHub-Page" class="headerlink" title="将Hexo部署到GitHub Page"></a>将Hexo部署到GitHub Page</h2><p>首先，回到我们之前在GitHub上创建的仓库，复制我们仓库的ssh地址<br><img src="/../images/image-6.png" alt="Alt text"><br>打开我们创建的Hexo项目中的_config.yml文件(推荐Visual Studio Code，后续写blog也很方便)，找到如下入位置进行修改<br><img src="/../images/image-12.png" alt="Alt text"><br><img src="/../images/image-11.png" alt="Alt text"></p><p><strong>敲黑板！！注意branch不要填入master，要填入main。</strong> 分支填错会就看不到了页面了，GitHub Page使用默认分支部署。不知道啥时候开始，GitHub为了zzzq把默认分支的名称从master修改为main了QAQ  </p><p>我们还需要安装一个hexo部署到git的插件来完成最终部署，进入到我们之前创建的Hexo项目目录中，执行：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 这里--save是将该插件添加到Hexo项目的依赖中，记录到package.json</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure><p>最后一步，激动人心的时刻就要到了，执行</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure><p>完成之后，访问user_name.github.io（user_name替换成你自己的GitHub账号名称），我们就可以看到我们的blog啦，完结撒花~~~~</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>第一篇正式的blog</title>
+    <link href="/2023/12/03/first_blog/"/>
+    <url>/2023/12/03/first_blog/</url>
+    
+    <content type="html"><![CDATA[<p>欢迎来到我的blog，从今天起，开始正式坚持写blog，记录下工作生活中遇到的一些问题，同时也希望分享一些有价值的经验。<br>作为一个曾经幻想着推动人类文明进步的孩子，到现在休息日只想躺着的废柴，终究还是被现实磨平了棱角。<br>那至少，希望用技术创造一些有价值的东西吧。<br>emmm，虽然也很难就是了，但梦想还是要有的嘛，万一呢</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/2023/12/03/hello-world/"/>
+    <url>/2023/12/03/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
