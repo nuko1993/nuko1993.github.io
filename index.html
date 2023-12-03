@@ -112,14 +112,14 @@
 <p>5.执行命令，启动本地服务器查看</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 启动本地server</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
 <p>6.在浏览器中打开 <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000/</a> 查看效果<br>不出意外的话，恭喜，已经曙光初现了，接下来就是将我们的blog发布到GitHub Page上供别人浏览了</p>
-<h1 id="部署到GitHub-Page"><a href="#部署到GitHub-Page" class="headerlink" title="部署到GitHub Page"></a>部署到GitHub Page</h1><h2 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h2><p>之前我们创建了GitHub账号，我们新建一个仓库<br><img src="/image.png" alt="Alt text"><br><img src="/image-1.png" alt="Alt text"></p>
+<h1 id="部署到GitHub-Page"><a href="#部署到GitHub-Page" class="headerlink" title="部署到GitHub Page"></a>部署到GitHub Page</h1><h2 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h2><p>之前我们创建了GitHub账号，我们新建一个仓库<br><img src="/../images/image.png" alt="Alt text"><br><img src="/../images/image-1.png" alt="Alt text"></p>
 <h2 id="配置SSH密钥"><a href="#配置SSH密钥" class="headerlink" title="配置SSH密钥"></a>配置SSH密钥</h2><p>等等，啥是SSH，啥是密钥？我们要把本地的Hexo产物文件push到GitHub，是通过ssh的方式。那GitHub肯定需要鉴权把。鉴权我们可以使用账号密码，但是如果每次push都要输入账号密码，那想想都很痛苦。<br>那有没有更加轻松的方式呢？GitHub很贴心的为你想好啦，我们只要把我们的设备添加到GitHub的信任名单中，那就不用每次都输入账号密码了，so easy!<br>那么，GitHub是怎么信任咱们的设备呢，它需要一个凭证，这个凭证就是SSH密钥。通过SSH密钥能够唯一标识请求来自于这台设备。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 生成ssh密钥，引号中的内容是注释，可以写我们自己的邮箱账号</span><br><span class="line">// 一路回车即可，记录下保存密钥的文件，例如~/.ssh/id_rsa，对应的公钥就是~/.ssh/id_rsa.pub</span><br><span class="line">ssh-keygen -t rsa -C &quot;your email@example.com&quot;</span><br></pre></td></tr></table></figure>
-<p>查看公钥并复制到剪切板中，然后按找到下面的位置将公钥粘贴进去<br><img src="/image-2.png" alt="Alt text"><br><img src="/image-3.png" alt="Alt text"><br><img src="/image-4.png" alt="Alt text"><br><img src="/image-5.png" alt="Alt text"><br>测试下添加是否成功</p>
+<p>查看公钥并复制到剪切板中，然后按找到下面的位置将公钥粘贴进去<br><img src="/../images/image-2.png" alt="Alt text"><br><img src="/../images/image-3.png" alt="Alt text"><br><img src="/../images/image-4.png" alt="Alt text"><br><img src="/../images/image-5.png" alt="Alt text"><br>测试下添加是否成功</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 当出现提示时回车即可</span><br><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
 <h2 id="配置Git个人信息"><a href="#配置Git个人信息" class="headerlink" title="配置Git个人信息"></a>配置Git个人信息</h2><p>上面的ssh密钥只是前提条件，GitHub在我们push文件时还会根据邮箱和用户名做校验，因而需要设置下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;此处填你的用户名&quot;</span><br><span class="line">git config --global user.email &quot;此处填你的邮箱&quot;</span><br></pre></td></tr></table></figure>
-<h2 id="将Hexo部署到GitHub-Page"><a href="#将Hexo部署到GitHub-Page" class="headerlink" title="将Hexo部署到GitHub Page"></a>将Hexo部署到GitHub Page</h2><p>首先，回到我们之前在GitHub上创建的仓库，复制我们仓库的ssh地址<br><img src="/image-6.png" alt="Alt text"><br>打开我们创建的Hexo项目中的_config.yml文件(推荐Visual Studio Code，后续写blog也很方便)，找到如下入位置进行修改<br><img src="/image-7.png" alt="Alt text"><br><strong>敲黑板！！注意branch不要填入master，要填入main。</strong> 分支填错会就看不到了页面了，GitHub Page使用默认分支部署。不知道啥时候开始，GitHub为了zzzq把默认分支的名称从master修改为main了QAQ  </p>
+<h2 id="将Hexo部署到GitHub-Page"><a href="#将Hexo部署到GitHub-Page" class="headerlink" title="将Hexo部署到GitHub Page"></a>将Hexo部署到GitHub Page</h2><p>首先，回到我们之前在GitHub上创建的仓库，复制我们仓库的ssh地址<br><img src="/../images/image-6.png" alt="Alt text"><br>打开我们创建的Hexo项目中的_config.yml文件(推荐Visual Studio Code，后续写blog也很方便)，找到如下入位置进行修改<br><img src="/../images/image-7.png" alt="Alt text"><br><strong>敲黑板！！注意branch不要填入master，要填入main。</strong> 分支填错会就看不到了页面了，GitHub Page使用默认分支部署。不知道啥时候开始，GitHub为了zzzq把默认分支的名称从master修改为main了QAQ  </p>
 <p>我们还需要安装一个hexo部署到git的插件来完成最终部署，进入到我们之前创建的Hexo项目目录中，执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 这里--save是将该插件添加到Hexo项目的依赖中，记录到package.json</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
 <p>最后一步，激动人心的时刻就要到了，执行</p>
@@ -163,7 +163,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>欢迎来到我的blog，从今天起，开始正式坚持写blog，记录下工作生活中遇到的一些问题，同时也希望分享一些有价值的经验。<br>作为一个曾经幻想着推动人类文明进步的孩子，到现在休息日只想躺着的废柴，终究还是被现实磨平了棱角。<br>那至少，希望用技术创造一些有价值的东西吧。<br>emmm，虽然也很难就是了，但梦想还是要有的嘛，万一呢<br>以上</p>
+        <p>欢迎来到我的blog，从今天起，开始正式坚持写blog，记录下工作生活中遇到的一些问题，同时也希望分享一些有价值的经验。<br>作为一个曾经幻想着推动人类文明进步的孩子，到现在休息日只想躺着的废柴，终究还是被现实磨平了棱角。<br>那至少，希望用技术创造一些有价值的东西吧。<br>emmm，虽然也很难就是了，但梦想还是要有的嘛，万一呢</p>
 
       
     </div>
