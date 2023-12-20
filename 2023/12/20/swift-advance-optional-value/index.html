@@ -24,7 +24,7 @@
 <meta property="og:description" content="前言这部分主要介绍Swift中可选值的底层原理 哨岗值 在许多时候，函数在没有读取到有效值后需要返回给我们一个特定的值，称为哨岗值，比如EOF、-1、null等等 哨岗值有时是有效的值，比如-1，但有时候这种情况会导致错误的结果，比如OC对nil发消息，如果方法返回的是结构体，则会是一个值全部为0的结构体，这时有可能导致逻辑错误,eg1234NSString *someString &#x3D; ...;i">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-12-20T13:52:08.000Z">
-<meta property="article:modified_time" content="2023-12-20T15:35:35.859Z">
+<meta property="article:modified_time" content="2023-12-20T15:46:07.635Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -275,10 +275,10 @@
                 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这部分主要介绍Swift中可选值的底层原理</p>
 <h2 id="哨岗值"><a href="#哨岗值" class="headerlink" title="哨岗值"></a>哨岗值</h2><ul>
 <li>在许多时候，函数在没有读取到有效值后需要返回给我们一个特定的值，称为哨岗值，比如EOF、-1、null等等</li>
-<li>哨岗值有时是有效的值，比如-1，但有时候这种情况会导致错误的结果，比如OC对nil发消息，如果方法返回的是结构体，则会是一个值全部为0的结构体，这时有可能导致逻辑错误,eg<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">NSString *someString = ...;<br>if ([someString rangeOfString:@<span class="hljs-string">&quot;Swift&quot;</span>].<span class="hljs-keyword">location</span> <span class="hljs-title">!= NSNotFound</span>) &#123;<br>NSLog(@<span class="hljs-string">&quot;Someone mentioned Swift!&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<li>哨岗值有时是有效的值，比如-1，但有时候这种情况会导致错误的结果，比如OC对nil发消息，如果方法返回的是结构体，则会是一个值全部为0的结构体，这时有可能导致逻辑错误,eg<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-built_in">NSString</span> *someString = ...;<br><span class="hljs-keyword">if</span> ([someString rangeOfString:<span class="hljs-string">@&quot;Swift&quot;</span>].location != <span class="hljs-built_in">NSNotFound</span>) &#123;<br><span class="hljs-built_in">NSLog</span>(<span class="hljs-string">@&quot;Someone mentioned Swift!&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
 如果someString是nil，location就会是0而不是NSNotFound（是NSIntegerMax），显然是错误的。</li>
 <li>哨岗值还依赖约定，如果不知道约定，则无法使用。</li>
-<li>Swift通过枚举实现Optional来解决哨岗值的问题,没错，可选值的本质实际就是带有关联值的Swift枚举<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs fortran"><span class="hljs-keyword">enum</span> <span class="hljs-keyword">Optional</span>&lt;Wrapped&gt; &#123;<br><span class="hljs-keyword">case</span> <span class="hljs-keyword">none</span><br><span class="hljs-keyword">case</span> some(Wrapped)<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>Swift通过枚举实现Optional来解决哨岗值的问题,没错，可选值的本质实际就是带有关联值的Swift枚举<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Optional</span>&lt;<span class="hljs-title class_">Wrapped</span>&gt; &#123;<br><span class="hljs-keyword">case</span> none<br><span class="hljs-keyword">case</span> <span class="hljs-keyword">some</span>(<span class="hljs-type">Wrapped</span>)<br>&#125;<br></code></pre></td></tr></table></figure></li>
 <li>Swift中对于可能是哨岗值的返回的都是可选值，从而避免了必须了解哨岗值约定的问题</li>
 <li>语法糖使得使用可选值更加方便：<ul>
 <li>Type? &#x3D; Optional<Type></li>
@@ -303,18 +303,18 @@
 <li>if var&#x2F;while var:可变版本，使得我们在if语句中可以修改变量</li>
 <li>在作用域之外使用解包后的值：使用guard let语句，其else路径必须是要求离开当前作用域，如return或者调用一个Never函数</li>
 <li>返回Never（又称为无人类型）的函数向编译器表明自己绝对不会返回，如fatalError或者dispatchMain;又或者对应的值绝对不会出现，比如将泛型指定为Never</li>
-<li>Never实际在Swift中就是个enum<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> Never&#123;&#125;<br></code></pre></td></tr></table></figure></li>
+<li>Never实际在Swift中就是个enum<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Never</span>&#123;&#125;<br></code></pre></td></tr></table></figure></li>
 <li>Never和Void是不同的，Void实际是空元祖()</li>
 <li>总结，不存在是nil，存在且为空Void，绝对不会发生Never</li>
 <li>在OC中，对nil发消息不会发生，在Swift中，使用可选链实现，如v?.callback(),<strong>可选链的调用结果一定是可选值</strong></li>
 <li>对于可选值成员，默认值是nil，这是Swift中对于成员成员初始化的<strong>唯一例外</strong>。注意这个默认行为支队x?的形式有效，如果写成了Optional<T>就无效了，还是必须初始化</li>
-<li>可选链和赋值：可以使用可选链来对可选值进行赋值，如<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">var</span> <span class="hljs-selector-tag">a</span>: Int?<br>a?+=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
-注意不能写成，因为可选值绑定对值类型来说是复制<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> a: <span class="hljs-built_in">Int</span>? = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">var</span> a = a &#123;<br>    <span class="hljs-comment">// 无法改变外层的a</span><br>    a+=<span class="hljs-number">1</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>可选链和赋值：可以使用可选链来对可选值进行赋值，如<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">var</span> a: <span class="hljs-type">Int</span>?<br>a<span class="hljs-operator">?+=</span><span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+注意不能写成，因为可选值绑定对值类型来说是复制<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">var</span> a: <span class="hljs-type">Int</span>? <span class="hljs-operator">=</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">var</span> a <span class="hljs-operator">=</span> a &#123;<br>    <span class="hljs-comment">// 无法改变外层的a</span><br>    a<span class="hljs-operator">+=</span><span class="hljs-number">1</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
 <li>nil合并操作符：??,略，注意??也是短路操作符</li>
 <li>可选值提供了一个map方法，方便我们在不为nil的请款修改进行转换，注意因为是Optional本身提供的方法，所以调用的时候不能加?,eg.arr.first.map{…}（注意，只要是可选值，就可以调用该map方法，不要求可选值是集合类型！！），但是注意，即使如此，<strong>返回的仍然是可选值类型</strong></li>
 <li>flatMap：如果变换本身返回了可选值类型，那么map得到的结果则是双重可选值，为了去掉一层，可以使用flatMap，注意可选值的类型上也是直接定义了flatMap</li>
 <li>compactMap：可以将变换后为nil的可选值给筛掉</li>
-<li>可选值判等：如果可选值封装的类型符合Equatable，则对应的可选值类型也是Equatable的，所以我们可以方便的判等：<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> a: <span class="hljs-built_in">Int</span>? = <span class="hljs-number">0</span><br>a == <span class="hljs-number">0</span> <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+<li>可选值判等：如果可选值封装的类型符合Equatable，则对应的可选值类型也是Equatable的，所以我们可以方便的判等：<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">var</span> a: <span class="hljs-type">Int</span>? <span class="hljs-operator">=</span> <span class="hljs-number">0</span><br>a <span class="hljs-operator">==</span> <span class="hljs-number">0</span> <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
 这里work的原因是swift会在必要时将0升级为可选值</li>
 <li>字典中如果直接设置key的value为nil会移除掉key和value，若要插入值nil，可以使用Optional(nil)</li>
 <li>强制解包的使用：一般不要使用，除非预期是在遇到nil时直接crash</li>
