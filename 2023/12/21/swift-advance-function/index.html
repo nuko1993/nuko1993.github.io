@@ -24,7 +24,7 @@
 <meta property="og:description" content="前言函数在Swift中和类一样，都是头等公民，可以被赋值给变量，可以被传递，可以捕获外部变量。当函数捕获变量时，可以视作函数和被捕获的变量构成了一个类对象（但是函数不可比较）。函数既可以使用func关键字声明，也可以用闭包表达式来声明，eg. 1let f &#x3D; &#123;(i: Int) -&gt; Int in return i * 2&#125; 闭包表达式与func的主要区别在于闭包是匿名">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-12-21T13:46:36.000Z">
-<meta property="article:modified_time" content="2023-12-22T15:02:10.022Z">
+<meta property="article:modified_time" content="2023-12-23T05:23:50.015Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -317,7 +317,7 @@
 <li>@available注解格式<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">@available</span>(版本范围, 可用性, message: 错误消息)<br></code></pre></td></tr></table></figure></li>
 <li>builder还可以通过实现buildIf和buildEither来支持if，if else和switch语句<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-comment">// 支持单个if，因为if语句要么有值，要么值为nil，所以参数是可选值类型</span><br><span class="hljs-keyword">static</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">buildIf</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">s</span>: <span class="hljs-type">String</span>?) -&gt; <span class="hljs-type">String</span> &#123;<br>    s <span class="hljs-operator">??</span> <span class="hljs-string">&quot;&quot;</span><br>&#125;<br><br><span class="hljs-comment">// 支持if else的if分支，要求if分支必须返回是String</span><br><span class="hljs-keyword">static</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">buildEither</span>(<span class="hljs-params">first</span> <span class="hljs-params">component</span>: <span class="hljs-type">String</span>) -&gt; <span class="hljs-type">String</span> &#123;<br>    component<br>&#125;<br><br><span class="hljs-comment">// 支持if else的else分支，要求else分支必须返回是String</span><br><span class="hljs-keyword">static</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">buildEither</span>(<span class="hljs-params">second</span> <span class="hljs-params">component</span>: <span class="hljs-type">String</span>) -&gt; <span class="hljs-type">String</span> &#123;<br>    component<br>&#125;<br><br><span class="hljs-comment">// 实现了if else，switch是实现了，switch也可以看做是if else的嵌套调用，但是实际上switch除了第一个case是buildEither(first:)，其余分支都是buildEdither(second:)</span><br></code></pre></td></tr></table></figure></li>
 <li>builder还可以支持循环<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">static</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">buildArray</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">components</span>: [<span class="hljs-type">String</span>]) -&gt; <span class="hljs-type">String</span> &#123;<br>    components.joined(separator: <span class="hljs-string">&quot;&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure></li>
-<li>buildFinderResult:将会在builder函数的最后的结果被应用</li>
+<li>buildFindalResult:将会在builder函数的最后的结果被应用</li>
 <li>resultBuilder不支持guard、defer、do…catch等，因为这些语句无法被求值</li>
 <li>总结：通过实现一系列build方法，创建一个XXXBuilder，通过@XXXBuilder将函数&#x2F;闭包转换为对build方法的调用，从而实现自定义DSL的效果</li>
 <li>所以为啥View中的body能返回不同类型的View呢，<strong>实际上View的body就是@ViewBuilder</strong>，但是并不是任何属性都具有该特特性，正常情况下，<strong>某个标记为some View的属性需要返回相同类型的View</strong>，我们可以加上@ViewBuilder注解（因为some View就是某种特定具体类型的View，所以如果返回的类型不同，自然无法编译通过，<strong>通过加上ViewBuilder注解让编译器帮我们将表达式转换为统一的封装类型</strong>就OK了~~）</li>
@@ -383,6 +383,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/12/23/swift-advance-property/" title="Swift进阶-属性">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Swift进阶-属性</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
