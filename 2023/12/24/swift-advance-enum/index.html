@@ -16,21 +16,21 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言结构体是值类型，类是引用类型。 值类型和引用类型 值类型：当赋值时会被copy一份，也就是说，每个值类型变量的数据都是独立的，其变量本身的地址中存储的就是值，具有这种行为的类型称为具有值语义 引用类型，变量本身的地址存储的是值的引用（可能是地址，也可能是其他的间接句柄），而非值，具有这种行为的类型称为具有引用语义 说白了还是和其他语言一样，就是直接存储值还是存储地址的区别  可变性 对stru">
+    <meta name="description" content="前言struct和class有时也被称为记录类型，一个记录是任意个属性组成。而枚举称为标签联合或变体类型，它和记录类型也一样强大。 概述 enum由任意个case组成，每个case有关联值 Optional和Result实际上都是枚举 枚举时值类型，和结构体类似，但是没有存储属性，我们可以将关联值视为存储属性  总和类型和乘积类型 居留元：简单理解就是一个类型的可能的取值，类型可以理解为取值的集合">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift进阶-结构体和类">
-<meta property="og:url" content="https://nuko1993.github.io/2023/12/23/swift-advance-struct-and-class/index.html">
+<meta property="og:title" content="Swift进阶-枚举">
+<meta property="og:url" content="https://nuko1993.github.io/2023/12/24/swift-advance-enum/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言结构体是值类型，类是引用类型。 值类型和引用类型 值类型：当赋值时会被copy一份，也就是说，每个值类型变量的数据都是独立的，其变量本身的地址中存储的就是值，具有这种行为的类型称为具有值语义 引用类型，变量本身的地址存储的是值的引用（可能是地址，也可能是其他的间接句柄），而非值，具有这种行为的类型称为具有引用语义 说白了还是和其他语言一样，就是直接存储值还是存储地址的区别  可变性 对stru">
+<meta property="og:description" content="前言struct和class有时也被称为记录类型，一个记录是任意个属性组成。而枚举称为标签联合或变体类型，它和记录类型也一样强大。 概述 enum由任意个case组成，每个case有关联值 Optional和Result实际上都是枚举 枚举时值类型，和结构体类似，但是没有存储属性，我们可以将关联值视为存储属性  总和类型和乘积类型 居留元：简单理解就是一个类型的可能的取值，类型可以理解为取值的集合">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-12-23T13:09:57.000Z">
-<meta property="article:modified_time" content="2023-12-23T14:39:19.557Z">
+<meta property="article:published_time" content="2023-12-24T06:59:57.000Z">
+<meta property="article:modified_time" content="2023-12-24T08:50:03.841Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Swift进阶-结构体和类 - nuko的小站</title>
+  <title>Swift进阶-枚举 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Swift进阶-结构体和类"></span>
+            <span id="subtitle" data-typed-text="Swift进阶-枚举"></span>
           
         </div>
 
@@ -207,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-23 21:09" pubdate>
-          2023年12月23日 晚上
+        <time datetime="2023-12-24 14:59" pubdate>
+          2023年12月24日 下午
         </time>
       </span>
     
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          2k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          18 分钟
+          17 分钟
         
       </span>
     
@@ -267,51 +267,76 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Swift进阶-结构体和类</h1>
+            <h1 id="seo-header">Swift进阶-枚举</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>结构体是值类型，类是引用类型。</p>
-<h2 id="值类型和引用类型"><a href="#值类型和引用类型" class="headerlink" title="值类型和引用类型"></a>值类型和引用类型</h2><ul>
-<li>值类型：当赋值时会被copy一份，也就是说，每个值类型变量的数据都是独立的，其变量本身的地址中存储的就是值，具有这种行为的类型称为具有<strong>值语义</strong></li>
-<li>引用类型，变量本身的地址存储的是值的引用（可能是地址，也可能是其他的间接句柄），而非值，具有这种行为的类型称为具有引用语义</li>
-<li>说白了还是和其他语言一样，就是直接存储值还是存储地址的区别</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>struct和class有时也被称为记录类型，一个记录是任意个属性组成。而枚举称为标签联合或变体类型，它和记录类型也一样强大。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>enum由任意个case组成，每个case有关联值</li>
+<li>Optional和Result实际上都是枚举</li>
+<li>枚举时值类型，和结构体类似，但是没有存储属性，我们可以将关联值视为存储属性</li>
 </ul>
-<h2 id="可变性"><a href="#可变性" class="headerlink" title="可变性"></a>可变性</h2><ul>
-<li>对struct中的属性修改，本质是创建了一个新的struct替换了原来的struct</li>
-<li>推荐使用var来声明struct中的属性</li>
-<li>struct中的方法默认不能修改结构体本身，如有必要，添加mutating关键字。属性和下标的stter默认都是mutating的</li>
-<li>调用struct的mutating方法，要求struct本身是var的。如果要调用一个let的struct属性setter，可以将该setter标记为nonmutating set，告知编译器该setter不会修改struct</li>
-<li>inout参数：实际的过程是先copy参数，然后修改参数，最后用修改完的参数覆盖原来的值。编译器有时会将这种行为优化为传递引用，但不要依赖这种行为。并且，如果使用了观察者，则无论在函数中修改了多少次，只会在最终被覆盖的时候得到通知</li>
+<h2 id="总和类型和乘积类型"><a href="#总和类型和乘积类型" class="headerlink" title="总和类型和乘积类型"></a>总和类型和乘积类型</h2><ul>
+<li>居留元：简单理解就是一个类型的可能的取值，类型可以理解为取值的集合</li>
+<li>strcut和class中的居留元数量，等于其成员的居留元数量的乘积，因为被称为乘积类型</li>
+<li>enum的居留元数量，等于其所有case的累加</li>
 </ul>
-<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><ul>
-<li>结构体的生命周期很简单，就是含有结构体实例变量的生命周期一致，一旦离开作用域就会被销毁</li>
-<li>类的生命周期，取决于ARC</li>
-<li>由于结构体不存在引用，所以也就无所谓结构体的循环引用问题</li>
-<li>打破类的循环引用，weak或unowned</li>
-<li>unowened实际的作用就是不持有引用，所以允许我们声明为非可选值，而weak引用必须声明为可选值。但是<strong>unowned不安全</strong>，如果释放之后再访问unowned会崩溃（是runtime崩溃，而不是badaccess崩溃，类似于断言）！！！虽然这里Swift只要unowned引用还存在，对象内存就不会释放，但是会标记为无效，即所谓僵尸内存</li>
-<li>Swift中，类不是唯一的引用类型，actor以及函数（包括闭包表达式&amp;方法）都是引用类型</li>
-<li>捕获列表，实际就是常用的在闭包中使用的[weak self]，但是捕获列表中还可以直接创建变量，例如<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Swift">window<span class="hljs-operator">?</span>.onRotate <span class="hljs-operator">=</span> &#123; [<span class="hljs-keyword">weak</span> view, <span class="hljs-keyword">weak</span> myWindow<span class="hljs-operator">=</span>window, x<span class="hljs-operator">=</span><span class="hljs-number">5</span><span class="hljs-operator">*</span><span class="hljs-number">5</span>] <span class="hljs-keyword">in</span><br>    <span class="hljs-comment">// ...</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
+<h2 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h2><ul>
+<li>switch通过方便的语法，可以比较成员和提取关联值，这一机制称为模式匹配，类似于<strong>正则匹配</strong></li>
+<li>支持的模式类型<ul>
+<li>通配符，如_,匹配任意值并忽略</li>
+<li>元祖模式，如case (let x, 0, _)</li>
+<li>美爵成员模式， 如.failure(let error)</li>
+<li>值绑定模式，如let x，注意let (x, y) &#x3D; (let x, let y)，但是let x，y则表示绑定x，并且和y进行比较</li>
+<li>可以在绑定模式添加where限定条件，如.success(let status) where 200..&lt;300 ~&#x3D; httpStatus</li>
+<li>如果是在单个case去匹配多个模式，则每个模式中let的数量、变量名和类型均要相同</li>
+<li>可选值模式，let x?，即可选值x不为nil时才匹配并绑定到x</li>
+<li>类型转换模式，let x as Type</li>
+<li>表达式模式，将输入值和模式作为参数传递给定义在标准库中的<del>&#x3D;操作符进行判断，对于实现了Equatable协议的类型，</del>&#x3D;的默认行为是转发到&#x3D;&#x3D;</li>
+<li>标准库为范围提供~&#x3D;的重载，可以方便的检查某个值是否在范围内</li>
+<li>可以通过重载~&#x3D;操作符来扩展模式匹配，返回true表示匹配成功</li>
 </ul>
-<h2 id="在struct和class中做选择"><a href="#在struct和class中做选择" class="headerlink" title="在struct和class中做选择"></a>在struct和class中做选择</h2><ul>
-<li>结构体的优点是开销小，不用担心循环引用、多线程、继承问题，缺点不如类具有共享的特性</li>
-<li>类则更加灵活和强大，可以使用类实现结构体的值语义，反之则不行</li>
+</li>
+<li>其他情景中的模式匹配：模式匹配并不是enum和switch的专属，我们可以在解构元祖，for循环、catch、if、guard中都可以使用。for case、while case仅在匹配成功的情况下才会执行循环体</li>
 </ul>
-<h2 id="具有值语义的类"><a href="#具有值语义的类" class="headerlink" title="具有值语义的类"></a>具有值语义的类</h2><ul>
-<li>我们可以final class，并将其中的属性都声明为let来实现值语义（嘛，这显然没有结构体好用</li>
+<h2 id="使用enum进行设计"><a href="#使用enum进行设计" class="headerlink" title="使用enum进行设计"></a>使用enum进行设计</h2><ul>
+<li>switch的完备性：即编译器保证所有的分支均能被覆盖到，否则报错</li>
+<li>避免产生非法状态：因为enum的状态有限，每个状态都是单一的，使用enum更加能确保状态的合法性</li>
+<li>enum是实现状态的绝佳选择：比如loading、success、failed，略</li>
 </ul>
-<h2 id="具有引用语义的结构体"><a href="#具有引用语义的结构体" class="headerlink" title="具有引用语义的结构体"></a>具有引用语义的结构体</h2><ul>
-<li>可以在struct中使用类属性实现引用语义</li>
-<li>所以在strcut中使用类属性要小心，不然可能会意外修改其值语义</li>
-<li>这种设计可以被用于实现COW，见下</li>
+<h2 id="选择enum还是struct"><a href="#选择enum还是struct" class="headerlink" title="选择enum还是struct"></a>选择enum还是struct</h2><ul>
+<li>enum和struct是类似的，有时都能完成相同的事情，比较如下：<ul>
+<li>enum更精确、状态有限、可以使用switch</li>
+<li>struct则可以方便扩展、包含私有成员</li>
+<li>即struct相对来说扩展性更好，更灵活，但enum更加精确，更不容易出错（嘛，凡事皆有代价</li>
 </ul>
-<h2 id="写时复制"><a href="#写时复制" class="headerlink" title="写时复制"></a>写时复制</h2><ul>
-<li>即COW，实际的意思就是修改时才发生真正的复制，很常见的优化</li>
-<li>自己实现COW，我们需要知道一般的实现原理：在没有发生修改之前，各变量都持有的值的内部都共享一份引用，如果一旦发生修改内部共享存储的行为（调用了set方法或者其他什么的），就将原来的内部共享存储进行copy，修改该copy属性</li>
-<li>查询Swift的引用类型是否只有一个持有者：isKnownUniquelyReferenced，但是注意该函数不是线程安全的，所以多线程对数组append是非线程安全的，该函数的参数是个inout参数，否则在传递参数的时候肯定会进行一次引用，函数功能就失效了<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">extension</span> <span class="hljs-title class_">HTTPRequest</span> &#123;<br>    <span class="hljs-comment">// 内部判断是否触发copy以实现COW</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">var</span> storageForWriting: <span class="hljs-type">HTTPRequest</span>.<span class="hljs-type">Storage</span> &#123;<br>        <span class="hljs-keyword">mutating</span> <span class="hljs-keyword">get</span> &#123;<br>            <span class="hljs-keyword">if</span> <span class="hljs-operator">!</span><span class="hljs-built_in">isKnownUniquelyReferenced</span>(<span class="hljs-operator">&amp;</span>storage) &#123;<br>            <span class="hljs-keyword">self</span>.storage <span class="hljs-operator">=</span> storage.copy()<br>            &#125;<br>            <span class="hljs-keyword">return</span> storage<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">var</span> path: <span class="hljs-type">String</span> &#123;<br>        <span class="hljs-keyword">get</span> &#123; storage.path &#125;<br>        <span class="hljs-keyword">set</span> &#123; storageForWriting.path <span class="hljs-operator">=</span> newValue &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">var</span> headers: [<span class="hljs-type">String</span>: <span class="hljs-type">String</span>] &#123;<br>        <span class="hljs-keyword">get</span> &#123; storage.headers &#125;<br>        <span class="hljs-keyword">set</span> &#123; storageForWriting.headers <span class="hljs-operator">=</span> newValue &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
-<li>注意willSet会导致COW性能的破坏，因为如果实现了willSet，则编译器在设置新值之前一定会先创建值，那么会导致值中的共享存储的引用增加，导致判断失效，导致必然发生复制</li>
-<li>在SwiftUI中，由于@Pushlied使用了willSet，所以会造成一些性能问题，每次修改@Published属性，都会导致数组的copy</li>
+</li>
+</ul>
+<h2 id="enum和protocol的相似之处"><a href="#enum和protocol的相似之处" class="headerlink" title="enum和protocol的相似之处"></a>enum和protocol的相似之处</h2><ul>
+<li>都能表达<strong>某种类型之一</strong>的语义，enum是通过case，而protocol则是通过具体类型</li>
+<li>如果我们侧重于添加成员，则用protocol更好，因为修改enum的case会破坏源码</li>
+</ul>
+<h2 id="使用enum实现递归数据结构"><a href="#使用enum实现递归数据结构" class="headerlink" title="使用enum实现递归数据结构"></a>使用enum实现递归数据结构</h2><ul>
+<li>比如用enum实现树形结构</li>
+<li>用indirect case让某个case表示为引用，indirect只能用在enum上，可以用在case前面，也可以直接加载enum前面</li>
+<li>enum的大小是其最大case的大小+元数据，和c语言中的union及其类似，每个case的大小是其关联值的大小，但如果是indirect的，则是固定大小8（理解为指针嘛</li>
+</ul>
+<h2 id="原始值"><a href="#原始值" class="headerlink" title="原始值"></a>原始值</h2><ul>
+<li>enum可以指定原始值类型，即每个case对应一个固定的rawValue，和关联值无关，一般就是一个整数或字符串</li>
+<li>RawRepresentable: 该协议的方法，即init(rawValue:)，RawValue类型为String、整数、浮点类型的enum默认符合，如果需要自定义，可以显示指定enum符合该协议，自己实现init方法，但是注意<strong>rawValue必须唯一！！</strong></li>
+<li>RawRepresentable也可以由struct和class来实现</li>
+<li>注意rawValue并不是enum中存储的，不影响enum的大小，其更加类似于于计算属性</li>
+</ul>
+<h2 id="列举枚举值"><a href="#列举枚举值" class="headerlink" title="列举枚举值"></a>列举枚举值</h2><ul>
+<li>没有关联值的enum，默认是可列举的，我们只需要将其声明为符合CaseIterable，编译器会为我们实现</li>
+<li>CaseIterable也可以用于struct和class，我们自己实现allCases方法即可</li>
+</ul>
+<h2 id="固定给固定enum"><a href="#固定给固定enum" class="headerlink" title="固定给固定enum"></a>固定给固定enum</h2><ul>
+<li>可能增加case的enum称为非固定的，为了应对以后二进制sdk中新增enum的case，我们一般需要加一个default</li>
+<li>apple的sdk库一般都是弹性库，即可能变化，其中的enum一般都是非固定enum（Optional是个例外</li>
+<li>@unknown default：前面的@unknown告知编译器，这个default只是为了应对为二进制sdk中了可能增加的enum的case，而如果在本次编译时就知道有些case没有处理，仍然要给我报错</li>
 </ul>
 
                 
@@ -330,8 +355,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Swift进阶-结构体和类</div>
-      <div>https://nuko1993.github.io/2023/12/23/swift-advance-struct-and-class/</div>
+      <div>Swift进阶-枚举</div>
+      <div>https://nuko1993.github.io/2023/12/24/swift-advance-enum/</div>
     </div>
     <div class="license-meta">
       
@@ -343,7 +368,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月23日</div>
+          <div>2023年12月24日</div>
         </div>
       
       
@@ -375,18 +400,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/24/swift-advance-enum/" title="Swift进阶-枚举">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Swift进阶-枚举</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/23/swift-advance-property/" title="Swift进阶-属性">
-                        <span class="hidden-mobile">Swift进阶-属性</span>
+                      <a href="/2023/12/23/swift-advance-struct-and-class/" title="Swift进阶-结构体和类">
+                        <span class="hidden-mobile">Swift进阶-结构体和类</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
