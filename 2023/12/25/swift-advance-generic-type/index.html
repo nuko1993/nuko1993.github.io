@@ -16,23 +16,21 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个Unicode标量组成。但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问 Unicode，而非固定宽度 一切都要从Unicode开始说起 一">
+    <meta name="description" content="前言泛型编程的主要目的类型安全和代码重用。泛型可以认为是多态的一种实现方式，所谓多态，就是多个类型可以调用同一个名称的接口。因为泛型只是具体类型不同，接口名称都是相同的，所以可以认为是一种多态的表现。而多态其实还有其他不同的表现形式：  专属多态（特设多态）： 概念：为特定类型的任意集合定义一个共同的接口 实现1：函数重载，函数名称相同，但传入的参数类型和个数不同 实现2：协议，多个类型实现同一个">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift进阶-字符串">
-<meta property="og:url" content="https://nuko1993.github.io/2023/12/24/swift-advance-string/index.html">
+<meta property="og:title" content="Swift进阶-泛型">
+<meta property="og:url" content="https://nuko1993.github.io/2023/12/25/swift-advance-generic-type/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个Unicode标量组成。但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问 Unicode，而非固定宽度 一切都要从Unicode开始说起 一">
+<meta property="og:description" content="前言泛型编程的主要目的类型安全和代码重用。泛型可以认为是多态的一种实现方式，所谓多态，就是多个类型可以调用同一个名称的接口。因为泛型只是具体类型不同，接口名称都是相同的，所以可以认为是一种多态的表现。而多态其实还有其他不同的表现形式：  专属多态（特设多态）： 概念：为特定类型的任意集合定义一个共同的接口 实现1：函数重载，函数名称相同，但传入的参数类型和个数不同 实现2：协议，多个类型实现同一个">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://nuko1993.github.io/images/image-21.png">
-<meta property="article:published_time" content="2023-12-24T11:29:03.000Z">
-<meta property="article:modified_time" content="2023-12-25T12:52:23.974Z">
+<meta property="article:published_time" content="2023-12-25T13:24:19.000Z">
+<meta property="article:modified_time" content="2023-12-25T14:43:26.740Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://nuko1993.github.io/images/image-21.png">
   
   
   
-  <title>Swift进阶-字符串 - nuko的小站</title>
+  <title>Swift进阶-泛型 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Swift进阶-字符串"></span>
+            <span id="subtitle" data-typed-text="Swift进阶-泛型"></span>
           
         </div>
 
@@ -209,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-24 19:29" pubdate>
-          2023年12月24日 晚上
+        <time datetime="2023-12-25 21:24" pubdate>
+          2023年12月25日 晚上
         </time>
       </span>
     
@@ -221,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.1k 字
+          1.6k 字
         
       </span>
     
@@ -232,7 +230,7 @@
         
         
         
-          27 分钟
+          14 分钟
         
       </span>
     
@@ -269,94 +267,69 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Swift进阶-字符串</h1>
+            <h1 id="seo-header">Swift进阶-泛型</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个Unicode标量组成。<br>但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问</p>
-<h2 id="Unicode，而非固定宽度"><a href="#Unicode，而非固定宽度" class="headerlink" title="Unicode，而非固定宽度"></a>Unicode，而非固定宽度</h2><ul>
-<li>一切都要从Unicode开始说起<ul>
-<li>一开始英文字符由asii码规定，只需要1个字节就可以编码，每个字符的宽度的大小固定</li>
-<li>后来，随着计算机的普及，更多的字符需要被编码，ascii码显然就不够用了</li>
-<li>Unicode就应运而生，他的目标是让天下没有难编码的字符！</li>
-<li>一开始Unicode使用2字节固定宽度进行编码，称为UCS-2，后来不够用，所以现在的Unicode是可变长编码<ul>
-<li>Unicode字符，由一个或者多个Unicode标量组成，每个字符对应一个编码点</li>
-<li>一个Unicode标量可以被编码为多个编码单元</li>
-<li>编码点一般使用U+前缀表示</li>
-<li>Unicode标量在大多数情况下都和编码点相同，在Swift中用Unicode.Scalar表示</li>
-<li>UTF8和UTF16都属于变长编码的编码方式，即每个标量编码的长度并不一致，编码方式中的最小实体称为编码单元，在Swift中用Unicode.UTF8.CodeUnit表示</li>
-<li>单个字符在大多数情况下是由单个标量组成，也可以通过多个标量组成</li>
-<li>总结下：1个可见字符-&gt;1个以上标量 1个标量-&gt;1个以上编码单元，如图所示<br>  <img src="/../images/image-21.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>泛型编程的主要目的类型安全和代码重用。泛型可以认为是多态的一种实现方式，所谓多态，就是多个类型可以调用同一个名称的接口。因为泛型只是具体类型不同，接口名称都是相同的，所以可以认为是一种多态的表现。<br>而多态其实还有其他不同的表现形式：</p>
+<ul>
+<li>专属多态（特设多态）：<ul>
+<li>概念：为特定类型的任意集合定义一个共同的接口</li>
+<li>实现1：函数重载，函数名称相同，但传入的参数类型和个数不同</li>
+<li>实现2：协议，多个类型实现同一个协议，这是更结构化的专属多态</li>
+</ul>
+</li>
+<li>子类型多态：<ul>
+<li>概念：一个类型名称表示很多具体类型，这些类具有共同的超类</li>
+<li>实现：同一个函数如果接受父类作为参数，那么也可以传递子类作为参数</li>
+</ul>
+</li>
+<li>参数化多态：<ul>
+<li>概念：指定一个抽象符号表示任意类型</li>
+<li>实现：泛型，接受泛型化参数的函数称为泛型函数，泛型化的参数被称为泛型，也是下面讨论的主要部分</li>
 </ul>
 </li>
 </ul>
+<h2 id="泛型类型"><a href="#泛型类型" class="headerlink" title="泛型类型"></a>泛型类型</h2><ul>
+<li>函数和方法、class、struct和enum都是泛型类型</li>
+</ul>
+<h2 id="泛型和Any"><a href="#泛型和Any" class="headerlink" title="泛型和Any"></a>泛型和Any</h2><ul>
+<li>泛型相比较Any，对于编译器来说能够获得更多的信息，更加安全，但同时也会增大编译产生的体积，因为对于一个具体化的泛型类型，编译器就要生成一个类型</li>
+<li>为每个泛型版本在调用时生成一个特定版本，这称为泛型特化，是C++的默认模板实现，但是对于Swift来说，默认不是，Swift默认是通过额外的间接层将泛型函数调用进行改造以便使其接受任意类型的，但我们可以开启Swift的编译优化选项，使其进行泛型特化</li>
+</ul>
+<h2 id="基于泛型的设计"><a href="#基于泛型的设计" class="headerlink" title="基于泛型的设计"></a>基于泛型的设计</h2><ul>
+<li>主要是抽象出共同的逻辑，将具体类型给泛型化</li>
+</ul>
+<h2 id="泛型的静态派发"><a href="#泛型的静态派发" class="headerlink" title="泛型的静态派发"></a>泛型的静态派发</h2><ul>
+<li>Swift支持函数重载，并且对重载函数的调用确定发生在<strong>编译期间</strong></li>
+<li>Swift只会使用调用侧模块的可用信息来决定调用哪个版本的函数，eg.<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">func</span> <span class="hljs-title function_">format</span>&lt;<span class="hljs-type">A</span>&gt;(<span class="hljs-params">value</span>: <span class="hljs-type">A</span>) -&gt; <span class="hljs-type">String</span> &#123;<br>    <span class="hljs-type">String</span>(describing: value)<br>&#125;<br><br><span class="hljs-keyword">func</span> <span class="hljs-title function_">format</span>(<span class="hljs-params">value</span>: <span class="hljs-type">Int</span>) -&gt; <span class="hljs-type">String</span> &#123;<br>    <span class="hljs-string">&quot;+<span class="hljs-subst">\(value)</span>+&quot;</span><br>&#125;<br><br><span class="hljs-keyword">func</span> <span class="hljs-title function_">process</span>&lt;<span class="hljs-type">B</span>&gt;(<span class="hljs-params">input</span>: <span class="hljs-type">B</span>) -&gt; <span class="hljs-type">String</span> &#123;<br>    <span class="hljs-keyword">let</span> formatted <span class="hljs-operator">=</span> format(value: input)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;-<span class="hljs-subst">\(formatted)</span>-&quot;</span><br>&#125;<br><br><span class="hljs-comment">// 这里只会调用泛型版本的函数，而不是更加具体的函数</span><br><span class="hljs-comment">// 因为函数重载发生在编译器，编译器并不确定类型是否是Int，所以只能匹配到更加宽松的版本</span><br>process(input: <span class="hljs-number">1</span>) <span class="hljs-comment">// - 1 -</span><br><br></code></pre></td></tr></table></figure></li>
+<li>协议中的函数则是动态派发的，在运行时才决定调用哪个版本的函数</li>
+</ul>
+<h2 id="泛型的工作方式"><a href="#泛型的工作方式" class="headerlink" title="泛型的工作方式"></a>泛型的工作方式</h2><ul>
+<li>Swift默认是通过间接层来实现一个可以处理任意类型</li>
+<li>间接层需要处理的问题<ul>
+<li>需要知道T的大小</li>
+<li>需要知道如何复制T和销毁T（比如是否需要引用计数）</li>
+<li>需要知道调用重载函数的地址</li>
+</ul>
+</li>
+<li>间接层提供的解决方案<ul>
+<li>Swift使用指针传递函数参数、返回值和变量</li>
+<li>对每个泛型参数，编译器会传递T的类型元数据，包括值目击表VWT，其包含如何对T进行操作，如复制、引用计数</li>
+<li>对T上的每个约束，传递协议目击表PWT，其作用是在运行时决定调用哪个函数</li>
+</ul>
 </li>
 </ul>
-<h2 id="字位簇和标准等价"><a href="#字位簇和标准等价" class="headerlink" title="字位簇和标准等价"></a>字位簇和标准等价</h2><ul>
-<li>标准等价：即一个可见字符可以是单个标量，也可以是多个标量的组合，对于用户来说是等价的，Swift可以正确处理，但对于OC来说，只会按照编码单元去判断</li>
-<li>Unicode为啥要支持两种方式表示同一个字符呢：<ul>
-<li>为了兼容之前的一些编码方式，因为有些预先组合好的字符在别的编码中已经存在了，在Unicode中需要将其视为单个字符</li>
-<li>为了支持以灵活的方式构造展现一个字符</li>
-<li>个人理解，预先组合的字符一定可以表示为多个标量的组合，但反之不一定，因为组合是无穷的</li>
-<li>注意，组合不是任意的，有些标量是可以无限制被添加的，有些则不行</li>
+<h2 id="泛型特化"><a href="#泛型特化" class="headerlink" title="泛型特化"></a>泛型特化</h2><ul>
+<li>之前说过，泛型特化是C++模板的默认实现，但不是Swift的默实现，所以默认是存在一定运行时开销的</li>
+<li>可以Swift -O开启编译优化，但要更好的帮助编译器需要：<ul>
+<li>全模块优化（whole moudle optimize）： 即使开启了优化，默认也只在同一个文件中生效，如果需要整个模块生效，需要开启该选项</li>
+<li>全模块优化还会开启一些额外的优化，如静态派发等等</li>
+<li>将泛型函数标记@inlinable以便其他模块进行导出，这使得编译器容易发现具体类型并进行特化</li>
 </ul>
 </li>
-<li>对于emoj，也是Unicode标量组合形成单个字符的典型例子</li>
-<li>那么这些字符是如何被渲染出来的，则是底层字符渲染系统的任务，如果渲染系统无法识别，则会将每个标量单独渲染出来，但是Swift仍然会将语法上有效的标量组合认为是单个字符</li>
-<li>其实OC也有能够支持Unicode标准的api，只不过Swift支持Unicode规范是默认行为</li>
-</ul>
-<h2 id="String和Collection"><a href="#String和Collection" class="headerlink" title="String和Collection"></a>String和Collection</h2><ul>
-<li>String是Character的集合,符合Collection协议</li>
-<li>String是集合，但又不是完全的集合，它不支持随机访问，Swift实现的是BidirectionalCollection，即只能从头或从尾部进行迭代，每次迭代一个字符</li>
-<li>String中的indices代表的是每个字符的索引集合</li>
-<li>String不支持只通过下标修改单个字符，也就是不支持MutableCollection协议。原因说过，因为编码时可变的，替换单个字符需要移动前后的数据。但String实现了RangeReplaceableCollection协议，这允许我们进行范围替换</li>
-</ul>
-<h2 id="String索引"><a href="#String索引" class="headerlink" title="String索引"></a>String索引</h2><ul>
-<li>String不允许直接使用下标索引操作，之前说过，String不能随机访问，所以访问一个字符的时间复杂度是n，所以为了防止我们写出性能糟糕的代码，Swift不支持直接使用下标访问String（个人理解，这牺牲了易用性真的得不偿失…</li>
-<li>String采用String.Index进行索引，其本质是一个字节偏移量。刚开始拿到该字节偏移量的时间复杂度是n，但一旦拿到，则时间复杂度降低为1</li>
-<li>通过将字符串写在#的包围中，可以不必对字符串中的引号进行转义</li>
-</ul>
-<h2 id="Substring"><a href="#Substring" class="headerlink" title="Substring"></a>Substring</h2><ul>
-<li>和所有Collection一样，String有个特定的SubSequence，称为Substring,类似于ArraySlice</li>
-<li>Substring和String的接口几乎一样，这是通过StringProtocol实现的</li>
-</ul>
-<h2 id="编码单元视图"><a href="#编码单元视图" class="headerlink" title="编码单元视图"></a>编码单元视图</h2><ul>
-<li>String允许我们以Unicode标量和特定编码方式的编码单元来查看</li>
-<li>可以直接将utf8的String传递给C函数指针，这是编译器优化过的，如果是utf16，编译器会先进行编码转换，然后传递</li>
-<li>注意，这些视图仍然是不支持随机访问，只支持通过String.Index访问，由于String.Index一般是位于边界的，所以一般从String获取的Index用于视图上不会有啥问题，反之，如果是从视图创建一个String.Index再用于String，则可能崩溃（嘛，不一定在边界了</li>
-</ul>
-<h2 id="String和Foundation"><a href="#String和Foundation" class="headerlink" title="String和Foundation"></a>String和Foundation</h2><ul>
-<li>String和NSString和无缝转换，并且如果引入了Foundation库，String可以使用NSString的api</li>
-<li>NSString的默认编码时UTF16，而String的默认编码时UTF8，所以在调用NSString时会存在一定开销</li>
-<li>Foundation中的CharacterSet，实际上的含义就是Unicode标量的集合，方便我们判断一个字符是否在某个特定集合中（如字母、数字）</li>
-<li>Foundation中的一些关于NSString的api可能还不兼容Swift，需要我们手动转换，比如NSString进行正则匹配，返回的基于标量的NSRange，而swift可能并不认为这个标量在String中能独立存在，所以必须转换会Range再判断</li>
-</ul>
-<h2 id="Unicode属性"><a href="#Unicode属性" class="headerlink" title="Unicode属性"></a>Unicode属性</h2><ul>
-<li>在Swift中，CharacterSet的部分功能放到了Unicode.Scalar.Properties中，比如判断是否为emoji</li>
-<li>一些功能在Charater中也有，比如判断一个字符是否为数字</li>
-</ul>
-<h2 id="String和Character的内部结构"><a href="#String和Character的内部结构" class="headerlink" title="String和Character的内部结构"></a>String和Character的内部结构</h2><ul>
-<li>String也是实现了COW的</li>
-<li>对于长度小于16个编码单元，Swft会进行编译优化，采用内联方式存储</li>
-<li>Character的内部实际就是长度为1的String</li>
-</ul>
-<h2 id="字符串字面量"><a href="#字符串字面量" class="headerlink" title="字符串字面量"></a>字符串字面量</h2><ul>
-<li>String和字符串字面量是不同的，String实际上是实现了ExpressibleByStringLiteral的类型</li>
-<li>我们可以为自己的类型实现ExpressibleByStringLiteral</li>
-</ul>
-<h2 id="String插值"><a href="#String插值" class="headerlink" title="String插值"></a>String插值</h2><ul>
-<li>插值使用ExpressibleByStringInterpolation和StringInterpolationProtocol组成，而ExpressibleByStringInterpolation又继承自ExpressibleByStringLiteral</li>
-<li>标准库中实现了一个DefaultStringInterpolation，其符合tringInterpolationProtocol，这使得我们可以直接进行字符串插值</li>
-<li>我们可以自行实现相关协议，为我们自己的类型实现字String插值来转换为对应的对象</li>
-</ul>
-<h2 id="定制字符串描述"><a href="#定制字符串描述" class="headerlink" title="定制字符串描述"></a>定制字符串描述</h2><ul>
-<li>实现CustomStringConvertible和CustomDebugStringConvertible在print时自定义输出内容</li>
-<li>LosslessStringConvertible：继承自CustomStringConvertible，用于将字符串转换会自定义类型，但是很少使用（一般都用codeable进行序列化）</li>
-</ul>
-<h2 id="文本输出流"><a href="#文本输出流" class="headerlink" title="文本输出流"></a>文本输出流</h2><ul>
-<li>print和dump默认是输出到标注输出，但实际上，只要对象支持TextOutputStream协议就可以重定向print和dump到该对象，比如String</li>
-<li>_playgroundPrintHook是个全局变量，可以hook输出的print的内容</li>
+<li>总体来看，Swift的泛型系统兼具C++的完全特化，又具有Java的只将泛型作为类型检查的能力</li>
 </ul>
 
                 
@@ -375,8 +348,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Swift进阶-字符串</div>
-      <div>https://nuko1993.github.io/2023/12/24/swift-advance-string/</div>
+      <div>Swift进阶-泛型</div>
+      <div>https://nuko1993.github.io/2023/12/25/swift-advance-generic-type/</div>
     </div>
     <div class="license-meta">
       
@@ -388,7 +361,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月24日</div>
+          <div>2023年12月25日</div>
         </div>
       
       
@@ -420,18 +393,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/25/swift-advance-generic-type/" title="Swift进阶-泛型">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Swift进阶-泛型</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/24/swift-advance-enum/" title="Swift进阶-枚举">
-                        <span class="hidden-mobile">Swift进阶-枚举</span>
+                      <a href="/2023/12/24/swift-advance-string/" title="Swift进阶-字符串">
+                        <span class="hidden-mobile">Swift进阶-字符串</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
