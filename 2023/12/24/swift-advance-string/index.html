@@ -16,16 +16,16 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个unicode标量组成。但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问 Unicode，而非固定宽度 一切都要从Unicode开始说起 一">
+    <meta name="description" content="前言Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个Unicode标量组成。但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问 Unicode，而非固定宽度 一切都要从Unicode开始说起 一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Swift进阶-字符串">
 <meta property="og:url" content="https://nuko1993.github.io/2023/12/24/swift-advance-string/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个unicode标量组成。但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问 Unicode，而非固定宽度 一切都要从Unicode开始说起 一">
+<meta property="og:description" content="前言Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个Unicode标量组成。但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问 Unicode，而非固定宽度 一切都要从Unicode开始说起 一">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-21.png">
 <meta property="article:published_time" content="2023-12-24T11:29:03.000Z">
-<meta property="article:modified_time" content="2023-12-24T15:18:37.116Z">
+<meta property="article:modified_time" content="2023-12-25T12:52:23.974Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://nuko1993.github.io/images/image-21.png">
@@ -274,7 +274,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个unicode标量组成。<br>但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问</p>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Swift在字符串的实现上尽力去满足Unicode标准，String是Character的值的集合，而Character是人类可读的单个字符，每个Character由多个Unicode标量组成。<br>但是为了实现这种复杂性，Swift会牺牲一些便捷性，比如不能直接通过str[idx+1]访问下一个字符，并且String不支持随机访问</p>
 <h2 id="Unicode，而非固定宽度"><a href="#Unicode，而非固定宽度" class="headerlink" title="Unicode，而非固定宽度"></a>Unicode，而非固定宽度</h2><ul>
 <li>一切都要从Unicode开始说起<ul>
 <li>一开始英文字符由asii码规定，只需要1个字节就可以编码，每个字符的宽度的大小固定</li>
@@ -302,7 +302,7 @@
 <li>注意，组合不是任意的，有些标量是可以无限制被添加的，有些则不行</li>
 </ul>
 </li>
-<li>对于emoj，也是unicode标量组合形成单个字符的典型例子</li>
+<li>对于emoj，也是Unicode标量组合形成单个字符的典型例子</li>
 <li>那么这些字符是如何被渲染出来的，则是底层字符渲染系统的任务，如果渲染系统无法识别，则会将每个标量单独渲染出来，但是Swift仍然会将语法上有效的标量组合认为是单个字符</li>
 <li>其实OC也有能够支持Unicode标准的api，只不过Swift支持Unicode规范是默认行为</li>
 </ul>
@@ -322,7 +322,7 @@
 <li>Substring和String的接口几乎一样，这是通过StringProtocol实现的</li>
 </ul>
 <h2 id="编码单元视图"><a href="#编码单元视图" class="headerlink" title="编码单元视图"></a>编码单元视图</h2><ul>
-<li>String允许我们以unicode标量和特定编码方式的编码单元来查看</li>
+<li>String允许我们以Unicode标量和特定编码方式的编码单元来查看</li>
 <li>可以直接将utf8的String传递给C函数指针，这是编译器优化过的，如果是utf16，编译器会先进行编码转换，然后传递</li>
 <li>注意，这些视图仍然是不支持随机访问，只支持通过String.Index访问，由于String.Index一般是位于边界的，所以一般从String获取的Index用于视图上不会有啥问题，反之，如果是从视图创建一个String.Index再用于String，则可能崩溃（嘛，不一定在边界了</li>
 </ul>
