@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://nuko1993.github.io/2023/12/30/swift-advance-concurrency/</loc>
+    
+    <lastmod>2023-12-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://nuko1993.github.io/2023/12/28/swift-advance-collection-protocol/</loc>
     
     <lastmod>2023-12-30</lastmod>
