@@ -16,21 +16,21 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言和别的语言序列化的概念相似，Swift中定义了Codeable协议，其实际就是Decodeable&amp;Encodeable。标准库所有基本类型都实现了Codeable，如果struct和class内部属性都满足Codeable，则编译器可以自动生成其Codeable实现。 一个最小的例子 当strcut中的成员都是Codeable时，编译器可以自动生成Codeable实现，我们只要声明C">
+    <meta name="description" content="前言所谓互用性，也称为互操作性，大白话就是Swift如何和其他编码语言的二进制进行交互调用。Swift的强大之处在于，可以方便的和OC、C混用。 封装一个用C编写的程序库 设置包管理器： brew install cmark: 安装cmark 创建SwiftPM项目目录：swift package init –type executable 如何找到cmark库 需要按照clang moudule">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift进阶-编码和解码">
-<meta property="og:url" content="https://nuko1993.github.io/2023/12/31/swift-advance-encode-decode/index.html">
+<meta property="og:title" content="Swift进阶-互用性">
+<meta property="og:url" content="https://nuko1993.github.io/2023/12/31/swift-advance-interop/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言和别的语言序列化的概念相似，Swift中定义了Codeable协议，其实际就是Decodeable&amp;Encodeable。标准库所有基本类型都实现了Codeable，如果struct和class内部属性都满足Codeable，则编译器可以自动生成其Codeable实现。 一个最小的例子 当strcut中的成员都是Codeable时，编译器可以自动生成Codeable实现，我们只要声明C">
+<meta property="og:description" content="前言所谓互用性，也称为互操作性，大白话就是Swift如何和其他编码语言的二进制进行交互调用。Swift的强大之处在于，可以方便的和OC、C混用。 封装一个用C编写的程序库 设置包管理器： brew install cmark: 安装cmark 创建SwiftPM项目目录：swift package init –type executable 如何找到cmark库 需要按照clang moudule">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-12-31T06:32:43.000Z">
-<meta property="article:modified_time" content="2023-12-31T07:56:42.024Z">
+<meta property="article:published_time" content="2023-12-31T07:58:07.000Z">
+<meta property="article:modified_time" content="2023-12-31T08:41:45.048Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>Swift进阶-编码和解码 - nuko的小站</title>
+  <title>Swift进阶-互用性 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Swift进阶-编码和解码"></span>
+            <span id="subtitle" data-typed-text="Swift进阶-互用性"></span>
           
         </div>
 
@@ -207,7 +207,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-31 14:32" pubdate>
+        <time datetime="2023-12-31 15:58" pubdate>
           2023年12月31日 下午
         </time>
       </span>
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.1k 字
+          902 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          26 分钟
+          8 分钟
         
       </span>
     
@@ -267,55 +267,50 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Swift进阶-编码和解码</h1>
+            <h1 id="seo-header">Swift进阶-互用性</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>和别的语言序列化的概念相似，Swift中定义了Codeable协议，其实际就是Decodeable&amp;Encodeable。标准库所有基本类型都实现了Codeable，如果struct和class内部属性都满足Codeable，则编译器可以自动生成其Codeable实现。</p>
-<h2 id="一个最小的例子"><a href="#一个最小的例子" class="headerlink" title="一个最小的例子"></a>一个最小的例子</h2><ul>
-<li>当strcut中的成员都是Codeable时，编译器可以自动生成Codeable实现，我们只要声明Codeable即可</li>
-<li>编码：Swift自带JSONEncoder和PropertyListEncoder，可以将Codeable转换为对应数据，不同的encoder返回的数据格式是不同的</li>
-<li>解码：将编码之后的数据传递给decoder，从而重新创建出实例</li>
-<li>自定义编码格式：如果不自定义，那么编码后的数据格式完全由编码器的默认实现决定，比如Double就是json中的浮点。如果想要让Double编码为字符串，我们可以实现一个自定义的@propertyWrapper，让其符合Encodeable，然后自己实现encode和init(from decoder)方法<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">@propertyWrapper</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">CodedAsString</span>: <span class="hljs-title class_">Codable</span> &#123;<br>    <span class="hljs-keyword">var</span> wrappedValue: <span class="hljs-type">Double</span><br>    <span class="hljs-keyword">init</span>(<span class="hljs-params">wrappedValue</span>: <span class="hljs-type">Double</span>) &#123;<br>        <span class="hljs-keyword">self</span>.wrappedValue <span class="hljs-operator">=</span> wrappedValue<br>    &#125;<br>    <br>    <span class="hljs-comment">// 自定义属性解码</span><br>    <span class="hljs-keyword">init</span>(<span class="hljs-params">from</span> <span class="hljs-params">decoder</span>: <span class="hljs-type">Decoder</span>) <span class="hljs-keyword">throws</span> &#123;<br>        <span class="hljs-keyword">let</span> container <span class="hljs-operator">=</span> <span class="hljs-keyword">try</span> decoder.singleValueContainer()<br>        <span class="hljs-keyword">let</span> str <span class="hljs-operator">=</span> <span class="hljs-keyword">try</span> container.decode(<span class="hljs-type">String</span>.<span class="hljs-keyword">self</span>)<br>        <span class="hljs-keyword">guard</span> <span class="hljs-keyword">let</span> value <span class="hljs-operator">=</span> <span class="hljs-type">Double</span>(str) <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 抛出错误</span><br>        &#125;<br>        wrappedValue <span class="hljs-operator">=</span> value<br>    &#125;<br>    <br>    <span class="hljs-comment">// 自定义属性编码</span><br>    <span class="hljs-keyword">func</span> <span class="hljs-title function_">encode</span>(<span class="hljs-params">to</span> <span class="hljs-params">encoder</span>: <span class="hljs-type">Encoder</span>) <span class="hljs-keyword">throws</span> &#123;<br>        <span class="hljs-keyword">var</span> container <span class="hljs-operator">=</span> encoder.singleValueContainer()<br>        <span class="hljs-keyword">try</span> container.encode(<span class="hljs-type">String</span>(wrappedValue))<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="编码过程"><a href="#编码过程" class="headerlink" title="编码过程"></a>编码过程</h2><ul>
-<li>实际是每个被编码的值调用自身的encode方法，传递对应的Encoder实例进行编码</li>
-<li>容器：先看下Encoder协议<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-comment">/// 一个可以把值编码成某种外部表现形式的类型。</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">protocol</span> <span class="hljs-title class_">Encoder</span> &#123;<br>    <span class="hljs-comment">/// 编码到当前位置的编码键 (coding key) 路径</span><br>    <span class="hljs-keyword">var</span> codingPath: [<span class="hljs-type">CodingKey</span>] &#123; <span class="hljs-keyword">get</span> &#125;<br>    <span class="hljs-comment">/// 用户为编码设置的上下文信息。</span><br>    <span class="hljs-keyword">var</span> userInfo: [<span class="hljs-type">CodingUserInfoKey</span> : <span class="hljs-keyword">Any</span>] &#123; <span class="hljs-keyword">get</span> &#125;<br>    <span class="hljs-comment">/// 返回一个容器，用于存放多个由给定键索引的值。</span><br>    <span class="hljs-keyword">func</span> <span class="hljs-title function_">container</span>&lt;<span class="hljs-type">Key</span>: <span class="hljs-type">CodingKey</span>&gt;(<span class="hljs-params">keyedBy</span> <span class="hljs-params">type</span>: <span class="hljs-type">Key</span>.<span class="hljs-keyword">Type</span>)<br>    -&gt; <span class="hljs-type">KeyedEncodingContainer</span>&lt;<span class="hljs-type">Key</span>&gt;<br>    <span class="hljs-comment">/// 返回一个容器，用于存放多个没有键索引的值。</span><br>    <span class="hljs-keyword">func</span> <span class="hljs-title function_">unkeyedContainer</span>() -&gt; <span class="hljs-type">UnkeyedEncodingContainer</span><br>    <span class="hljs-comment">/// 返回一个适合存放单一值的编码容器。</span><br>    <span class="hljs-keyword">func</span> <span class="hljs-title function_">singleValueContainer</span>() -&gt; <span class="hljs-type">SingleValueEncodingContainer</span><br>&#125;<br></code></pre></td></tr></table></figure>
-为每个要编码的值创建一个编码容器，保证每个值不会覆盖彼此，有三种类型的容器：<ul>
-<li>keyed contianer：用于编码键值对，可以看做是个特殊的dict</li>
-<li>unkeyed container：编码值，不需要key，可以懒做是编码结果数组</li>
-<li>single value container：对单一值编码，处理由单个属性定义的类型，如Int<br>每种容器都对应一个协议，约束容器应该如何接受值并进行编码，以single value container举例：<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">public</span> <span class="hljs-keyword">protocol</span> <span class="hljs-title class_">SingleValueEncodingContainer</span> &#123;<br>    <span class="hljs-comment">/// 编码到当前位置的编码键路径。</span><br>    <span class="hljs-keyword">var</span> codingPath: [<span class="hljs-type">CodingKey</span>] &#123; <span class="hljs-keyword">get</span> &#125;<br>    <span class="hljs-comment">/// 编码空值。</span><br>    <span class="hljs-keyword">mutating</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">encodeNil</span>() <span class="hljs-keyword">throws</span><br>    <span class="hljs-comment">/// 编码原始类型的方法</span><br>    <span class="hljs-keyword">mutating</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">encode</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">value</span>: <span class="hljs-type">Bool</span>) <span class="hljs-keyword">throws</span><br>    <span class="hljs-comment">/// TL;DR</span><br>    <span class="hljs-keyword">mutating</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">encode</span>&lt;<span class="hljs-type">T</span>: <span class="hljs-type">Encodable</span>&gt;(<span class="hljs-keyword">_</span> <span class="hljs-params">value</span>: <span class="hljs-type">T</span>) <span class="hljs-keyword">throws</span><br>&#125; <br></code></pre></td></tr></table></figure>
-可以看到，如果是单个简单类型的值，直接调用对应函数，如果不属于这个简单类型，那么则调用该对象的encode(to:)递归。其他两种类型的容器也是和single value container有类似的结构，但是具备更多的能力，比如可以创建嵌套容器，具体使用哪个，取决于类型实现者自己。比如数组既可以调用single value container，也可以使用unkeyed container，显然后者更佳。</li>
-</ul>
-</li>
-<li>总结下：编码器提供底层编码能力，被编码的类型自己调用编码器去编码。</li>
-</ul>
-<h2 id="合成的代码"><a href="#合成的代码" class="headerlink" title="合成的代码"></a>合成的代码</h2><ul>
-<li>当编译器自己合成Codeable方法时，其实现时什么<ul>
-<li>首先，会生成一个枚举CodingKeys，用来表示内部的属性，该enum符合CodingKey协议，该协议允许使用String和Int转换</li>
-<li>encode：使用一个keyed container，将属性分别encode并放到container中，最终的结果是递归的</li>
-<li>init方法：同样先获取keyed container，然后递归调用decode获得属性值并最终创建自身</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>所谓互用性，也称为互操作性，大白话就是Swift如何和其他编码语言的二进制进行交互调用。Swift的强大之处在于，可以方便的和OC、C混用。</p>
+<h2 id="封装一个用C编写的程序库"><a href="#封装一个用C编写的程序库" class="headerlink" title="封装一个用C编写的程序库"></a>封装一个用C编写的程序库</h2><ul>
+<li>设置包管理器：<ul>
+<li>brew install cmark: 安装cmark</li>
+<li>创建SwiftPM项目目录：swift package init –type executable</li>
+<li>如何找到cmark库<ul>
+<li>需要按照clang moudule格式使用module map封装cmark为module</li>
+<li>需要在Package.swift中定义一个.systemLibaryay target，标志由系统包管理器，如apt、homebrew提供的库，并将其添加到主target的依赖中</li>
+<li>那么创建一个目录，包含shime.h，其中包含cmark.h，module map文件中指定header为shime.h，并link cmark二进制</li>
+<li>然后就可以在Swift中调用了</li>
 </ul>
 </li>
 </ul>
-<h2 id="手动遵守协议"><a href="#手动遵守协议" class="headerlink" title="手动遵守协议"></a>手动遵守协议</h2><ul>
-<li>如果不想使用编译器生成的Codeable方法，可以自己实现</li>
-<li>自定义CodingKeys：<ul>
-<li>实现键的重命名：将对应case的rawValue修改为指定值</li>
-<li>不含某个case：编码时将跳过对应属性</li>
+</li>
+<li>封装CmmonMark程序库<ul>
+<li>Swift在调用是，会将c的数据类型转换为Swift数据类型</li>
+<li>注意在调用后，需要手动free c返回的数据对象</li>
 </ul>
 </li>
-<li>自定义encode和init<ul>
-<li>比如处理json字符串中缺失某个字段</li>
-<li>但是这也反应了一个问题，就是对于非正常值的处理，使用编码系统还是不够灵活和普适合，但是，理想情况下是要求server返回正确的数据，但是因为在实际工作中总是有各种各样的case，所以一般还是手动解析更多</li>
+<li>对于不透明指针，Swift使用OpaquePointer</li>
+<li>对于C枚举，Swift使用struct表示，而对于OC的NS_Enum会转换为Swift Enum</li>
+</ul>
+<h2 id="底层类型概览"><a href="#底层类型概览" class="headerlink" title="底层类型概览"></a>底层类型概览</h2><ul>
+<li>含有managed表示内存时自动管理</li>
+<li>含有unsafe表示安全性需要自己保证，不提供内存管理，需要手动管理</li>
+<li>含有buffer表示作用于连续内存上的多个元素而非单一元素</li>
+<li>含有pointer表示具有指针语义</li>
+<li>含有raw表示无类型原始数据，等价于void*</li>
+<li>含有mutable表示允许修改指向的内存</li>
+<li>指针：<ul>
+<li>UnsafePointer等价于const int*，即不能修改指针指向的内存</li>
+<li>const int *p,const修饰指向的内容，指向的内容不可变</li>
+<li>int *const p,const修饰指针，指针不可变，指向的内容可变</li>
+<li>使用可选值代表空指针</li>
 </ul>
 </li>
 </ul>
-<h2 id="常见的编码任务"><a href="#常见的编码任务" class="headerlink" title="常见的编码任务"></a>常见的编码任务</h2><ul>
-<li>编码非自己的类型：可以自定义encode或者封装嵌套实现，但是不能直接通过extension别人的类型为Codeable，或者使用计算属性来动态创建非Codeable的类型</li>
-<li>让类满足Codable：对值来说，很简单，直接符合Codeable，但是对于类来说，不能通过extension的方式追加Codeable（required方法不能添加到extension中，required表示所有子类都要实现，所以required方法能被动态派发，所以必须在编译期间检查创建，而不不能通过事后extension的方式创建）。我们可以通过变通的方法，比如使用可Codeable的类型，然后动态创建出非Codeable的类型</li>
-<li>解码多态的集合：比如数组中包含多个UIView的子类型，但是解码时我们只能将其解码为固定的UIView类型，实际上这种情况我们只能case by case解决，因为要保证类型安全，否则就有可能创建意外类型的对象</li>
+<h2 id="闭包用作C的回调函数"><a href="#闭包用作C的回调函数" class="headerlink" title="闭包用作C的回调函数"></a>闭包用作C的回调函数</h2><ul>
+<li>只允许向C函数指针传递不捕获任何外部变量的block或者函数，使用@convention(C)告知编译器，因为C函数指针时静态的，但是Swift闭包本质上可以理解为一个带有上下文和函数的结构体</li>
 </ul>
 
                 
@@ -334,8 +329,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Swift进阶-编码和解码</div>
-      <div>https://nuko1993.github.io/2023/12/31/swift-advance-encode-decode/</div>
+      <div>Swift进阶-互用性</div>
+      <div>https://nuko1993.github.io/2023/12/31/swift-advance-interop/</div>
     </div>
     <div class="license-meta">
       
@@ -379,18 +374,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/31/swift-advance-interop/" title="Swift进阶-互用性">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Swift进阶-互用性</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/30/swift-advance-error-handle/" title="Swift进阶-错误处理">
-                        <span class="hidden-mobile">Swift进阶-错误处理</span>
+                      <a href="/2023/12/31/swift-advance-encode-decode/" title="Swift进阶-编码和解码">
+                        <span class="hidden-mobile">Swift进阶-编码和解码</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
