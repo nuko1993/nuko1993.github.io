@@ -24,7 +24,7 @@
 <meta property="og:description" content="ARC，即自动引用计数，是在iOS 5中被引入的。类似于C++中的智能指针 在很久之前，需要开发者手动管理对OC对象内存，即需要手动retain和手动release，ARC的引入则是将这项任务交给了编译器 MRC的一般规则： 使用以下名称开头的方法意味着调用方生成对象并持有： alloc new copy mutableCopy   非调用方生成的对象，调用方也可以持有 例如通过非上述方法生成的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-01-03T13:54:12.000Z">
-<meta property="article:modified_time" content="2024-01-05T13:43:14.216Z">
+<meta property="article:modified_time" content="2024-01-05T13:46:43.987Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -377,7 +377,7 @@ retain -&gt; __strong
 usafe_unretained -&gt; __unsafe_unretained
 weak -&gt; __weak
 </code></pre>
-<p>需要注意，关联的属性和类成员变量必须修饰符xiangtong</p>
+<p>需要注意，关联的属性和类成员变量必须修饰符相同</p>
 <ul>
 <li>当与C数组结合使用时：<ul>
 <li>当静态数组中存放oc对象的引用时，oc对象会随着数组的释放而释放，静态数组是分配在栈上的，编译器知道何时释放</li>
