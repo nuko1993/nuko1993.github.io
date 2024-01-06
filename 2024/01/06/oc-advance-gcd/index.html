@@ -16,23 +16,23 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言本章主要介绍iOS4引入的Blocks，对应其他语言的闭包，可以看做是编译器自动生成的带有上下文变量和函数的结构体。 Blocks概要 概念：带有自动变量的匿名函数  Blocks的模式 语法：123456&#x2F;&#x2F; 完整写法^返回类型 (参数列表) &#123;表达式&#125;&#x2F;&#x2F; 返回类型可以省略^(参数列表) &#123;表达式&#125;&#x2F;&#x2F; 没有参数时可省略参数列表^&#123;表达式&amp;">
+    <meta name="description" content="前言这部分主要介绍iOS 4引入了GCD多线程编程模型 GCD概要 概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建 在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现 多线程的问题：race condition、dead lock、线程爆">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OC高级编程-Blocks">
-<meta property="og:url" content="https://nuko1993.github.io/2024/01/06/oc-advance-blocks/index.html">
+<meta property="og:title" content="OC高级编程-GCD">
+<meta property="og:url" content="https://nuko1993.github.io/2024/01/06/oc-advance-gcd/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言本章主要介绍iOS4引入的Blocks，对应其他语言的闭包，可以看做是编译器自动生成的带有上下文变量和函数的结构体。 Blocks概要 概念：带有自动变量的匿名函数  Blocks的模式 语法：123456&#x2F;&#x2F; 完整写法^返回类型 (参数列表) &#123;表达式&#125;&#x2F;&#x2F; 返回类型可以省略^(参数列表) &#123;表达式&#125;&#x2F;&#x2F; 没有参数时可省略参数列表^&#123;表达式&amp;">
+<meta property="og:description" content="前言这部分主要介绍iOS 4引入了GCD多线程编程模型 GCD概要 概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建 在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现 多线程的问题：race condition、dead lock、线程爆">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://nuko1993.github.io/images/image-23.png">
-<meta property="article:published_time" content="2024-01-06T06:24:33.000Z">
-<meta property="article:modified_time" content="2024-01-06T09:22:53.538Z">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-24.png">
+<meta property="article:published_time" content="2024-01-06T11:51:27.000Z">
+<meta property="article:modified_time" content="2024-01-06T13:12:24.747Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://nuko1993.github.io/images/image-23.png">
+<meta name="twitter:image" content="https://nuko1993.github.io/images/image-24.png">
   
   
   
-  <title>OC高级编程-Blocks - nuko的小站</title>
+  <title>OC高级编程-GCD - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="OC高级编程-Blocks"></span>
+            <span id="subtitle" data-typed-text="OC高级编程-GCD"></span>
           
         </div>
 
@@ -209,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-06 14:24" pubdate>
-          2024年1月6日 下午
+        <time datetime="2024-01-06 19:51" pubdate>
+          2024年1月6日 晚上
         </time>
       </span>
     
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          1.8k 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          17 分钟
+          15 分钟
         
       </span>
     
@@ -269,68 +269,53 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OC高级编程-Blocks</h1>
+            <h1 id="seo-header">OC高级编程-GCD</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本章主要介绍iOS4引入的Blocks，对应其他语言的闭包，可以看做是编译器自动生成的带有上下文变量和函数的结构体。</p>
-<h2 id="Blocks概要"><a href="#Blocks概要" class="headerlink" title="Blocks概要"></a>Blocks概要</h2><ul>
-<li>概念：带有自动变量的匿名函数</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这部分主要介绍iOS 4引入了GCD多线程编程模型</p>
+<h2 id="GCD概要"><a href="#GCD概要" class="headerlink" title="GCD概要"></a>GCD概要</h2><ul>
+<li>概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建</li>
+<li>在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现</li>
+<li>多线程的问题：race condition、dead lock、线程爆炸等等</li>
 </ul>
-<h2 id="Blocks的模式"><a href="#Blocks的模式" class="headerlink" title="Blocks的模式"></a>Blocks的模式</h2><ul>
-<li>语法：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs Objective-C">// 完整写法<br>^返回类型 (参数列表) &#123;表达式&#125;<br>// 返回类型可以省略<br>^(参数列表) &#123;表达式&#125;<br>// 没有参数时可省略参数列表<br>^&#123;表达式&#125;<br></code></pre></td></tr></table></figure></li>
-<li>block类型声明<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Objective-C">// 实际上，这种写法和c函数指针很相似 int(*ptr)(type...)<br>返回类型 (^变量名)(参数列表类型)<br></code></pre></td></tr></table></figure></li>
-<li>与typedef结合使用<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs Objective-C">// 使用typedef可以简化传参<br>typedef 返回类型 (^类型名)(参数列表类型)<br></code></pre></td></tr></table></figure></li>
-<li>block类型变量和其他c变量一样，也可以使用block *指针</li>
-<li>block默认捕获外部变量的值的默认方式是copy，在block内部默认不能修改外部值，如要修改，需要在被捕获的变量前加__block修饰</li>
-<li>block没有实现对c数组的捕获，<strong>不能捕获c数组，需要使用c指针</strong></li>
-</ul>
-<h2 id="Blocks的实现"><a href="#Blocks的实现" class="headerlink" title="Blocks的实现"></a>Blocks的实现</h2><ul>
-<li>block实质：实质就由编译器生成的struct</li>
-<li>为了探究编译器的实现，使用clang –rewrite-objc重写为c++<ul>
-<li>编译器合成了一个xxx_block_impl_idx的结构体，封装了函数和捕获的变量</li>
-<li>block结构体的isa指针描述了block的类型</li>
-<li>id的本质是objc_object的指针的typedef，即  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Objective-C">typedef struct objc_object &#123;<br>    Class isa;<br>&#125; *id;<br></code></pre></td></tr></table></figure></li>
-<li>Class实际是objc_class的指针的typedef，即  <figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elm">typedef struct objc_class&#123;<br>    <span class="hljs-type">Class</span> isa;<br>&#125; *<span class="hljs-type">Class</span>;<br></code></pre></td></tr></table></figure>
-  和objc_object完全相同。</li>
-<li>假设有个类叫做NyanCat，则NyanCat对象的实际的结构体objc_object中包含了：<ul>
-<li>isa：指向其自己的Class，自己的Class包含了实例方法和实例成员的信息<ul>
-<li>自己的Class中的isa，指向元类的Class，元类的Class的super指向父类元类的Class</li>
-<li>自己的Class的super，指向父类的Class</li>
+<h2 id="GCD-API"><a href="#GCD-API" class="headerlink" title="GCD API"></a>GCD API</h2><ul>
+<li>dispatch queue：即任务队列<ul>
+<li>串行队列：任务必须依次执行完毕，单线程，每个queue对应一个线程</li>
+<li>并发队列：任务不必依次执行完毕，可同时执行，多线程,线程数由os管理</li>
 </ul>
 </li>
-<li>具体实例成员<br>  如下图所示<br>  <img src="/../images/image-23.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
-<li>总是，就是具体实例+描述信息，仅此而已</li>
-<li>Class的具体实现就是class_t</li>
+<li>创建queue：dispatch_queue_create</li>
+<li>dispatch_release&#x2F;dispatch_retain:自iOS6以来，dispatch对象被纳入了ARC，不需要手动调用</li>
+<li>main queue和global queue：main queue比较特殊，与主线程绑定，global queue都是异步线程，global queue支持设置优先级</li>
+<li>disptach_set_target_queue:该api主要用于修改dispatch_queue_create生成queue的优先级，注意不能修改直接main queue和get_global_queue得到的queue的优先级，同时本应在queue上执行的任务也将放到目标queue上执行<ul>
+<li>一个可能的用法：将两个串行queue放到一个串行queue上执行，避免两个queue并发，实际上就是重新绑定了queue</li>
 </ul>
 </li>
-<li>而block的结构体也包含有isa，可以看做是oc对象（**只要有isa的struct都可以认为是oc对象），其isa则是NSXXXBlock</li>
+<li>dispatch_afer:延时执行</li>
+<li>dispatch_group:实现结构化并发，被添加到group中的任务必须全部执行结束，才会触发触发dispatch_group_notify设置的回调</li>
+<li>dispatch_wait:阻塞当前线程，等待group中的所有任务执行完毕</li>
+<li>dispatch_barrier_async:在并发queue中，所有的任务执行是乱序的，但是该函数就行一个栅栏，分割了上面和下面的任务，所以该函数一般是和并发队列一起使用</li>
+<li>dispatch_sync:同步执行，在任务执行结束之前，调用线程会一直阻塞，注意在主线程中调用可能造成死锁</li>
+<li>dipatch_apply:在queue上执行指定次数，并且在执行完毕之前阻塞当前线程</li>
+<li>dispatch_suspend&#x2F;dispatch_resume:挂起和恢复执行的queue</li>
+<li>dispatch信号量：使用disptahc_seamphore和dispatch_semaphore_wait&#x2F;signal来等待和释放信号量，信号量大于0时才能执行，否则阻塞</li>
+<li>dispatch_once:保证只执行一次，一般用于实现单例</li>
+<li>dispatch io:主要用于并发读取和处理文件，略</li>
+</ul>
+<h2 id="GCD实现"><a href="#GCD实现" class="headerlink" title="GCD实现"></a>GCD实现</h2><ul>
+<li>GCD的实现构成：<ul>
+<li>libdispatch：基于pthread抽象出queue</li>
+<li>libc：提供pthread</li>
+<li>xnu内核：workqueue</li>
 </ul>
 </li>
-<li>对于自动变量的捕获，编译器通过在创建block struct传入进行赋值到struct实例中</li>
-<li>__block:实际上__block类似于auto，向编译器表明存储区域。编译器为__block变量创建一个ref结构体，将变量封装到该结构体中，对该变量的访问实际就是对该结构体的访问（类似于Swift的propertyWerapper)<ul>
-<li>在ref中有个forwarding指针，指向自身，需要通过forwarding指针访问值而不直接通过ref</li>
-<li>同一个ref可以被多个block共享，也就是说，block中存放该ref的指针而不存放具体的ref</li>
-</ul>
-</li>
-<li>之前说过，block可以看做是oc对象，block的类可以分为：<ul>
-<li>stack:分配在栈上，捕获变量的block，脱离作用域则被销毁</li>
-<li>global：分配在data区,例如全局block和不捕获变量的block</li>
-<li>malloc：分配在堆，将block和__block进行copy，这也是__block为啥要用一个forwarding，因为当copy后，如果栈上的ref还指向自身，就没法同步变化了</li>
-<li>大多数情况下，block不需要显式copy，编译器会自动copy，如从函数中返回block，调用retainBlock，实际会调用block_copy</li>
-<li>coco框架usingBlock和gcd的api都会帮我们copy，不需要手动调用</li>
-<li>实测，大部分函数返回或者传递的block都会帮我们copy</li>
-<li>对于已经在堆上的block进行copy只会增加引用计数</li>
-<li>在ARC中，多次连续copy不会有问题，copy之后的引用计数就是持有变量的数量</li>
-</ul>
-</li>
-<li>__block变量当block从栈复制到堆时，会跟着一起复制，多个block持有时会增加其引用计数，当block被废弃时，__block也会一起被废弃</li>
-<li>block捕获对象，即增加对象的引用计数，默认是捕获的是__strong引用，编译器会给合成的ref增加合成对应的assign和dispose，实际相当于retain和release<ul>
-<li>ps:书中说如果不对block copy，那么持有的强引用无效，实测还是有效的，不会有任何问题，不需要手动copy</li>
-</ul>
-</li>
-<li>block循环引用：略，使用weak即可，或者使用__block，再执行完毕之后，手动设置为nil（不推荐！！）</li>
+<li>queue就是通过链表实现的队列，block一般不直接加入queue，然后先封装到dispatch continuation结构体中，然后再加入queue，不管如何，最后实际都是绑定到main queue或者global queue中</li>
+<li>global queue按照优先级和是否强制生成线程分为8种，强制生成线程一般用于串行队列（因为每个串行队列都要生成一个线程）</li>
+<li>每个global queue使用一个pthread_workqueue,对应xnu内核的wrokqueue，关系如图：<br><img src="/../images/image-24.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>具体执行过程：block从queue中被取出，将global queue、workqueue信息和continuation作为参数传递给pthread的work_queue_add函数，pthread则通过系统调用，通知xnu内核增加执行项目，xnu判断是否生成线程，然后执行pthread_work_queue函数，最终执行block，block执行结束后，进行通知group、取下一个block操作</li>
+<li>dispatch source:实际是xnu的kqueue的封装，当系统事件出现时进行回调的技术，比如mach端口发送&#x2F;接受、定时器等等，并且dispatch_source可以设置取消回调</li>
 </ul>
 
                 
@@ -349,8 +334,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OC高级编程-Blocks</div>
-      <div>https://nuko1993.github.io/2024/01/06/oc-advance-blocks/</div>
+      <div>OC高级编程-GCD</div>
+      <div>https://nuko1993.github.io/2024/01/06/oc-advance-gcd/</div>
     </div>
     <div class="license-meta">
       
@@ -394,18 +379,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/06/oc-advance-gcd/" title="OC高级编程-GCD">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">OC高级编程-GCD</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/03/oc-adavance-arc/" title="OC高级编程-ARC">
-                        <span class="hidden-mobile">OC高级编程-ARC</span>
+                      <a href="/2024/01/06/oc-advance-blocks/" title="OC高级编程-Blocks">
+                        <span class="hidden-mobile">OC高级编程-Blocks</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
