@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-23.png">
 <meta property="article:published_time" content="2024-01-06T06:24:33.000Z">
-<meta property="article:modified_time" content="2024-01-06T09:06:24.606Z">
+<meta property="article:modified_time" content="2024-01-06T09:09:57.686Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://nuko1993.github.io/images/image-23.png">
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k 字
+          2k 字
         
       </span>
     
@@ -294,13 +294,14 @@
 <li>id的本质是objc_object的指针的typedef，即  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Objective-C">typedef struct objc_object &#123;<br>    Class isa;<br>&#125; *id;<br></code></pre></td></tr></table></figure></li>
 <li>Class实际是objc_class的指针的typedef，即  <figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elm">typedef struct objc_class&#123;<br>    <span class="hljs-type">Class</span> isa;<br>&#125; *<span class="hljs-type">Class</span>;<br></code></pre></td></tr></table></figure>
   和objc_object完全相同。</li>
-<li>假设有个类叫做MyObject，则MyObject对象的objc_object中包含了：<ul>
+<li>假设有个类叫做NyanCat，则NyanCat对象的实际的结构体objc_object中包含了：<ul>
 <li>isa：指向其自己的Class，自己的Class包含了实例方法和实例成员的信息<ul>
-<li>自己的Class中的isa，指向元类的Class</li>
-<li>自己的Class的super，指向父类元类的Class</li>
+<li>自己的Class中的isa，指向元类的Class，元类的Class的super指向父类元类的Class</li>
+<li>自己的Class的super，指向父类的Class</li>
 </ul>
 </li>
 <li>具体实例成员<br>  如下图所示<br>  <img src="/../images/image-23.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>总是，就是具体实例+描述信息，仅此而已</li>
 </ul>
 </li>
 <li>而block的结构体也包含有isa，可以看做是oc对象（**只要有isa的struct都可以认为是oc对象），其isa则是NSXXXBlock</li>
