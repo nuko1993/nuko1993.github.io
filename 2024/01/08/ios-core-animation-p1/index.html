@@ -16,24 +16,21 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言这部分主要介绍iOS 4引入了GCD多线程编程模型 GCD概要 概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建 在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现 多线程的问题：race condition、dead lock、线程爆">
+    <meta name="description" content="前言Core Animation实际是由Layer Kit演变而来的，是一个强大的符渲染引擎，通过将独立的layer进行组合成树状结构进行渲染 Layer tree UIKit中，我们使用的是UIView，UIView可以处理事件、CG绘图和简单的动画，UIView之间组成了树状关系 CALayer和UIView类似，只是不支持处理事件 实际上，每个UIView都管理一个CALayer，反之则未必">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OC高级编程-GCD">
-<meta property="og:url" content="https://nuko1993.github.io/2024/01/06/oc-advance-gcd/index.html">
+<meta property="og:title" content="iOS核心动画-Part1">
+<meta property="og:url" content="https://nuko1993.github.io/2024/01/08/ios-core-animation-p1/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言这部分主要介绍iOS 4引入了GCD多线程编程模型 GCD概要 概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建 在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现 多线程的问题：race condition、dead lock、线程爆">
+<meta property="og:description" content="前言Core Animation实际是由Layer Kit演变而来的，是一个强大的符渲染引擎，通过将独立的layer进行组合成树状结构进行渲染 Layer tree UIKit中，我们使用的是UIView，UIView可以处理事件、CG绘图和简单的动画，UIView之间组成了树状关系 CALayer和UIView类似，只是不支持处理事件 实际上，每个UIView都管理一个CALayer，反之则未必">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://nuko1993.github.io/images/image-25.png">
-<meta property="og:image" content="https://nuko1993.github.io/images/image-24.png">
-<meta property="article:published_time" content="2024-01-06T11:51:27.000Z">
-<meta property="article:modified_time" content="2024-01-06T14:06:06.893Z">
+<meta property="article:published_time" content="2024-01-08T13:22:20.000Z">
+<meta property="article:modified_time" content="2024-01-08T15:09:44.567Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://nuko1993.github.io/images/image-25.png">
   
   
   
-  <title>OC高级编程-GCD - nuko的小站</title>
+  <title>iOS核心动画-Part1 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="OC高级编程-GCD"></span>
+            <span id="subtitle" data-typed-text="iOS核心动画-Part1"></span>
           
         </div>
 
@@ -210,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-06 19:51" pubdate>
-          2024年1月6日 晚上
+        <time datetime="2024-01-08 21:22" pubdate>
+          2024年1月8日 晚上
         </time>
       </span>
     
@@ -222,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          931 字
         
       </span>
     
@@ -233,7 +230,7 @@
         
         
         
-          18 分钟
+          8 分钟
         
       </span>
     
@@ -270,56 +267,30 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">OC高级编程-GCD</h1>
+            <h1 id="seo-header">iOS核心动画-Part1</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这部分主要介绍iOS 4引入了GCD多线程编程模型</p>
-<h2 id="GCD概要"><a href="#GCD概要" class="headerlink" title="GCD概要"></a>GCD概要</h2><ul>
-<li>概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建</li>
-<li>在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现</li>
-<li>多线程的问题：race condition、dead lock、线程爆炸等等</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Core Animation实际是由Layer Kit演变而来的，是一个强大的符渲染引擎，通过将独立的layer进行组合成树状结构进行渲染</p>
+<h2 id="Layer-tree"><a href="#Layer-tree" class="headerlink" title="Layer tree"></a>Layer tree</h2><ul>
+<li>UIKit中，我们使用的是UIView，UIView可以处理事件、CG绘图和简单的动画，UIView之间组成了树状关系</li>
+<li>CALayer和UIView类似，只是不支持处理事件</li>
+<li>实际上，每个UIView都管理一个CALayer，反之则未必，CALayer才是真正处理渲染的，UIView&#x3D;CALayer+事件处理+动画抽象接口，实际上就是分层和解耦的思想的体现</li>
+<li>但是有时想实现复杂的展示效果，如果阴影、圆角，UIView没有提供相应接口，此时就必须直接操作CALayer</li>
+<li>可以直接创建layer并添加到子layer</li>
 </ul>
-<h2 id="GCD-API"><a href="#GCD-API" class="headerlink" title="GCD API"></a>GCD API</h2><ul>
-<li>dispatch queue：即任务队列<ul>
-<li>串行队列：任务必须依次执行完毕，单线程，每个queue对应一个线程</li>
-<li>并发队列：任务不必依次执行完毕，可同时执行，多线程,线程数由os管理</li>
-</ul>
-</li>
-<li>创建queue：dispatch_queue_create</li>
-<li>dispatch_release&#x2F;dispatch_retain:自iOS6以来，dispatch对象被纳入了ARC，不需要手动调用</li>
-<li>main queue和global queue：main queue比较特殊，与主线程绑定，global queue都是异步线程，global queue支持设置优先级</li>
-<li>disptach_set_target_queue:该api主要用于修改dispatch_queue_create生成queue的优先级，注意不能修改直接main queue和get_global_queue得到的queue的优先级，同时本应在queue上执行的任务也将放到目标queue上执行<ul>
-<li>一个可能的用法：将两个串行queue放到一个串行queue上执行，避免两个queue并发，实际上就是重新绑定了queue</li>
-</ul>
-</li>
-<li>dispatch_afer:延时执行</li>
-<li>dispatch_group:实现结构化并发，被添加到group中的任务必须全部执行结束，才会触发触发dispatch_group_notify设置的回调</li>
-<li>dispatch_wait:阻塞当前线程，等待group中的所有任务执行完毕</li>
-<li>dispatch_barrier_async:在并发queue中，所有的任务执行是乱序的，但是该函数就行一个栅栏，分割了上面和下面的任务，所以该函数一般是和并发队列一起使用</li>
-<li>dispatch_sync:同步执行，在任务执行结束之前，调用线程会一直阻塞，注意在主线程中调用可能造成死锁</li>
-<li>dipatch_apply:在queue上执行指定次数，并且在执行完毕之前阻塞当前线程</li>
-<li>dispatch_suspend&#x2F;dispatch_resume:挂起和恢复执行的queue</li>
-<li>dispatch信号量：使用disptahc_seamphore和dispatch_semaphore_wait&#x2F;signal来等待和释放信号量，信号量大于0时才能执行，否则阻塞</li>
-<li>dispatch_once:保证只执行一次，一般用于实现单例</li>
-<li>dispatch io:主要用于并发读取和处理文件，略</li>
-</ul>
-<h2 id="GCD实现"><a href="#GCD实现" class="headerlink" title="GCD实现"></a>GCD实现</h2><ul>
-<li>GCD的实现构成：<ul>
-<li>libdispatch：基于pthread抽象出queue</li>
-<li>libc：提供pthread</li>
-<li>xnu内核：workqueue</li>
+<h2 id="寄宿图"><a href="#寄宿图" class="headerlink" title="寄宿图"></a>寄宿图</h2><ul>
+<li>layer有个contents属性，可以添加一个CGImageRef显示图片，称为寄宿图，类似于UIImageView，可以设置contentGravity设置缩放模式， contentScale用于设置一个点显示多少像素，如果在高分屏上设置低scale，那意味着每个物理点显示的像素数更少，则颗粒感越强</li>
+<li>默认情况下，UIView的内容如果超出边界不会裁减，layer也一样，可以设置maskToBounds属性（UIView叫做clipToBounds）</li>
+<li>contentsRect：可以指定显示寄宿图的区域，是单位坐标</li>
+<li>contentsCenter: TODO,感觉不是很理解,类似于.9图？</li>
+<li>drawRect：<ul>
+<li>可以通过在UIView的方法以代码方式设置寄宿图，像素大小是layer大小*scale，所以如无必要不要实现该方法，造成资源浪费</li>
+<li>实际上UIView将自己layer的CALayerDelegate设置为自己，并在必要的时候触发layer的display方法，如果我们不依赖UIView，可以手动实现CALayerDelegate并自己决定何时调用display</li>
+<li>手动调用layer的display方法 -&gt; delegate 若实现了displayLayer，则调用该函数，否则 -&gt; delegate: drawLaer in context-&gt; uiview: drawInContext</li>
 </ul>
 </li>
-<li>queue就是通过链表实现的队列，block一般不直接加入queue，然后先封装到dispatch continuation结构体中，然后再加入queue，不管如何，最后实际都是绑定到main queue或者root global queue中</li>
-<li>root global queue按照优先级和是否强制生成线程分为8种，强制生成线程一般用于串行队列（因为每个串行队列都要生成一个线程）<br><img src="/../images/image-25.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
-<li>每个global queue使用一个pthread_workqueue,对应xnu内核的wrokqueue，关系如图：<br><img src="/../images/image-24.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
-<li>具体执行过程：block从queue中被取出，将global queue、workqueue信息和continuation作为参数传递给pthread的work_queue_add函数，pthread则通过系统调用，通知xnu内核增加执行项目，xnu判断是否生成线程，然后执行pthread_work_queue函数，最终执行block，block执行结束后，进行通知group、取下一个block操作</li>
-<li>dispatch source:实际是xnu的kqueue的封装，当系统事件出现时进行回调的技术，比如mach端口发送&#x2F;接受、定时器等等，并且dispatch_source可以设置取消回调</li>
-<li>主队列和主线程：主队列的任务必然在主线程中执行，主线程中不仅可以执行主队列任何，还有可能执行其他关联的任务</li>
-<li>在libdispatch内部，<strong>可以将线程和queue关联起来，比如主线程</strong>，既可以执行main queue任务，也可以执行其他queue任务，那么在执行的时候，就需要先获取原来的queue保存起来，将线程设置为新queue绑定，然后执行完毕之后再恢复与原来queue的绑定</li>
-<li>dispatch_sync实际上会优化为当前线程执行，如果在主线程上执行，那么因为会阻塞主线程，导致block无法执行，也就无法唤醒，造成dead lock</li>
 </ul>
 
                 
@@ -338,8 +309,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>OC高级编程-GCD</div>
-      <div>https://nuko1993.github.io/2024/01/06/oc-advance-gcd/</div>
+      <div>iOS核心动画-Part1</div>
+      <div>https://nuko1993.github.io/2024/01/08/ios-core-animation-p1/</div>
     </div>
     <div class="license-meta">
       
@@ -351,7 +322,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年1月6日</div>
+          <div>2024年1月8日</div>
         </div>
       
       
@@ -383,18 +354,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/08/ios-core-animation-p1/" title="iOS核心动画-Part1">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">iOS核心动画-Part1</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/06/oc-advance-blocks/" title="OC高级编程-Blocks">
-                        <span class="hidden-mobile">OC高级编程-Blocks</span>
+                      <a href="/2024/01/06/oc-advance-gcd/" title="OC高级编程-GCD">
+                        <span class="hidden-mobile">OC高级编程-GCD</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

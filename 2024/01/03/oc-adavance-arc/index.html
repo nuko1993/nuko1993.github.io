@@ -24,7 +24,7 @@
 <meta property="og:description" content="前言这部分主要介绍OC的内存管理实现原理。 什么是ARC ARC，即自动引用计数，是在iOS 5中被引入的。类似于C++中的智能指针  内存管理&#x2F;引用计数 在很久之前，需要开发者手动管理对OC对象内存，即需要手动retain和手动release，ARC的引入则是将这项任务交给了编译器 MRC的一般规则： 使用以下名称开头的方法意味着调用方生成对象并持有： alloc&#x2F;new&amp;#">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-01-03T13:54:12.000Z">
-<meta property="article:modified_time" content="2024-01-06T06:32:28.299Z">
+<meta property="article:modified_time" content="2024-01-08T14:14:30.182Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.3k 字
+          4.5k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          36 分钟
+          38 分钟
         
       </span>
     
@@ -347,7 +347,8 @@
 </li>
 </ul>
 <h2 id="ARC规则"><a href="#ARC规则" class="headerlink" title="ARC规则"></a>ARC规则</h2><ul>
-<li>在ARC的情况下，编译器会根据我们声明的修饰自动插入合适的retain&#x2F;release&#x2F;autorelease等<ul>
+<li><p>在ARC的情况下，编译器会根据我们声明的修饰自动插入合适的retain&#x2F;release&#x2F;autorelease等</p>
+<ul>
 <li>__strong：默认行为，持有引用，可以修饰变量和类成员变量</li>
 <li>__weak：需要显式写出，不持有引用，主要用于解决循环引用问题</li>
 <li>__unsafe_unretained:和__weak一样，不持有引用，但是不安全，不会自动设置为nil（为什么需要这个修饰符呢？有时是为了一些性能优势，有时是为了与C交互不得不使用）</li>
@@ -360,18 +361,19 @@
 <li>ARC有效的情况下：<ul>
 <li>如需将ARC的对象给到C结构体成员，需要转换为修改为_unsafe_unretained或者转换为void *</li>
 <li>如需转换id和void *:使用__brigde，但是这种直接转换没有任何内存管理语义<ul>
-<li>__brigde_reatined:将oc对象转换为c对象，实际就是编译器为我们额外插入了一次retain，保证c在使用时该对象还没被释放，<strong>oc作用域还没结束时引用计数会多个1</strong></li>
-<li>__bridge_transfer:将c对象转换为oc对象，实际就是编译器先retatin，然后额外进行了release，保证c中看上去已经释放了，完全由oc托管，<strong>引用计数保持不变</strong></li>
+<li>__brigde_reatined:将oc对象转换为c对象，实际就是编译器为我们额外插入了一次retain，保证c在使用时该对象还没被释放，<strong>oc作用域还没结束时引用计数会多个1</strong>，oc作用域结束后，引用计数仍然为1，<strong>必须调用CFRelease手动释放</strong></li>
+<li>__bridge_transfer:将c对象转换为oc对象，实际就是编译器先retatin，然后额外进行了release，保证c中看上去已经释放了，完全由oc托管，<strong>转换前后引用计数保持不变</strong>，即将内存管理职责交给了oc</li>
 <li>注意这种转换只适合OC和CoreFoundation中的类，普通的C结构体是不行的（因为根本就没有retain&#x2F;release这些…)</li>
-<li><strong>注意将c对象直接通过bridge转换给到oc，会发生默认的retain，可能造成内存泄漏；而如果直接通过brigde将oc转换为c，则oc作用域结束时，对象会被销毁，会发生bad access</strong>，所以必须正确使用__brigde_xxx和CRXXX才能正确转换避免内存错误</li>
-<li>转换为c的对象需要手动调用CRRelease进行释放</li>
+<li><strong>注意将c对象直接通过bridge转换给到oc的__strong，会发生默认的retain，可能造成内存泄漏（这里说的内存泄漏是指忘记对cf对象调用cfrelease的情况）；而如果直接通过brigde将oc转换为c，则oc作用域结束时，对象会被销毁，会发生bad access</strong>，所以必须正确使用__brigde_xxx和CRXXX才能正确转换避免内存错误</li>
+<li>总结下必须手动调用cfrelease的情况：1.通过__bridge_retined将oc转换为cf 2.通过__bridge将c转换为oc的__strong，释放的目的都是为了防止内存泄漏</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li>属性和修饰符有着对应关系：</li>
+<li><p>属性和修饰符有着对应关系：</p>
+</li>
 </ul>
 <pre><code class="Objective-C">assign -&gt; __unsafe_unretained
 copy -&gt; __strong，并且调用copy
