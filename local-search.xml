@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>iOS核心动画-Part2</title>
+    <link href="/2024/01/09/ios-core-animation-p2/"/>
+    <url>/2024/01/09/ios-core-animation-p2/</url>
+    
+    <content type="html"><![CDATA[<h2 id="layer几何学"><a href="#layer几何学" class="headerlink" title="layer几何学"></a>layer几何学</h2><ul><li>UIView的的属性frame、bounds、center对应layer的frame、bounds、position</li><li>frame代表相对于父view上的坐标，bounds是设定自身的坐标，center和position代表自身的anchorPoint相对于父view的坐标，center和anchorPoint只不过是同样的东西的不同表述罢了</li><li>anchorPoint和position是同样的东西，但是修改其中之一，不影响另一个，但是这样的话frame就得变动了，其计算公式如下： <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs objc"> <span class="hljs-comment">// 这里记住，anchorPoint和position只是同一个东西，只是数值不同，按照默认anchorPoint 0.5 0.5去推算就行</span><br>position.x = frame.origin.x + anchorPoint.x * bounds.size.width；  <br>position.y = frame.origin.y + anchorPoint.y * bounds.size.height；<br></code></pre></td></tr></table></figure></li><li>anchorPoint默认位于中间，他是layer进行变换时的锚点，比如同样都是缩放，是从中间开始缩放还是从左上角开始缩放是不同的效果</li><li>view的几种属性，实际上最终改变的是layer的属性，frame实际上是个计算属性，会根据bounds、position、transform计算得到，而改变frame也会改变这几个值，frame始终代表的是轴对齐的一个矩形区域，当旋转后可能frame的宽高和bounds的宽高不再一致，我们一般修改frame来进行布局，但实际上，底层layer使用的是anchorPoint来定位<br><img src="/../images/image-26.png" alt="Alt text"></li><li>修改layer的anchorPoint，会造成view的位置变动，把锚点想象成一个钉子，系统会优先使用锚点定位，然后根据宽高计算出frame，当我们修改锚点时，做旋转变换是以锚点为中心点的</li><li>可以通过CALayer提供的convertXXX函数来进行坐标转换</li><li>layer有zindex决定覆盖顺序，默认是按照子layer的添加顺序展示</li><li>CALayer虽然不关心触摸事件，却提供了containsPoint和hitTest的方法<ul><li>containsPoint: 接受子layer的坐标，由每个子layer判定是否在区域中，所以需要先转换为子view的point</li><li>hitTest:接受父layer中的坐标，返回是哪个子layer被触摸了，但是hitTest依赖于添加的顺序，如果手动修改了zIndex，就检测不正确</li></ul></li><li>CALayer没有UIView的自动布局，但是可以实现CALayerDelegate的layoutSUblayersOfLayer当布局调整时重新设置layer的frame</li></ul><h2 id="layer可以实现的视觉效果"><a href="#layer可以实现的视觉效果" class="headerlink" title="layer可以实现的视觉效果"></a>layer可以实现的视觉效果</h2><ul><li>圆角：cornerRaidus，默认不影响子layer，但可以设置maskTouBounds</li><li>边框：borderWidth和borderColor，内边框</li><li>阴影：shadowColor（阴影色值）、shadowOffset（默认向为0,-3向上偏移）、shadowRadius（控制模糊度），阴影的形状和寄宿图的形状完全一致，我们也可以指定shadowPath来自己绘制阴影形状</li><li>clip会将阴影给裁掉，可以先内部进行裁减，然后添加到外部容器上，再给外部容器设置阴影，因为阴影默认是针对寄宿图的形状的（也就是裁减之后的子view）</li><li>mask：可以将一个layer A设置为另一个layer B的mask属性来将B的内容裁减为A的形状</li><li>放大或者缩小content时，可以选择不同的采样算法，默认是linear，可以选择neareast</li><li>组透明：ios7之前默认是false，ios7之后（包含ios7）之后是true，所以一般无需考虑</li><li>shouldRasterize+rasterizationScale用于将layer光栅化，那么效果也是整体的</li></ul>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>iOS核心动画-Part1</title>
     <link href="/2024/01/08/ios-core-animation-p1/"/>
     <url>/2024/01/08/ios-core-animation-p1/</url>
