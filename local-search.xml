@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>ios-core-animation-p3</title>
+    <link href="/2024/01/11/ios-core-animation-p3/"/>
+    <url>/2024/01/11/ios-core-animation-p3/</url>
+    
+    <content type="html"><![CDATA[<h2 id="transform"><a href="#transform" class="headerlink" title="transform"></a>transform</h2><ul><li>仿射变换：即旋转、缩放、平移。仿射变换的特定是在变换前后，两条平行直线依然保持平行</li><li>可以使用CGAffineTransformMakeXXX函数来创建一个变换</li><li>UIView中的transform属性对应于CALayer的affineTransform属性</li><li>可以通过CGAffineTransformXXX属性来和另一个transform进行合成新的transform</li><li>也可以使用concat来拼接两个transform</li><li>注意变换的顺序会影响最终的结果，先旋转后平移和先平移后旋转结果不同</li></ul><h2 id="3d-transform"><a href="#3d-transform" class="headerlink" title="3d transform"></a>3d transform</h2><ul><li>CGAffineTransform只是2d变换，CATransform3D则可以做3d变换</li><li>可以使用CATransformMake生成对应变换，iOS上z轴从屏幕向外</li><li>3d transform默认是等距投影而不是透视投影，这意味着远处的边和近处的边是看上去一样长，这不符合人类视觉，所以3d效果不强</li><li>要使用透视效果，需要修改transform3d的m34值，m34默认为0，可以取值为-1&#x2F;d,d越小，透视效果越强，同时越失真，d越大，透视效果越弱</li><li>灭点：所有透视物体最远处的共同消失点，默认是anchorPoint，位于layer中心。所以一般对多个layer做透视同时让他们保持同一个灭点，可以先将layer放到屏幕中线做变化，然后平移到指定位置；更方便的方法是设置父容器的subLayerTransform来让所有子layer共享灭点，这样不用将每个layer先放到中心再做变换</li><li>layer有个doubleSided,表示是否要双面绘制，默认YES，如果设置为NO，则翻转后不显示</li><li>注意在3d transform加透视的情况下，先对外层绕y轴旋转，再对内层绕y轴逆向旋转是不会使得内层回到初始状态的，因为外层变换之后，内层已经被被渲染变形了，再做逆向旋转只是对原来变形的layer做旋转</li><li>可以使用3d transform构建立方体，不常用，略</li></ul><h2 id="专用layer"><a href="#专用layer" class="headerlink" title="专用layer"></a>专用layer</h2><ul><li>CAShapeLayer：通过CGPath绘制指定形状，相比于直接通过CGContext绘制，渲染速度更快，并且可以超出layer之外绘制；通过bezier Path可以绘制任意形状的shape，自然可以绘制自定义圆角</li><li>CATextLayer：功能上比肩UILabel，但速度更快，并且支持富文本，可以将CATextLayer作为自定义View的宿主layer来实现自定义的UILabel</li><li>CATransformLayer：方便3d展示，略</li><li>CAGradientLayer：最常用，展示渐变色</li><li>CAReplicationLayer：对每个子layer接连应用指定次数的变换和色彩偏移，复制出指定数量的子layer，可以利用它实现反射效果</li><li>CAScrollLayer：实现自定义的ScrollView，虽然contentRect可以指定layer可视区域，但是处理滑动并不方便</li><li>CATiledLayer:将大图分解为小片并按需载入，以避免性能压力，实际上CATiledLayer需要我们手动将大图分解为小图，在需要的时候通过回调在drawLayerInContext函数中需要我们实现读取指定小图的逻辑</li><li>CAEmitterLayer：实现例子效果</li><li>CAEAGLLayer：实现opengl绘制，大多用于3d绘制</li><li>AVPlayerLayer：视频播放，是MPMoviePlayer的底层</li></ul>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>iOS核心动画-Part2</title>
     <link href="/2024/01/09/ios-core-animation-p2/"/>
     <url>/2024/01/09/ios-core-animation-p2/</url>
