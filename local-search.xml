@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>iOS核心动画-Part5</title>
+    <link href="/2024/01/13/ios-core-animation-p5/"/>
+    <url>/2024/01/13/ios-core-animation-p5/</url>
+    
+    <content type="html"><![CDATA[<h2 id="layer时间"><a href="#layer时间" class="headerlink" title="layer时间"></a>layer时间</h2><ul><li>CAMediaTiming：该协议定义了在一段时间内用于控制时间流逝的属性，如duration、repatCount，CALayer和CAAnimation都实现了该协议，所以时间可以被任意基于layer或者animation控制<ul><li>duration实际是动画重复一次的事件，还有repeatCount控制重复次数</li><li>repatDuration:指定动画重复指定时长</li><li>autoreveres:指定是否自动反向执行</li></ul></li><li>相对时间：animation中，每个aniamtion的时间有自己控制，可以加速、减速、延时<ul><li>beginTime：指定动画开始之前的延时时间，收到speed影响</li><li>speed：时间倍数，默认为1</li><li>timeOffset:让动画快进到某一点，但是不收speed硬性</li></ul></li><li>fillMode：指定动画的开始和结束时的行为<ul><li>removed:默认行为，在到达beginTime时才显示第一帧，并且结束后回到layer当前状态</li><li>backwards：无论是否到达beginTime，立刻显示第一帧，但只有到达beginTime才会执行动画</li><li>forwards：到达beginTime才显示第一帧，动画结束后保持最后一帧状态，直到动画被删除</li><li>both：backwards+forward综合体，立刻显示第一帧，并且结束后保持最后的状态，直到动画移除</li><li>思考：如何既删除动画又保留最终状态？需要我们自己实现delegate，动画结束后手动设置layer的属性值,注意如果不手动设置值，则layer的属性值并不会发生改变！！</li></ul></li><li>层级关系时间：对于layer调整时间将影响到所有子layer，子layer中的时间是以父layer为基准的，但是调整子layer时间并不会影响父layer<ul><li>duration、repeatCount、repatDuartaion并不会影响子layer，但是beginTime、timeOffset、speed会影响</li><li>全局时间：即mach时间，即CACurrentMediaTime，可以认为是绝对可靠的事件基准</li><li>本地时间：每个CALayer和CAAnimation都有自己的本地时间的概念，类似于坐标转换，可以在layer之间通过covertTime来转换</li></ul></li><li>暂停、倒回和跨进：通过设置layer的speed修改动画速度</li><li>手动动画：设置layer的speed为0，并且手动修改timeOffset即可</li></ul><h2 id="动画曲线"><a href="#动画曲线" class="headerlink" title="动画曲线"></a>动画曲线</h2><ul><li>动画速度：即改变量&#x2F;时间间隔</li><li>通过CAMediaTimingFunction的functionWithName创建动画曲线</li><li>通过CATransaction的setAnimationTimingFunction设置动画曲线</li><li>UIView动画在通过options更加方便我们使用动画曲线</li><li>关键帧动画的每个步骤都可以单独应用一个动画曲线</li><li>自定义动画曲线：可以通过functionWithControlPoints构造自己的动画曲线</li></ul>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>iOS核心动画-Part4</title>
     <link href="/2024/01/13/ios-core-animation-p4/"/>
     <url>/2024/01/13/ios-core-animation-p4/</url>
