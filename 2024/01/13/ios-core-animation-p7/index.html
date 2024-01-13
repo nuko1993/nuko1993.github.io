@@ -16,21 +16,21 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="基于定时器的动画 NSTimer：普通的计时器，但是存在不准确、受到的runloop事件处理耗时的影响，我们可以修改为使用CADisplayLink和基于真实时间流逝进行计算 CADisplayLink：基于屏幕刷新进行回调，CADisplayLink因为是基于帧的，如果发生丢帧，那么丢帧时将不会调用回调，但是NSTimer总是会执行，即使延迟 计算帧耗时：在回调时记录当前时间，和上次时间进行对比">
+    <meta name="description" content="高效绘图 cpu绘图：通常是指自己实现drawLayer:InContext或drawRect，这需要额外开辟内存和计算，代价高昂 矢量图形： 通过path绘制矢量图形，每次draw都会重绘整个path 优化：通过CAShapeLayer绘制   脏矩形： 有时CAShapeLayer并不能满足我们的要求，比如我们希望绘制的线条是用粉笔样式，那么CAShapeLayer显然不能实现 可以调用set">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS核心动画-Part6">
-<meta property="og:url" content="https://nuko1993.github.io/2024/01/13/ios-core-animation-p6/index.html">
+<meta property="og:title" content="iOS核心动画-Part7">
+<meta property="og:url" content="https://nuko1993.github.io/2024/01/13/ios-core-animation-p7/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="基于定时器的动画 NSTimer：普通的计时器，但是存在不准确、受到的runloop事件处理耗时的影响，我们可以修改为使用CADisplayLink和基于真实时间流逝进行计算 CADisplayLink：基于屏幕刷新进行回调，CADisplayLink因为是基于帧的，如果发生丢帧，那么丢帧时将不会调用回调，但是NSTimer总是会执行，即使延迟 计算帧耗时：在回调时记录当前时间，和上次时间进行对比">
+<meta property="og:description" content="高效绘图 cpu绘图：通常是指自己实现drawLayer:InContext或drawRect，这需要额外开辟内存和计算，代价高昂 矢量图形： 通过path绘制矢量图形，每次draw都会重绘整个path 优化：通过CAShapeLayer绘制   脏矩形： 有时CAShapeLayer并不能满足我们的要求，比如我们希望绘制的线条是用粉笔样式，那么CAShapeLayer显然不能实现 可以调用set">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-13T08:44:32.000Z">
-<meta property="article:modified_time" content="2024-01-13T09:24:23.057Z">
+<meta property="article:published_time" content="2024-01-13T09:27:40.000Z">
+<meta property="article:modified_time" content="2024-01-13T13:52:41.100Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>iOS核心动画-Part6 - nuko的小站</title>
+  <title>iOS核心动画-Part7 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="iOS核心动画-Part6"></span>
+            <span id="subtitle" data-typed-text="iOS核心动画-Part7"></span>
           
         </div>
 
@@ -207,7 +207,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-13 16:44" pubdate>
+        <time datetime="2024-01-13 17:27" pubdate>
           2024年1月13日 下午
         </time>
       </span>
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          1.7k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          10 分钟
+          14 分钟
         
       </span>
     
@@ -267,63 +267,94 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">iOS核心动画-Part6</h1>
+            <h1 id="seo-header">iOS核心动画-Part7</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="基于定时器的动画"><a href="#基于定时器的动画" class="headerlink" title="基于定时器的动画"></a>基于定时器的动画</h2><ul>
-<li>NSTimer：普通的计时器，但是存在不准确、受到的runloop事件处理耗时的影响，我们可以修改为使用CADisplayLink和基于真实时间流逝进行计算</li>
-<li>CADisplayLink：基于屏幕刷新进行回调，CADisplayLink因为是基于帧的，如果发生丢帧，那么丢帧时将不会调用回调，但是NSTimer总是会执行，即使延迟</li>
-<li>计算帧耗时：在回调时记录当前时间，和上次时间进行对比，可以计算出实际上一帧持续的时间，进而动态调整下一帧要展示的数据</li>
-<li>runloop mode:由于runloop中的事件分为不同优先级，所在在不同情况下，runloop优先执行某些mode下的回调，比如在滑动的时候，NSTimer可能就不被执行（因为它在defaultMode），如果想要不受这种影响，需要将我们的回调添加到commonMode中</li>
-</ul>
-<h2 id="物理模拟"><a href="#物理模拟" class="headerlink" title="物理模拟"></a>物理模拟</h2><p>略，很少用</p>
-<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><ul>
-<li>CoreAnimation会智能将工作分配在cpu和gpu上以达到最优新能</li>
-<li>在系统中，所有的layer的最终合成是被SpringBoard进程管理的</li>
-<li>动画执行过程：<ul>
-<li>App进程：<ul>
-<li>布局：设置图层层级、位置、属性</li>
-<li>显示： 绘制寄宿图，涉及UIView的drawRect和CALayer的drawLayerInContext</li>
-<li>准备：将动画数据准备发送到渲染进程</li>
-<li>提交：打包所有图层和动画数据发送到渲染进程</li>
+                <h2 id="高效绘图"><a href="#高效绘图" class="headerlink" title="高效绘图"></a>高效绘图</h2><ul>
+<li>cpu绘图：通常是指自己实现drawLayer:InContext或drawRect，这需要额外开辟内存和计算，代价高昂</li>
+<li>矢量图形：<ul>
+<li>通过path绘制矢量图形，每次draw都会重绘整个path</li>
+<li>优化：通过CAShapeLayer绘制</li>
 </ul>
 </li>
-<li>渲染进程：<ul>
-<li>解码图层数据</li>
-<li>计算OpenGL纹理</li>
-<li>GPU绘制</li>
+<li>脏矩形：<ul>
+<li>有时CAShapeLayer并不能满足我们的要求，比如我们希望绘制的线条是用粉笔样式，那么CAShapeLayer显然不能实现</li>
+<li>可以调用setNeedsPlayInRect来设置需要重绘的rect，这样drawRect不会重绘整个layer区域，可以减少需要绘制的内存和对象</li>
+<li>异步绘制：一般情况下，布局、绘制都是在主线程上的，但是如果我们有预测的将某些内容放到异步去做，那么可以提高性能<ul>
+<li>CATiledLayer就允许每个小块独立线程调用drwaLayerInContext</li>
+<li>drawsAsync属性:和CATiledLayer不同，drawLayerInContext仍让在主线程调用，只不过该方法的实际代码执行是在异步线程，该属性适用于哪些频繁重绘的layer，如UITableView的cell</li>
 </ul>
 </li>
-<li>只有最后的GPU绘制才是GPU处理，前面的都是CPU处理，并且只有布局和显示由开发者自己控制</li>
 </ul>
 </li>
-<li>性能影响：<ul>
-<li>GPU相关操作<ul>
-<li>太多的图层会造成发送给渲染进程的数据量过大，造成cpu压力</li>
-<li>重绘：由重叠的半透明layer引起，因为gpu填充比率有限制，所以需要避免重绘</li>
-<li>离屏绘制：如圆角、为离屏图片分配内存，圆角触发离屏绘制的主要原因是无法在当前屏幕使用的frameBuffer中计算圆角的展示效果，否则会将背景像素也给切割掉，所以只能在额外的frameBuffer中先计算出本图层圆角的效果，然后再贴到当前的frameBuffer中去</li>
-<li>过大的图片：如果图片过大，gpu无法处理，就需要cpu先预先处理</li>
+</ul>
+<h2 id="图像IO"><a href="#图像IO" class="headerlink" title="图像IO"></a>图像IO</h2><ul>
+<li>可以优化图片加载时机：<ul>
+<li>预加载</li>
+<li>异步线程加载，有时为了避免主线程加载图片耗时，可以使用异步线程加载，如tableview展示很多图片，注意避免复用的情况，加tag标记cell，cell没有复用的情况下再展示图片（所以实际上没啥卵用），但对本地图片来说其实作用不是很大</li>
+<li>避免延迟解码：<ul>
+<li>iOS通常会延迟解码</li>
+<li>UIImage的imageNamed方法会立刻解码而不会延迟</li>
+<li>可以将image设置为contents避免延迟解码，但这回在主线程执行，所以不利于优化耗时</li>
+<li>可以使用ImageIO框架，强制图片立刻解码</li>
+<li>可以使用CGContext绘制图片<ul>
+<li>绘制一个像素，然后丢弃绘制的像素，这回强制图片解码</li>
+<li>绘制所有像素，然后丢弃原始图片，这种方式会在特定设备上优化</li>
 </ul>
 </li>
-<li>CPU相关操作：<ul>
-<li>如果CPU做了大量操作，则会引起卡顿，丢帧</li>
-<li>布局计算：如果布局很复杂，自然是耗时验证的</li>
-<li>view懒加载：如果view是懒加载的，自然也会降低布局速度</li>
-<li>CG绘制：这个不用说，cpu自己开辟内存绘制，并且发送给给渲染进程，会造成巨大性能开销</li>
-<li>解压图片：对于大图片，会占用一定时间</li>
-<li>layer被发送到render进程之后，cpu会将layer转换为三角纹理，如果layer过于复杂，也会降低性能</li>
 </ul>
 </li>
-<li>IO相关操作：如网络、读取文件等等，可以采取预加载、多线程、缓存机制进行优化</li>
+<li>使用CATiledLayer来实现异步加载</li>
+<li>使用预览图</li>
 </ul>
 </li>
-<li>测量性能&#x2F;Instruments<ul>
-<li>Time Profile:测量函数耗时</li>
-<li>Core Animation：CoreAnimation性能</li>
+<li>缓存：<ul>
+<li>UIImageNamed默认会缓存，他有自己的缓存策略</li>
+<li>自定义缓存：需要自己实现缓存key、缓存策略、失效策略（这里的失效是指相同文件名但内容变化）、回收策略等等</li>
+<li>NSCache，类似于字典，但是系统会在内存压力大时自动回收</li>
 </ul>
 </li>
+<li>文件格式：<ul>
+<li>png适合透明图片、jpeg适合普通图片</li>
+</ul>
+</li>
+</ul>
+<h2 id="layer性能"><a href="#layer性能" class="headerlink" title="layer性能"></a>layer性能</h2><ul>
+<li>隐式绘制：相对的是显式绘制，比如设置contents属性，使用cgcontext绘制；隐式绘制，则是通过使用特定的layer属性、特定的视图、特定的layer子类造成的</li>
+<li>文本：CATextLayer使用CoreText绘制寄宿图，所以尽量避免改变他的frame，因为会引起重绘</li>
+<li>光栅化：shouldRasterize会触发渲染为图片，然后结果将被缓存起来以便后续使用；但是如果用在频繁变动的layer上，缓存的优势荡然无存甚至更糟糕</li>
+<li>离屏渲染：<ul>
+<li>当不能直接在当前屏幕的framebuffer上绘制时，就会触发离屏渲染然后贴到当前的buffer</li>
+<li>圆角、图层蒙版、阴影均会触发离屏渲染</li>
+<li>圆角矩形可以优化为<ul>
+<li>CAShapeLayer+Path的方式</li>
+<li>圆角背景图片</li>
+</ul>
+</li>
+<li>阴影可以优化为使用shadowPath,但是只对简单的形状有效</li>
+</ul>
+</li>
+<li>混合和过度绘制：<ul>
+<li>gpu每一帧填充的像素数量有限制，即填充率</li>
+<li>屏幕上同一个像素被填充多次</li>
+<li>但是如果存在大量重叠的透明子layer，那么gpu就需要消耗更多资源去计算layer的混合，并且对每个透明像素都需要绘制1次，造成过度绘制，为了减少混合和过度绘制行为，优化：<ul>
+<li>视图设置不透明的色值</li>
+<li>设置opaque为YES</li>
+<li>图片尽量避免透明</li>
+<li>若有可能，使用shouldRasterize，以将结果缓存避免混合</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>减少layer数量：<ul>
+<li>创建layer、处理layer、打包layer数据给渲染进程都是有开销的</li>
+<li>虽然CoreAnimation会处理不可见的layer，但我们自己也要避免创建不可见的layer</li>
+<li>建立自己的layer回收机制</li>
+</ul>
+</li>
+<li>建立快照：使用renderInContext，一般日后使用，一般适合固定不变的视图</li>
 </ul>
 
                 
@@ -342,8 +373,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>iOS核心动画-Part6</div>
-      <div>https://nuko1993.github.io/2024/01/13/ios-core-animation-p6/</div>
+      <div>iOS核心动画-Part7</div>
+      <div>https://nuko1993.github.io/2024/01/13/ios-core-animation-p7/</div>
     </div>
     <div class="license-meta">
       
@@ -387,18 +418,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/13/ios-core-animation-p7/" title="iOS核心动画-Part7">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">iOS核心动画-Part7</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/13/ios-core-animation-p5/" title="iOS核心动画-Part5">
-                        <span class="hidden-mobile">iOS核心动画-Part5</span>
+                      <a href="/2024/01/13/ios-core-animation-p6/" title="iOS核心动画-Part6">
+                        <span class="hidden-mobile">iOS核心动画-Part6</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
