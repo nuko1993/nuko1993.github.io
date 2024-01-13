@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>iOS核心动画-Part4</title>
+    <link href="/2024/01/13/ios-core-animation-p4/"/>
+    <url>/2024/01/13/ios-core-animation-p4/</url>
+    
+    <content type="html"><![CDATA[<h2 id="隐式动画"><a href="#隐式动画" class="headerlink" title="隐式动画"></a>隐式动画</h2><ul><li>CALayer的属性改变默认是带有自动动画的，比如颜色切换时会发生过渡，这就是所谓的隐式动画</li><li>隐式动画的时长取决于事务，动画类型取决于layer关联的CAAction</li><li>事务会将属性变化打包并做动画，通过CATransaction进行管理</li><li>类似于autorelease pool，事务也是类似stack的设计，当前属性的改变会被添加到最内层的事务，也可以通过begin、commit手动入栈和出栈</li><li>通过setAnimationDuration设置当前事务的时长</li><li>默认的，在每次runloop周期自动开启一次新的事务，所以一般我们不需要手动创建（是不是很像autorelease pool!!)，默认的时长是0.25s</li><li>UIView的animateWithDuration实际上内部就是对CATransaction begin、commit封装</li><li>可以通过setCompletionBlock来设置事务完成之后的回调，如果完成回调中作了动画，那么该动画是默认添加到外部的事务（一般是runloop开启的事务）中的</li><li>之前说，隐式动画的类型取决于layer关联的CAAction，UIView中的关联的layer的隐式动画实际是被禁用了的，也就是说，修改UIView的属性，默认是不带动画的，那么UIView是如何禁用隐式动画的呢？这就需要我们理解隐式动画的机制：<ul><li>当layer属性被修改时，layer会检测实现CALayerDelegate的actionForLayer:forKey方法，如果有，则之间返回结果</li><li>如没有实现delegate的委托，那么layer检查acttions字典</li><li>如果actions字典不存在对应属性，那么检查style字典</li><li>如果style字典不存在对应属性，那么调用兜底的defaultActionForKey</li><li>所以，最终返回一个CAAction，使用该action对属性做动画</li><li>UIView实际上通过实现了delegate，检测当前是否包含在动画块中，如果是，则返回对应CAAction，否则，返回nil，造成默认禁用的效果</li><li>当然，也可以通过调用CATransaction setDisableAction显式禁用所有隐式动画</li><li>这里，我们可以发现，如果想要修改隐式动画行为，对于单独的CALayer，可以实现deleagte，或者设置actions字典；对于UIView来说，要么放在动画块中，要么自定义UIView，重写actionForLayer，本质上，我们只是需要能够获取到何时的CAAction</li></ul></li><li>在做动画的时候，修改layer的属性，值会立刻发生变化，但是实际上渲染并没有立刻发生，动画时CALayer仅是model的角色，真正的呈现需要通过presentationLayer建模，通过presentation我们可以获取屏幕上当前真正展示的属性值，这允许我们在动画期间允许视图响应交互</li></ul><h2 id="显式动画"><a href="#显式动画" class="headerlink" title="显式动画"></a>显式动画</h2><ul><li>显式动画是相对于隐式动画来说，所谓的隐式，我认为理解为默认更合适，由UIKit框架决定，而显式则是开发者自己决定，对于底层渲染并不关心是隐式还是显式</li><li>属性动画：即创建一个CAPropertyAniation子类对象，设置该子类对应的keyPath和value，然通过layer的addAnimation应用该action，即可让keyPath指定的属性做预期动画，可以设置action的delegate，让其在停止时调用对应回调</li><li>通过setValueForKey给action关联特定值，可以在回调中区分出是哪个动画</li><li>CAKeyframeAnimation:是属性动画的子类，特点可以是设置values，或者设置path，让动画以指定的属性步调或者路径进行变化（如果是以path作为值，一般动画的属性是position，并且我们可以通过设置rotationMode来沿着path的切线运动）</li><li>虚拟属性：keyPath并不完全对应于真实属性，如果我们想做旋转动画，我们可能会想到transform属性，但是在某些情况下，可能直接使用transform不如使用虚拟属性transform.rotation更方便，后者只要指定旋转的角度即可，这实际上因为apple通过CAValueFunction内部对我们指定的虚拟属性作了计算实现的</li><li>动画组：之前的属性动画只能针对于单个属性做动画，通过CAAnimationGroup则可以将单独的属性动画组合起来一起做动画</li><li>过渡：属性动画只能针对于属性，如果想针对于layer整体内容（如移除子layer）做动画，则过渡更合适。CATransition通过type和subtype控制过渡效果。其实过渡动画在修改layer的content时默认发生的隐式动画，一般是淡入淡出</li><li>除了过渡实现内容动效，我们还可以自己使用renderInContext进行截图，然后对截图内容自定义属性动画实现自定义过渡效果</li><li>移除动画：调用removeAnimationForKey移除，移除之后，会立刻渲染成当前layer的属性值（注意不是目标值）；如果要让动画被移除之后更新layer的属性值，那么需要设置removedOnCompletion为NO，并设置fillMode</li></ul>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>iOS核心动画-Part3</title>
     <link href="/2024/01/11/ios-core-animation-p3/"/>
     <url>/2024/01/11/ios-core-animation-p3/</url>

@@ -16,21 +16,21 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="transform 仿射变换：即旋转、缩放、平移。仿射变换的特定是在变换前后，两条平行直线依然保持平行 可以使用CGAffineTransformMakeXXX函数来创建一个变换 UIView中的transform属性对应于CALayer的affineTransform属性 可以通过CGAffineTransformXXX属性来和另一个transform进行合成新的transform 也可以使用c">
+    <meta name="description" content="隐式动画 CALayer的属性改变默认是带有自动动画的，比如颜色切换时会发生过渡，这就是所谓的隐式动画 隐式动画的时长取决于事务，动画类型取决于layer关联的CAAction 事务会将属性变化打包并做动画，通过CATransaction进行管理 类似于autorelease pool，事务也是类似stack的设计，当前属性的改变会被添加到最内层的事务，也可以通过begin、commit手动入栈和">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS核心动画-Part3">
-<meta property="og:url" content="https://nuko1993.github.io/2024/01/11/ios-core-animation-p3/index.html">
+<meta property="og:title" content="iOS核心动画-Part4">
+<meta property="og:url" content="https://nuko1993.github.io/2024/01/13/ios-core-animation-p4/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="transform 仿射变换：即旋转、缩放、平移。仿射变换的特定是在变换前后，两条平行直线依然保持平行 可以使用CGAffineTransformMakeXXX函数来创建一个变换 UIView中的transform属性对应于CALayer的affineTransform属性 可以通过CGAffineTransformXXX属性来和另一个transform进行合成新的transform 也可以使用c">
+<meta property="og:description" content="隐式动画 CALayer的属性改变默认是带有自动动画的，比如颜色切换时会发生过渡，这就是所谓的隐式动画 隐式动画的时长取决于事务，动画类型取决于layer关联的CAAction 事务会将属性变化打包并做动画，通过CATransaction进行管理 类似于autorelease pool，事务也是类似stack的设计，当前属性的改变会被添加到最内层的事务，也可以通过begin、commit手动入栈和">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-11T14:18:47.000Z">
-<meta property="article:modified_time" content="2024-01-12T14:21:13.356Z">
+<meta property="article:published_time" content="2024-01-13T06:37:12.000Z">
+<meta property="article:modified_time" content="2024-01-13T08:01:46.002Z">
 <meta property="article:author" content="nuko">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>iOS核心动画-Part3 - nuko的小站</title>
+  <title>iOS核心动画-Part4 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="iOS核心动画-Part3"></span>
+            <span id="subtitle" data-typed-text="iOS核心动画-Part4"></span>
           
         </div>
 
@@ -207,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-11 22:18" pubdate>
-          2024年1月11日 晚上
+        <time datetime="2024-01-13 14:37" pubdate>
+          2024年1月13日 下午
         </time>
       </span>
     
@@ -219,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          2.1k 字
         
       </span>
     
@@ -230,7 +230,7 @@
         
         
         
-          12 分钟
+          18 分钟
         
       </span>
     
@@ -267,40 +267,43 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">iOS核心动画-Part3</h1>
+            <h1 id="seo-header">iOS核心动画-Part4</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="transform"><a href="#transform" class="headerlink" title="transform"></a>transform</h2><ul>
-<li>仿射变换：即旋转、缩放、平移。仿射变换的特定是在变换前后，两条平行直线依然保持平行</li>
-<li>可以使用CGAffineTransformMakeXXX函数来创建一个变换</li>
-<li>UIView中的transform属性对应于CALayer的affineTransform属性</li>
-<li>可以通过CGAffineTransformXXX属性来和另一个transform进行合成新的transform</li>
-<li>也可以使用concat来拼接两个transform</li>
-<li>注意变换的顺序会影响最终的结果，先旋转后平移和先平移后旋转结果不同</li>
+                <h2 id="隐式动画"><a href="#隐式动画" class="headerlink" title="隐式动画"></a>隐式动画</h2><ul>
+<li>CALayer的属性改变默认是带有自动动画的，比如颜色切换时会发生过渡，这就是所谓的隐式动画</li>
+<li>隐式动画的时长取决于事务，动画类型取决于layer关联的CAAction</li>
+<li>事务会将属性变化打包并做动画，通过CATransaction进行管理</li>
+<li>类似于autorelease pool，事务也是类似stack的设计，当前属性的改变会被添加到最内层的事务，也可以通过begin、commit手动入栈和出栈</li>
+<li>通过setAnimationDuration设置当前事务的时长</li>
+<li>默认的，在每次runloop周期自动开启一次新的事务，所以一般我们不需要手动创建（是不是很像autorelease pool!!)，默认的时长是0.25s</li>
+<li>UIView的animateWithDuration实际上内部就是对CATransaction begin、commit封装</li>
+<li>可以通过setCompletionBlock来设置事务完成之后的回调，如果完成回调中作了动画，那么该动画是默认添加到外部的事务（一般是runloop开启的事务）中的</li>
+<li>之前说，隐式动画的类型取决于layer关联的CAAction，UIView中的关联的layer的隐式动画实际是被禁用了的，也就是说，修改UIView的属性，默认是不带动画的，那么UIView是如何禁用隐式动画的呢？这就需要我们理解隐式动画的机制：<ul>
+<li>当layer属性被修改时，layer会检测实现CALayerDelegate的actionForLayer:forKey方法，如果有，则之间返回结果</li>
+<li>如没有实现delegate的委托，那么layer检查acttions字典</li>
+<li>如果actions字典不存在对应属性，那么检查style字典</li>
+<li>如果style字典不存在对应属性，那么调用兜底的defaultActionForKey</li>
+<li>所以，最终返回一个CAAction，使用该action对属性做动画</li>
+<li>UIView实际上通过实现了delegate，检测当前是否包含在动画块中，如果是，则返回对应CAAction，否则，返回nil，造成默认禁用的效果</li>
+<li>当然，也可以通过调用CATransaction setDisableAction显式禁用所有隐式动画</li>
+<li>这里，我们可以发现，如果想要修改隐式动画行为，对于单独的CALayer，可以实现deleagte，或者设置actions字典；对于UIView来说，要么放在动画块中，要么自定义UIView，重写actionForLayer，本质上，我们只是需要能够获取到何时的CAAction</li>
 </ul>
-<h2 id="3d-transform"><a href="#3d-transform" class="headerlink" title="3d transform"></a>3d transform</h2><ul>
-<li>CGAffineTransform只是2d变换，CATransform3D则可以做3d变换</li>
-<li>可以使用CATransformMake生成对应变换，iOS上z轴从屏幕向外</li>
-<li>3d transform默认是等距投影而不是透视投影，这意味着远处的边和近处的边是看上去一样长，这不符合人类视觉，所以3d效果不强</li>
-<li>要使用透视效果，需要修改transform3d的m34值，m34默认为0，可以取值为-1&#x2F;d,d越小，透视效果越强，同时越失真，d越大，透视效果越弱</li>
-<li>灭点：所有透视物体最远处的共同消失点，默认是anchorPoint，位于layer中心。所以一般对多个layer做透视同时让他们保持同一个灭点，可以先将layer放到屏幕中线做变化，然后平移到指定位置；更方便的方法是设置父容器的subLayerTransform来让所有子layer共享灭点，这样不用将每个layer先放到中心再做变换</li>
-<li>layer有个doubleSided,表示是否要双面绘制，默认YES，如果设置为NO，则翻转后不显示</li>
-<li>注意在3d transform加透视的情况下，先对外层绕y轴旋转，再对内层绕y轴逆向旋转是不会使得内层回到初始状态的，因为外层变换之后，内层已经被被渲染变形了，再做逆向旋转只是对原来变形的layer做旋转</li>
-<li>可以使用3d transform构建立方体，不常用，略</li>
+</li>
+<li>在做动画的时候，修改layer的属性，值会立刻发生变化，但是实际上渲染并没有立刻发生，动画时CALayer仅是model的角色，真正的呈现需要通过presentationLayer建模，通过presentation我们可以获取屏幕上当前真正展示的属性值，这允许我们在动画期间允许视图响应交互</li>
 </ul>
-<h2 id="专用layer"><a href="#专用layer" class="headerlink" title="专用layer"></a>专用layer</h2><ul>
-<li>CAShapeLayer：通过CGPath绘制指定形状，相比于直接通过CGContext绘制，渲染速度更快，并且可以超出layer之外绘制；通过bezier Path可以绘制任意形状的shape，自然可以绘制自定义圆角</li>
-<li>CATextLayer：功能上比肩UILabel，但速度更快，并且支持富文本，可以将CATextLayer作为自定义View的宿主layer来实现自定义的UILabel</li>
-<li>CATransformLayer：方便3d展示，略</li>
-<li>CAGradientLayer：最常用，展示渐变色</li>
-<li>CAReplicationLayer：对每个子layer接连应用指定次数的变换和色彩偏移，复制出指定数量的子layer，可以利用它实现反射效果</li>
-<li>CAScrollLayer：实现自定义的ScrollView，虽然contentRect可以指定layer可视区域，但是处理滑动并不方便</li>
-<li>CATiledLayer:将大图分解为小片并按需载入，以避免性能压力，实际上CATiledLayer需要我们手动将大图分解为小图，在需要的时候通过回调在drawLayerInContext函数中需要我们实现读取指定小图的逻辑</li>
-<li>CAEmitterLayer：实现例子效果</li>
-<li>CAEAGLLayer：实现opengl绘制，大多用于3d绘制</li>
-<li>AVPlayerLayer：视频播放，是MPMoviePlayer的底层</li>
+<h2 id="显式动画"><a href="#显式动画" class="headerlink" title="显式动画"></a>显式动画</h2><ul>
+<li>显式动画是相对于隐式动画来说，所谓的隐式，我认为理解为默认更合适，由UIKit框架决定，而显式则是开发者自己决定，对于底层渲染并不关心是隐式还是显式</li>
+<li>属性动画：即创建一个CAPropertyAniation子类对象，设置该子类对应的keyPath和value，然通过layer的addAnimation应用该action，即可让keyPath指定的属性做预期动画，可以设置action的delegate，让其在停止时调用对应回调</li>
+<li>通过setValueForKey给action关联特定值，可以在回调中区分出是哪个动画</li>
+<li>CAKeyframeAnimation:是属性动画的子类，特点可以是设置values，或者设置path，让动画以指定的属性步调或者路径进行变化（如果是以path作为值，一般动画的属性是position，并且我们可以通过设置rotationMode来沿着path的切线运动）</li>
+<li>虚拟属性：keyPath并不完全对应于真实属性，如果我们想做旋转动画，我们可能会想到transform属性，但是在某些情况下，可能直接使用transform不如使用虚拟属性transform.rotation更方便，后者只要指定旋转的角度即可，这实际上因为apple通过CAValueFunction内部对我们指定的虚拟属性作了计算实现的</li>
+<li>动画组：之前的属性动画只能针对于单个属性做动画，通过CAAnimationGroup则可以将单独的属性动画组合起来一起做动画</li>
+<li>过渡：属性动画只能针对于属性，如果想针对于layer整体内容（如移除子layer）做动画，则过渡更合适。CATransition通过type和subtype控制过渡效果。其实过渡动画在修改layer的content时默认发生的隐式动画，一般是淡入淡出</li>
+<li>除了过渡实现内容动效，我们还可以自己使用renderInContext进行截图，然后对截图内容自定义属性动画实现自定义过渡效果</li>
+<li>移除动画：调用removeAnimationForKey移除，移除之后，会立刻渲染成当前layer的属性值（注意不是目标值）；如果要让动画被移除之后更新layer的属性值，那么需要设置removedOnCompletion为NO，并设置fillMode</li>
 </ul>
 
                 
@@ -319,8 +322,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>iOS核心动画-Part3</div>
-      <div>https://nuko1993.github.io/2024/01/11/ios-core-animation-p3/</div>
+      <div>iOS核心动画-Part4</div>
+      <div>https://nuko1993.github.io/2024/01/13/ios-core-animation-p4/</div>
     </div>
     <div class="license-meta">
       
@@ -332,7 +335,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年1月11日</div>
+          <div>2024年1月13日</div>
         </div>
       
       
@@ -364,18 +367,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/01/13/ios-core-animation-p4/" title="iOS核心动画-Part4">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">iOS核心动画-Part4</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/09/ios-core-animation-p2/" title="iOS核心动画-Part2">
-                        <span class="hidden-mobile">iOS核心动画-Part2</span>
+                      <a href="/2024/01/11/ios-core-animation-p3/" title="iOS核心动画-Part3">
+                        <span class="hidden-mobile">iOS核心动画-Part3</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
