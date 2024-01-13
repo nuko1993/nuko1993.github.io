@@ -224,6 +224,39 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/01/13/ios-core-animation-p6/" target="_self">
+          iOS核心动画-Part6
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/13/ios-core-animation-p6/" target="_self">
+        <div>
+          基于定时器的动画 NSTimer：普通的计时器，但是存在不准确、受到的runloop事件处理耗时的影响，我们可以修改为使用CADisplayLink和基于真实时间流逝进行计算 CADisplayLink：基于屏幕刷新进行回调，CADisplayLink因为是基于帧的，如果发生丢帧，那么丢帧时将不会调用回调，但是NSTimer总是会执行，即使延迟 计算帧耗时：在回调时记录当前时间，和上次时间进行对比
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-01-13 16:44" pubdate>
+              2024-01-13
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/01/13/ios-core-animation-p5/" target="_self">
           iOS核心动画-Part5
         </a>
@@ -505,39 +538,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2023-12-31 15:58" pubdate>
-              2023-12-31
-            </time>
-          </div>
-        
-        
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/12/31/swift-advance-encode-decode/" target="_self">
-          Swift进阶-编码和解码
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/31/swift-advance-encode-decode/" target="_self">
-        <div>
-          前言和别的语言序列化的概念相似，Swift中定义了Codeable协议，其实际就是Decodeable&amp;Encodeable。标准库所有基本类型都实现了Codeable，如果struct和class内部属性都满足Codeable，则编译器可以自动生成其Codeable实现。 一个最小的例子 当strcut中的成员都是Codeable时，编译器可以自动生成Codeable实现，我们只要声明C
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-31 14:32" pubdate>
               2023-12-31
             </time>
           </div>

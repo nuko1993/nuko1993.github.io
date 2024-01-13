@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>iOS核心动画-Part6</title>
+    <link href="/2024/01/13/ios-core-animation-p6/"/>
+    <url>/2024/01/13/ios-core-animation-p6/</url>
+    
+    <content type="html"><![CDATA[<h2 id="基于定时器的动画"><a href="#基于定时器的动画" class="headerlink" title="基于定时器的动画"></a>基于定时器的动画</h2><ul><li>NSTimer：普通的计时器，但是存在不准确、受到的runloop事件处理耗时的影响，我们可以修改为使用CADisplayLink和基于真实时间流逝进行计算</li><li>CADisplayLink：基于屏幕刷新进行回调，CADisplayLink因为是基于帧的，如果发生丢帧，那么丢帧时将不会调用回调，但是NSTimer总是会执行，即使延迟</li><li>计算帧耗时：在回调时记录当前时间，和上次时间进行对比，可以计算出实际上一帧持续的时间，进而动态调整下一帧要展示的数据</li><li>runloop mode:由于runloop中的事件分为不同优先级，所在在不同情况下，runloop优先执行某些mode下的回调，比如在滑动的时候，NSTimer可能就不被执行（因为它在defaultMode），如果想要不受这种影响，需要将我们的回调添加到commonMode中</li></ul><h2 id="物理模拟"><a href="#物理模拟" class="headerlink" title="物理模拟"></a>物理模拟</h2><p>略，很少用</p><h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><ul><li>CoreAnimation会智能将工作分配在cpu和gpu上以达到最优新能</li><li>在系统中，所有的layer的最终合成是被SpringBoard进程管理的</li><li>动画执行过程：<ul><li>App进程：<ul><li>布局：设置图层层级、位置、属性</li><li>显示： 绘制寄宿图，涉及UIView的drawRect和CALayer的drawLayerInContext</li><li>准备：将动画数据准备发送到渲染进程</li><li>提交：打包所有图层和动画数据发送到渲染进程</li></ul></li><li>渲染进程：<ul><li>解码图层数据</li><li>计算OpenGL纹理</li><li>GPU绘制</li></ul></li><li>只有最后的GPU绘制才是GPU处理，前面的都是CPU处理，并且只有布局和显示由开发者自己控制</li></ul></li><li>性能影响：<ul><li>GPU相关操作<ul><li>太多的图层会造成发送给渲染进程的数据量过大，造成cpu压力</li><li>重绘：由重叠的半透明layer引起，因为gpu填充比率有限制，所以需要避免重绘</li><li>离屏绘制：如圆角、为离屏图片分配内存，圆角触发离屏绘制的主要原因是无法在当前屏幕使用的frameBuffer中计算圆角的展示效果，否则会将背景像素也给切割掉，所以只能在额外的frameBuffer中先计算出本图层圆角的效果，然后再贴到当前的frameBuffer中去</li><li>过大的图片：如果图片过大，gpu无法处理，就需要cpu先预先处理</li></ul></li><li>CPU相关操作：<ul><li>如果CPU做了大量操作，则会引起卡顿，丢帧</li><li>布局计算：如果布局很复杂，自然是耗时验证的</li><li>view懒加载：如果view是懒加载的，自然也会降低布局速度</li><li>CG绘制：这个不用说，cpu自己开辟内存绘制，并且发送给给渲染进程，会造成巨大性能开销</li><li>解压图片：对于大图片，会占用一定时间</li><li>layer被发送到render进程之后，cpu会将layer转换为三角纹理，如果layer过于复杂，也会降低性能</li></ul></li><li>IO相关操作：如网络、读取文件等等，可以采取预加载、多线程、缓存机制进行优化</li></ul></li><li>测量性能&#x2F;Instruments<ul><li>Time Profile:测量函数耗时</li><li>Core Animation：CoreAnimation性能</li></ul></li></ul>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>iOS核心动画-Part5</title>
     <link href="/2024/01/13/ios-core-animation-p5/"/>
     <url>/2024/01/13/ios-core-animation-p5/</url>
