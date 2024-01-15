@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://nuko1993.github.io/2024/01/15/think-deep-in-ios-runloop/</loc>
+    
+    <lastmod>2024-01-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://nuko1993.github.io/2023/12/03/first_blog/</loc>
     
     <lastmod>2024-01-15</lastmod>
@@ -331,6 +340,13 @@
   
   <url>
     <loc>https://nuko1993.github.io/tags/OC/</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://nuko1993.github.io/tags/RunLoop/</loc>
     <lastmod>2024-01-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
