@@ -33,8 +33,9 @@
 <meta property="og:image" content="https://nuko1993.github.io/images/image-12.png">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-11.png">
 <meta property="article:published_time" content="2023-12-03T07:27:35.000Z">
-<meta property="article:modified_time" content="2023-12-03T12:33:57.410Z">
+<meta property="article:modified_time" content="2024-01-15T13:23:15.641Z">
 <meta property="article:author" content="nuko">
+<meta property="article:tag" content="Hexo">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://nuko1993.github.io/images/image.png">
   
@@ -286,36 +287,36 @@
 <h1 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h1><p>我们可以将我们的blog理解成一个app，Hexo项目就是这个app的框架工程源码，通过Node.js进行编译打包，最终生成产品发布到GitHub上被人查看使用。</p>
 <h1 id="安装Git-注册GitHub账号"><a href="#安装Git-注册GitHub账号" class="headerlink" title="安装Git&amp;注册GitHub账号"></a>安装Git&amp;注册GitHub账号</h1><h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2><p>传送门：<a target="_blank" rel="noopener" href="https://git-scm.com/downloads">https://git-scm.com/downloads</a><br>作用：用于管理Hexo生成的文件，对接GitHub</p>
 <h2 id="注册GitHub账号"><a href="#注册GitHub账号" class="headerlink" title="注册GitHub账号"></a>注册GitHub账号</h2><p>传送门：<a target="_blank" rel="noopener" href="https://github.com/">https://github.com/</a><br>作用：托管Hexo生成的文件，并提供GitHub Page服务，让blog可以被别人浏览  </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 校验安装</span><br><span class="line">git --version</span><br></pre></td></tr></table></figure>
+<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs d"><span class="hljs-comment">// 校验安装</span><br>git --<span class="hljs-keyword">version</span><br></code></pre></td></tr></table></figure>
 <h1 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h1><p>传送门：<a target="_blank" rel="noopener" href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a><br>Node.js是一个跨平台的基于Chrome V8引擎的JavaScript运行环境，它可以让JS脚本可以脱离浏览器执行。这么说如果还是不太理解的话，把他理解成Python就可以<br>为啥需要Node.js呢，有两个原因：</p>
 <ul>
 <li>Hexo是基于Node.js作为构建系统来生成网页</li>
 <li>Hexo可以使用npm来下载安装</li>
 <li>等等，这里npm又是啥？别慌，npm是Node.js的包管理器，理解成pip之于Python。最近的Node.js在安装的时候已经会一起安装npm了</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 校验安装</span><br><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">// 校验安装<br><span class="hljs-keyword">node</span> <span class="hljs-title">-v</span><br>npm -v<br></code></pre></td></tr></table></figure>
 <h1 id="Hexo安装"><a href="#Hexo安装" class="headerlink" title="Hexo安装"></a>Hexo安装</h1><p>使用npm进行安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// -g参数表示将hexo-cli作为全局(global)包安装，hexo-cli中的二进制文件加入到PATH中，方便终端调用hexo命令</span><br><span class="line">// 全局安装还可以使得在创建其他Node.js项目的时候也方便引用到</span><br><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">// -g参数表示将hexo-<span class="hljs-keyword">cli</span>作为全局(<span class="hljs-meta">global</span>)包安装，hexo-<span class="hljs-keyword">cli</span>中的二进制文件加入到PATH中，方便终端调用hexo命令<br>// 全局安装还可以使得在创建其他Node<span class="hljs-number">.</span><span class="hljs-keyword">js</span>项目的时候也方便引用到<br>npm install hexo-<span class="hljs-keyword">cli</span> -g<br></code></pre></td></tr></table></figure>
 <h1 id="创建Hexo项目"><a href="#创建Hexo项目" class="headerlink" title="创建Hexo项目"></a>创建Hexo项目</h1><p>1.在你喜欢的地方创建一个文件夹，例如桌面上，就叫做hexo_blog吧<br>2.cd到该目录<br>3.执行命令，创建Hexo项目</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 创建Hexo项目</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-comment">// 创建Hexo项目</span><br>hexo <span class="hljs-keyword">init</span><br></code></pre></td></tr></table></figure>
 <p>4.执行命令，在本地生成网页产物</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 生成网页产物</span><br><span class="line">hexo generate</span><br></pre></td></tr></table></figure>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs verilog"><span class="hljs-comment">// 生成网页产物</span><br>hexo <span class="hljs-keyword">generate</span><br></code></pre></td></tr></table></figure>
 <p>5.执行命令，启动本地服务器查看</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 启动本地server</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-comment">// 启动本地server</span><br>hexo <span class="hljs-keyword">server</span><br></code></pre></td></tr></table></figure>
 <p>6.在浏览器中打开 <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000/</a> 查看效果<br>不出意外的话，恭喜，已经曙光初现了，接下来就是将我们的blog发布到GitHub Page上供别人浏览了</p>
 <h1 id="部署到GitHub-Page"><a href="#部署到GitHub-Page" class="headerlink" title="部署到GitHub Page"></a>部署到GitHub Page</h1><h2 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h2><p>之前我们创建了GitHub账号，我们新建一个仓库<br><img src="/../images/image.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br><img src="/../images/image-1.png" srcset="/img/loading.gif" lazyload alt="Alt text"></p>
 <h2 id="配置SSH密钥"><a href="#配置SSH密钥" class="headerlink" title="配置SSH密钥"></a>配置SSH密钥</h2><p>等等，啥是SSH，啥是密钥？我们要把本地的Hexo产物文件push到GitHub，是通过ssh的方式。那GitHub肯定需要鉴权把。鉴权我们可以使用账号密码，但是如果每次push都要输入账号密码，那想想都很痛苦。<br>那有没有更加轻松的方式呢？GitHub很贴心的为你想好啦，我们只要把我们的设备添加到GitHub的信任名单中，那就不用每次都输入账号密码了，so easy!<br>那么，GitHub是怎么信任咱们的设备呢，它需要一个凭证，这个凭证就是SSH密钥。通过SSH密钥能够唯一标识请求来自于这台设备。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 生成ssh密钥，引号中的内容是注释，可以写我们自己的邮箱账号</span><br><span class="line">// 一路回车即可，记录下保存密钥的文件，例如~/.ssh/id_rsa，对应的公钥就是~/.ssh/id_rsa.pub</span><br><span class="line">ssh-keygen -t rsa -C &quot;your email@example.com&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">//</span> 生成ssh密钥，引号中的内容是注释，可以写我们自己的邮箱账号<br><span class="hljs-regexp">//</span> 一路回车即可，记录下保存密钥的文件，例如~<span class="hljs-regexp">/.ssh/i</span>d_rsa，对应的公钥就是~<span class="hljs-regexp">/.ssh/i</span>d_rsa.pub<br>ssh-keygen -t rsa -C <span class="hljs-string">&quot;your email@example.com&quot;</span><br></code></pre></td></tr></table></figure>
 <p>查看公钥并复制到剪切板中，然后按找到下面的位置将公钥粘贴进去<br><img src="/../images/image-2.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br><img src="/../images/image-3.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br><img src="/../images/image-4.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br><img src="/../images/image-5.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br>测试下添加是否成功</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 当出现提示时回车即可</span><br><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-comment">// 当出现提示时回车即可</span><br>ssh -T <span class="hljs-symbol">git@</span>github.com<br></code></pre></td></tr></table></figure>
 <h2 id="配置Git个人信息"><a href="#配置Git个人信息" class="headerlink" title="配置Git个人信息"></a>配置Git个人信息</h2><p>上面的ssh密钥只是前提条件，GitHub在我们push文件时还会根据邮箱和用户名做校验，因而需要设置下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;此处填你的用户名&quot;</span><br><span class="line">git config --global user.email &quot;此处填你的邮箱&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">git config <span class="hljs-attr">--global</span> user<span class="hljs-selector-class">.name</span> <span class="hljs-string">&quot;此处填你的用户名&quot;</span><br>git config <span class="hljs-attr">--global</span> user<span class="hljs-selector-class">.email</span> <span class="hljs-string">&quot;此处填你的邮箱&quot;</span><br></code></pre></td></tr></table></figure>
 <h2 id="将Hexo部署到GitHub-Page"><a href="#将Hexo部署到GitHub-Page" class="headerlink" title="将Hexo部署到GitHub Page"></a>将Hexo部署到GitHub Page</h2><p>首先，回到我们之前在GitHub上创建的仓库，复制我们仓库的ssh地址<br><img src="/../images/image-6.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br>打开我们创建的Hexo项目中的_config.yml文件(推荐Visual Studio Code，后续写blog也很方便)，找到如下入位置进行修改<br><img src="/../images/image-12.png" srcset="/img/loading.gif" lazyload alt="Alt text"><br><img src="/../images/image-11.png" srcset="/img/loading.gif" lazyload alt="Alt text"></p>
 <p><strong>敲黑板！！注意branch不要填入master，要填入main。</strong> 分支填错会就看不到了页面了，GitHub Page使用默认分支部署。不知道啥时候开始，GitHub为了zzzq把默认分支的名称从master修改为main了QAQ  </p>
 <p>我们还需要安装一个hexo部署到git的插件来完成最终部署，进入到我们之前创建的Hexo项目目录中，执行：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 这里--save是将该插件添加到Hexo项目的依赖中，记录到package.json</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">//</span> 这里<span class="hljs-params">--save</span>是将该插件添加到Hexo项目的依赖中，记录到package.json<br>npm install hexo-deployer-git <span class="hljs-params">--save</span><br></code></pre></td></tr></table></figure>
 <p>最后一步，激动人心的时刻就要到了，执行</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">hexo g -d</span><br></code></pre></td></tr></table></figure>
 
 <p>完成之后，访问user_name.github.io（user_name替换成你自己的GitHub账号名称），我们就可以看到我们的blog啦，完结撒花~~~~</p>
 
@@ -326,6 +327,13 @@
             <div>
               <div class="post-metas my-3">
   
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+      
+    </div>
   
 </div>
 
