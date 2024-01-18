@@ -4,6 +4,29 @@
   
   
   <entry>
+    <title>iOS KVO和KVC实现原理</title>
+    <link href="/2024/01/18/think-deep-in-ios-kvc-kvo/"/>
+    <url>/2024/01/18/think-deep-in-ios-kvc-kvo/</url>
+    
+    <content type="html"><![CDATA[<h1 id="KVO"><a href="#KVO" class="headerlink" title="KVO"></a>KVO</h1><p>在OC中，我们可以使用KVO机制来监听某个对象的属性值变化；swift中，一般使用属性的willSet和didSet达到类似效果，这里我们主要讨论OC的实现</p><h2 id="KVO的使用"><a href="#KVO的使用" class="headerlink" title="KVO的使用"></a>KVO的使用</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-comment">// 为receiver增加一个observer，从而监听receiver的属性变化</span><br>- (<span class="hljs-type">void</span>)addObserver:(<span class="hljs-built_in">NSObject</span> *)observer <br>         forKeyPath:(<span class="hljs-built_in">NSString</span> *)keyPath <br>            options:(<span class="hljs-built_in">NSKeyValueObservingOptions</span>)options <br>            context:(<span class="hljs-type">void</span> *)context;<br><br><span class="hljs-comment">// 在observer中实现该函数，当监听的属性发生变化时，回调该函数</span><br>- (<span class="hljs-type">void</span>)observeValueForKeyPath:(<span class="hljs-built_in">NSString</span> *)keyPath ofObject:(<span class="hljs-type">id</span>)object change:(<span class="hljs-built_in">NSDictionary</span>&lt;<span class="hljs-built_in">NSKeyValueChangeKey</span>,<span class="hljs-type">id</span>&gt; *)change context:(<span class="hljs-type">void</span> *)context;<br><br><span class="hljs-comment">// 移除receiver的observer</span><br>- (<span class="hljs-type">void</span>)removeObserver:(<span class="hljs-built_in">NSObject</span> *)observer <br>            forKeyPath:(<span class="hljs-built_in">NSString</span> *)keyPath <br>               context:(<span class="hljs-type">void</span> *)context;<br></code></pre></td></tr></table></figure><h2 id="KVO实现机制"><a href="#KVO实现机制" class="headerlink" title="KVO实现机制"></a>KVO实现机制</h2><ul><li>KVO实现依赖于runtime，其基本原理是在addObserver时，runtime会动态创建一个原对象Class的子Class，然后让被监听对象的isa指向该创建的子Class，从而达到替换调用setXXX的方法效果</li><li>动态生成的Class一般叫做NSKVONotifying_KVOTestModel，并且其superClass指向被监听对象的原Class，这样，既可以替换指定的setXXX方法，又不影响调用其他方法</li><li>动态生成的Class除了替换了setXXX方法，还重写了class、dealloc等方法，这是因为系统要屏蔽内部实现细节。当然，如果我们直接用object_getClass来获取，获取到的还是派生的子Class</li><li>由于KVO是通过重写setter方法触发的，如果我们直接修改实例变量是不会触发KVO的，必须调用setXXX方法</li><li>重写的setter方法：先调用willChangeValue，然后调用原setter，最后调用didChangeValueForKey</li><li>监听属性使用的是keyPath，runtime会通过keyPath找到对应的setter并进行替换</li><li>KVO无论监听子类属性还是父类属性，都是可以的，即使子类中重写父类属性也是OK的，runtime只要找到setter方法就可以</li><li>使用block简化KVO调用：原理就是通过增加NSObject分类，添加便捷方法，将自身作为Observer去监听特定对象，当触发时，调用所有注册的block</li></ul><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.neroxie.com/2019/07/12/KVO%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">https://www.neroxie.com/2019/07/12/KVO%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</a></p><h1 id="KVC"><a href="#KVC" class="headerlink" title="KVC"></a>KVC</h1><p>KVC允许我们通过keyPath来访问属性方法和成员变量，其工作原理依赖于搜索规则</p><h2 id="搜索规则"><a href="#搜索规则" class="headerlink" title="搜索规则"></a>搜索规则</h2><ul><li>依赖setter和getter以及accessInstanceVariablesDirectly（是否允许读取实例变量的值，默认为YES）</li><li>赋值原理：<ul><li>查找setXX，_setXX方法，找不到next</li><li>若accessInstanceVariablesDirectly为YES，则按照_XX,_isXX,XX,isXX去找实例变量，找不到next</li><li>调用setValue:forUndefinedKey<br><img src="/../images/image-32.png" alt="Alt text"></li></ul></li><li>取值原理：和赋值原理类似，但是注意<ul><li>若返回值是对象指针，则直接返回，若是基础类型且被NSNumber支持，则返回NSNumber，若不是则返回NSValue</li></ul></li><li>对于没有setXX的实例变量，KVC是否能触发KVO？讲道理是不行的，但实测可以，可能是apple自己再内部检测到了如果有KVO，则手动触发</li></ul><h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.neroxie.com/2019/07/12/KVC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">https://www.neroxie.com/2019/07/12/KVC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</a></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>iOS</tag>
+      
+      <tag>KVC</tag>
+      
+      <tag>KVO</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>深入理解iOS Runtime</title>
     <link href="/2024/01/17/think-deep-in-ios-runtime/"/>
     <url>/2024/01/17/think-deep-in-ios-runtime/</url>
