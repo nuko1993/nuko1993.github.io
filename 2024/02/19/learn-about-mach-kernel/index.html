@@ -16,26 +16,30 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="KVO在OC中，我们可以使用KVO机制来监听某个对象的属性值变化；swift中，一般使用属性的willSet和didSet达到类似效果，这里我们主要讨论OC的实现 KVO的使用12345678910111213&#x2F;&#x2F; 为receiver增加一个observer，从而监听receiver的属性变化- (void)addObserver:(NSObject *)observer          for">
+    <meta name="description" content="前言年过完啦，继续总结，先过渡下，回忆下Mach内核吧~Mach内核是OS X是iOS的核心中的核心，提供了线程调度、内存管理、硬件管理、IPC等重要功能 OS X系统 初代Apple使用的Mac OS和现在的OS X是不同的，初代Mac OS最后一代是Mac OS 9，终结于2001年 现在的OS X基于NeXTSTEP OS，于2001年正式接任 app bundle额interface bu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS KVO和KVC实现原理">
-<meta property="og:url" content="https://nuko1993.github.io/2024/01/18/think-deep-in-ios-kvc-kvo/index.html">
+<meta property="og:title" content="Mach内核">
+<meta property="og:url" content="https://nuko1993.github.io/2024/02/19/learn-about-mach-kernel/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="KVO在OC中，我们可以使用KVO机制来监听某个对象的属性值变化；swift中，一般使用属性的willSet和didSet达到类似效果，这里我们主要讨论OC的实现 KVO的使用12345678910111213&#x2F;&#x2F; 为receiver增加一个observer，从而监听receiver的属性变化- (void)addObserver:(NSObject *)observer          for">
+<meta property="og:description" content="前言年过完啦，继续总结，先过渡下，回忆下Mach内核吧~Mach内核是OS X是iOS的核心中的核心，提供了线程调度、内存管理、硬件管理、IPC等重要功能 OS X系统 初代Apple使用的Mac OS和现在的OS X是不同的，初代Mac OS最后一代是Mac OS 9，终结于2001年 现在的OS X基于NeXTSTEP OS，于2001年正式接任 app bundle额interface bu">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://nuko1993.github.io/images/image-32.png">
-<meta property="article:published_time" content="2024-01-18T13:39:24.000Z">
-<meta property="article:modified_time" content="2024-01-18T14:47:10.619Z">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-33.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-36.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-35.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-37.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-38.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-39.png">
+<meta property="article:published_time" content="2024-02-19T12:52:50.000Z">
+<meta property="article:modified_time" content="2024-02-19T14:08:14.947Z">
 <meta property="article:author" content="nuko">
 <meta property="article:tag" content="iOS">
-<meta property="article:tag" content="KVC">
-<meta property="article:tag" content="KVO">
+<meta property="article:tag" content="Mach">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://nuko1993.github.io/images/image-32.png">
+<meta name="twitter:image" content="https://nuko1993.github.io/images/image-33.png">
   
   
   
-  <title>iOS KVO和KVC实现原理 - nuko的小站</title>
+  <title>Mach内核 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -201,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="iOS KVO和KVC实现原理"></span>
+            <span id="subtitle" data-typed-text="Mach内核"></span>
           
         </div>
 
@@ -212,8 +216,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-18 21:39" pubdate>
-          2024年1月18日 晚上
+        <time datetime="2024-02-19 20:52" pubdate>
+          2024年2月19日 晚上
         </time>
       </span>
     
@@ -224,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.8k 字
+          2.5k 字
         
       </span>
     
@@ -235,7 +239,7 @@
         
         
         
-          15 分钟
+          21 分钟
         
       </span>
     
@@ -272,41 +276,59 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">iOS KVO和KVC实现原理</h1>
+            <h1 id="seo-header">Mach内核</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="KVO"><a href="#KVO" class="headerlink" title="KVO"></a>KVO</h1><p>在OC中，我们可以使用KVO机制来监听某个对象的属性值变化；swift中，一般使用属性的willSet和didSet达到类似效果，这里我们主要讨论OC的实现</p>
-<h2 id="KVO的使用"><a href="#KVO的使用" class="headerlink" title="KVO的使用"></a>KVO的使用</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-comment">// 为receiver增加一个observer，从而监听receiver的属性变化</span><br>- (<span class="hljs-type">void</span>)addObserver:(<span class="hljs-built_in">NSObject</span> *)observer <br>         forKeyPath:(<span class="hljs-built_in">NSString</span> *)keyPath <br>            options:(<span class="hljs-built_in">NSKeyValueObservingOptions</span>)options <br>            context:(<span class="hljs-type">void</span> *)context;<br><br><span class="hljs-comment">// 在observer中实现该函数，当监听的属性发生变化时，回调该函数</span><br>- (<span class="hljs-type">void</span>)observeValueForKeyPath:(<span class="hljs-built_in">NSString</span> *)keyPath ofObject:(<span class="hljs-type">id</span>)object change:(<span class="hljs-built_in">NSDictionary</span>&lt;<span class="hljs-built_in">NSKeyValueChangeKey</span>,<span class="hljs-type">id</span>&gt; *)change context:(<span class="hljs-type">void</span> *)context;<br><br><span class="hljs-comment">// 移除receiver的observer</span><br>- (<span class="hljs-type">void</span>)removeObserver:(<span class="hljs-built_in">NSObject</span> *)observer <br>            forKeyPath:(<span class="hljs-built_in">NSString</span> *)keyPath <br>               context:(<span class="hljs-type">void</span> *)context;<br></code></pre></td></tr></table></figure>
-
-<h2 id="KVO实现机制"><a href="#KVO实现机制" class="headerlink" title="KVO实现机制"></a>KVO实现机制</h2><ul>
-<li>KVO实现依赖于runtime，其基本原理是在addObserver时，runtime会动态创建一个原对象Class的子Class，然后让被监听对象的isa指向该创建的子Class，从而达到替换调用setXXX的方法效果</li>
-<li>动态生成的Class一般叫做NSKVONotifying_KVOTestModel，并且其superClass指向被监听对象的原Class，这样，既可以替换指定的setXXX方法，又不影响调用其他方法</li>
-<li>动态生成的Class除了替换了setXXX方法，还重写了class、dealloc等方法，这是因为系统要屏蔽内部实现细节。当然，如果我们直接用object_getClass来获取，获取到的还是派生的子Class</li>
-<li>由于KVO是通过重写setter方法触发的，如果我们直接修改实例变量是不会触发KVO的，必须调用setXXX方法</li>
-<li>重写的setter方法：先调用willChangeValue，然后调用原setter，最后调用didChangeValueForKey</li>
-<li>监听属性使用的是keyPath，runtime会通过keyPath找到对应的setter并进行替换</li>
-<li>KVO无论监听子类属性还是父类属性，都是可以的，即使子类中重写父类属性也是OK的，runtime只要找到setter方法就可以</li>
-<li>使用block简化KVO调用：原理就是通过增加NSObject分类，添加便捷方法，将自身作为Observer去监听特定对象，当触发时，调用所有注册的block</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>年过完啦，继续总结，先过渡下，回忆下Mach内核吧~Mach内核是OS X是iOS的核心中的核心，提供了线程调度、内存管理、硬件管理、IPC等重要功能</p>
+<h2 id="OS-X系统"><a href="#OS-X系统" class="headerlink" title="OS X系统"></a>OS X系统</h2><ul>
+<li>初代Apple使用的Mac OS和现在的OS X是不同的，初代Mac OS最后一代是Mac OS 9，终结于2001年</li>
+<li>现在的OS X基于NeXTSTEP OS，于2001年正式接任</li>
+<li>app bundle额interface builder的概念来自于NeXTSTEP，并且提供了Drive Kit用于驱动开发，后来被放到了IO Kit中</li>
+<li>iOS派生自OS X，于2007年发布</li>
+<li>NeXTSTEP是乔布斯在离开Apple之后创办了NeXT公司开发的</li>
+<li>OS X和iOS的核心部分被称为Darwin，包含了XNU kernel和Unix基础</li>
+<li>Darwin是开源的，但不含图形界面，并且没有官方ARM架构支持</li>
+<li>XNU kernel是个混合kernel，包含Mach kernel和部分BSD</li>
+<li>Carbon和Java都被OS X废弃，Carbon在Cocoa在功能上有重叠，在iOS上已经移除</li>
+<li>graphic框架的核心是Quartz，其整合了Quartz Compositor（窗口组合）和Quartz 2D，其基于PDF模型，提供设备无关的分辨率，并可以使用OpenGL进行加速</li>
+<li>OS X10.5首次支持64位Cocoa，10.6版本支持kernel以64位运行</li>
+<li>OS X架构如下<br><img src="/../images/image-33.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
 </ul>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.neroxie.com/2019/07/12/KVO%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">https://www.neroxie.com/2019/07/12/KVO%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</a></p>
-<h1 id="KVC"><a href="#KVC" class="headerlink" title="KVC"></a>KVC</h1><p>KVC允许我们通过keyPath来访问属性方法和成员变量，其工作原理依赖于搜索规则</p>
-<h2 id="搜索规则"><a href="#搜索规则" class="headerlink" title="搜索规则"></a>搜索规则</h2><ul>
-<li>依赖setter和getter以及accessInstanceVariablesDirectly（是否允许读取实例变量的值，默认为YES）</li>
-<li>赋值原理：<ul>
-<li>查找setXX，_setXX方法，找不到next</li>
-<li>若accessInstanceVariablesDirectly为YES，则按照_XX,_isXX,XX,isXX去找实例变量，找不到next</li>
-<li>调用setValue:forUndefinedKey<br><img src="/../images/image-32.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
-</ul>
-</li>
-<li>取值原理：和赋值原理类似，但是注意<ul>
-<li>若返回值是对象指针，则直接返回，若是基础类型且被NSNumber支持，则返回NSNumber，若不是则返回NSValue</li>
+<h2 id="XNU-kernel"><a href="#XNU-kernel" class="headerlink" title="XNU kernel"></a>XNU kernel</h2><ul>
+<li>XNU是个混合kernel，包含BSD、Mach、IO Kit，实际上，有时这些layer的边界是模糊的，其架构如下：<br><img src="/../images/image-36.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>KEXTs即kernel扩展，kernel扩展用于动态加载代码到kernel空间，从而可以编写驱动或者实现其他kernel功能，例如实现新的文件系统</li>
+<li>KEXTs一般有两类：<ul>
+<li>基于IO Kit，使用c++编写</li>
+<li>基于通用kernel扩展，使用c编写</li>
 </ul>
 </li>
-<li>对于没有setXX的实例变量，KVC是否能触发KVO？讲道理是不行的，但实测可以，可能是apple自己再内部检测到了如果有KVO，则手动触发</li>
+<li>XNU的最核心的部分是Mach，Mach为IOKit和BSD提供了硬件抽象、内存管理、线程调度、IPC</li>
+<li>在Mach中，所谓Task，可以对应到Unix中的进程，Thread就是线程。Mach层面，Thread调度是独立，但是BSD层可以感知Thread属于哪个Task，以及进程之间的父子关系</li>
+<li>XNU调度线程支持优先级，优先级如下：<br><img src="/../images/image-35.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>XNU以双向链表的方式组织thread，每个优先级都有自己的链表，链表的集合被称为run queue，每个cpu的core都维护自己的run queue<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">run_queue</span> &#123;</span><br><span class="hljs-type">int</span> highq; <span class="hljs-comment">/* highest runnable queue */</span><br><span class="hljs-type">int</span> bitmap[NRQBM]; <span class="hljs-comment">/* run queue bitmap array */</span><br><span class="hljs-type">int</span> count; <span class="hljs-comment">/* # of threads total */</span><br><span class="hljs-type">int</span> urgency; <span class="hljs-comment">/* level of preemption urgency */</span><br><span class="hljs-type">queue_head_t</span> queues[NRQS]; <span class="hljs-comment">/* one for each priority */</span><br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>Mach中的IPC，通过Port和Message<ul>
+<li>Port类似于UDP协议，但是不局限于数据传输，而是可以提供同步、发送通知</li>
+<li>Port使用message queue实现，一个port只能有一个sender，但是可以有多个receiver</li>
+<li>每个Port需要有对应的right才能访问，同一个task中的thread共享Port的right，但是父子task的right不会继承</li>
+<li>Port的right类型如下：<br>  <img src="/../images/image-37.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>一组Port被称为Port Set，他们共享message queue，Port使用32位整数表示，并且没有全局注册表</li>
+<li>在用户空间也是可以使用Mach IPC的，在一定程度上能代替system call，虽然最后也是通过system call调用</li>
 </ul>
-<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.neroxie.com/2019/07/12/KVC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">https://www.neroxie.com/2019/07/12/KVC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</a></p>
+</li>
+<li>Mach的Exception分为错误和正常，征程包含缺页、断点、系统调用（这在linux上被称为中断）<ul>
+<li>Exception类型如下<br>  <img src="/../images/image-38.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>当Exeption发生时，Mach会首先通过IPC Port将其发给引发Exception的thread，thread若无法处理交给Task，Task无法处理交给OS</li>
+<li>Thread、Task和OS都维护了一组action，每个action用于处理一个 Exception type，如下  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">exception_action</span> &#123;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ipc_port</span>* <span class="hljs-title">port</span>;</span> <span class="hljs-comment">/* exception port */</span><br>    <span class="hljs-type">thread_state_flavor_t</span> flavor; <span class="hljs-comment">/* state flavor to send */</span><br>    <span class="hljs-type">exception_behavior_t</span> behavior; <span class="hljs-comment">/* exception type to raise */</span><br>    <span class="hljs-type">boolean_t</span> privileged; <span class="hljs-comment">/* survives ipc_task_reset */</span><br>&#125;;<br></code></pre></td></tr></table></figure></li>
+<li>其中flavor和behavior可以确定expcetion message和handler，handler即处理函数，可以是catch_mach_exception_raise()等。当Exception被分发后，kernel会等待replay，若返回KERN_SUCCESS意味着Thread可以继续执行</li>
+<li>默认Thread的Exception Port是Null，默认由Task来处理。当进程使用Fork生成子进程时，子进程会继承父进程的Exception Port。XNU中的Unix的signal机制就是基于Mach的Exception机制来试下的</li>
+</ul>
+</li>
+<li>XNU的Kernel地址空间和用户的Task的地址空间是独立的，而Linux的kernel地址空间和用户进程地址空间是共享的（kernel占用1GB、用户进程占用3GB，优点是无需TLB寻址，缺点是kernel地址受限），XNU和Task都各自占用4GB</li>
+<li>XNU的虚拟内存数据结构使用了VM Map表示，VM Map代表进程的地址空间，以链表的方式串起来entry，entry在逻辑上是连续的，代表了一个region，而region则是可以合并和分割的，如下图所示<br><img src="/../images/image-39.png" srcset="/img/loading.gif" lazyload alt="Alt text"></li>
+<li>XNU源码：<br><a target="_blank" rel="noopener" href="https://opensource.apple.com/">https://opensource.apple.com/</a></li>
+</ul>
 
                 
               </div>
@@ -321,9 +343,7 @@
       
         <a href="/tags/iOS/" class="print-no-link">#iOS</a>
       
-        <a href="/tags/KVC/" class="print-no-link">#KVC</a>
-      
-        <a href="/tags/KVO/" class="print-no-link">#KVO</a>
+        <a href="/tags/Mach/" class="print-no-link">#Mach</a>
       
     </div>
   
@@ -335,8 +355,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>iOS KVO和KVC实现原理</div>
-      <div>https://nuko1993.github.io/2024/01/18/think-deep-in-ios-kvc-kvo/</div>
+      <div>Mach内核</div>
+      <div>https://nuko1993.github.io/2024/02/19/learn-about-mach-kernel/</div>
     </div>
     <div class="license-meta">
       
@@ -348,7 +368,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年1月18日</div>
+          <div>2024年2月19日</div>
         </div>
       
       
@@ -380,18 +400,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/02/19/learn-about-mach-kernel/" title="Mach内核">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Mach内核</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/01/17/think-deep-in-ios-runtime/" title="深入理解iOS Runtime">
-                        <span class="hidden-mobile">深入理解iOS Runtime</span>
+                      <a href="/2024/01/18/think-deep-in-ios-kvc-kvo/" title="iOS KVO和KVC实现原理">
+                        <span class="hidden-mobile">iOS KVO和KVC实现原理</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
