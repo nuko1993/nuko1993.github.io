@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="nuko">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言之前已经了解了dispatch_semaphore的底层实现，而dispatch_group的实现时基于前者。dispatch_group通常应用在控制并发任务的执行顺序。例如：有A、B、C三个并发任务，要求在A、B、C都执行完毕后后，才能刷新页面，此时就可以使用dispatch_group控制： 123456789101112131415161718192021222324252627282">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解GCD-Dispatch Group">
+<meta property="og:url" content="https://nuko1993.github.io/2024/02/29/think-deep-in-gcd-dispatch-group/index.html">
+<meta property="og:site_name" content="nuko的小站">
+<meta property="og:description" content="前言之前已经了解了dispatch_semaphore的底层实现，而dispatch_group的实现时基于前者。dispatch_group通常应用在控制并发任务的执行顺序。例如：有A、B、C三个并发任务，要求在A、B、C都执行完毕后后，才能刷新页面，此时就可以使用dispatch_group控制： 123456789101112131415161718192021222324252627282">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-50.png">
+<meta property="article:published_time" content="2024-02-29T13:07:54.000Z">
+<meta property="article:modified_time" content="2024-02-29T14:03:55.834Z">
+<meta property="article:author" content="nuko">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="GCD">
+<meta property="article:tag" content="Dispatch Group">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nuko1993.github.io/images/image-50.png">
+  
+  
+  
+  <title>深入理解GCD-Dispatch Group - nuko的小站</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"nuko1993.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>nuko的小站</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深入理解GCD-Dispatch Group"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-29 21:07" pubdate>
+          2024年2月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          84 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深入理解GCD-Dispatch Group</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前已经了解了dispatch_semaphore的底层实现，而dispatch_group的实现时基于前者。dispatch_group通常应用在控制并发任务的执行顺序。例如：有A、B、C三个并发任务，要求在A、B、C都执行完毕后后，才能刷新页面，此时就可以使用dispatch_group控制：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC">- (<span class="hljs-type">void</span>)viewDidLoad &#123;<br>    [<span class="hljs-variable language_">super</span> viewDidLoad];<br>    <br>    __block <span class="hljs-built_in">NSInteger</span> number = <span class="hljs-number">0</span>;<br>    <br>    <span class="hljs-comment">// 创建dispatch group</span><br>    dispatch_group_t group = dispatch_group_create();<br>    <br>    <span class="hljs-comment">//A耗时操作</span><br>    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="hljs-number">0</span>), ^&#123;<br>        sleep(<span class="hljs-number">3</span>);<br>        number += <span class="hljs-number">2222</span>;<br>    &#125;);<br>    <br>    <span class="hljs-comment">//B网络请求</span><br>    dispatch_group_enter(group);<br>    [<span class="hljs-keyword">self</span> sendRequestWithCompletion:^(<span class="hljs-type">id</span> response) &#123;<br>        number += [response integerValue];<br>        dispatch_group_leave(group);<br>    &#125;];<br>    <br>    <span class="hljs-comment">//C网络请求</span><br>    dispatch_group_enter(group);<br>    [<span class="hljs-keyword">self</span> sendRequestWithCompletion:^(<span class="hljs-type">id</span> response) &#123;<br>        number += [response integerValue];<br>        dispatch_group_leave(group);<br>    &#125;];<br>    <br>    <span class="hljs-comment">// 注意此处，只有当A、B、C任务执行完毕后，notify中的任务才能执行</span><br>    dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;<br>        <span class="hljs-built_in">NSLog</span>(<span class="hljs-string">@&quot;%zd&quot;</span>, number);<br>    &#125;);<br>&#125;<br><br>- (<span class="hljs-type">void</span>)sendRequestWithCompletion:(<span class="hljs-type">void</span> (^)(<span class="hljs-type">id</span> response))completion &#123;<br>    <span class="hljs-comment">//模拟一个网络请求</span><br>    <span class="hljs-built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">dispatch_async</span>(queue, ^&#123;<br>        sleep(<span class="hljs-number">2</span>);<br>        <span class="hljs-built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;<br>            <span class="hljs-keyword">if</span> (completion) completion(@<span class="hljs-number">1111</span>);<br>        &#125;);<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据上面的流程，看下dispatch_group相关的api的内部实现</p>
+<h2 id="dispatch-group-create"><a href="#dispatch-group-create" class="headerlink" title="dispatch_group_create"></a>dispatch_group_create</h2><p>创建dispatch_group</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">dispatch_group_t</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_create</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">return</span> (<span class="hljs-type">dispatch_group_t</span>)<span class="hljs-built_in">dispatch_semaphore_create</span>(LONG_MAX);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>欸？是不是很熟悉，dispatch_group的本质实际就是信号量！只不过这个信号量的初始值是LONG_MAX</p>
+<h2 id="dispatch-group-async"><a href="#dispatch-group-async" class="headerlink" title="dispatch_group_async"></a>dispatch_group_async</h2><p>该函数用于将异步任务与group关联起来，源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">void</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_async</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg, <span class="hljs-type">dispatch_queue_t</span> dq,</span></span><br><span class="hljs-params"><span class="hljs-function">		<span class="hljs-type">dispatch_block_t</span> db)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">dispatch_group_async_f</span>(dg, dq, _dispatch_Block_copy(db),<br>			_dispatch_call_block_and_release);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="dispatch-group-async-f"><a href="#dispatch-group-async-f" class="headerlink" title="dispatch_group_async_f"></a>dispatch_group_async_f</h2><p>该函数的源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">void</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_async_f</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg, <span class="hljs-type">dispatch_queue_t</span> dq, <span class="hljs-type">void</span> *ctxt,</span></span><br><span class="hljs-params"><span class="hljs-function">		<span class="hljs-type">dispatch_function_t</span> func)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-type">dispatch_continuation_t</span> dc;<br><br>	_dispatch_retain(dg);<br>	<span class="hljs-built_in">dispatch_group_enter</span>(dg);<br><br>	dc = <span class="hljs-built_in">fastpath</span>(_dispatch_continuation_alloc_cacheonly());<br>	<span class="hljs-keyword">if</span> (!dc) &#123;<br>		dc = _dispatch_continuation_alloc_from_heap();<br>	&#125;<br><br>	dc-&gt;do_vtable = (<span class="hljs-type">void</span> *)(DISPATCH_OBJ_ASYNC_BIT | DISPATCH_OBJ_GROUP_BIT);<br>	dc-&gt;dc_func = func;<br>	dc-&gt;dc_ctxt = ctxt;<br>	dc-&gt;dc_group = dg;<br><br>	<span class="hljs-comment">// No fastpath/slowpath hint because we simply don&#x27;t know</span><br>	<span class="hljs-keyword">if</span> (dq-&gt;dq_width != <span class="hljs-number">1</span> &amp;&amp; dq-&gt;do_targetq) &#123;<br>		<span class="hljs-keyword">return</span> _dispatch_async_f2(dq, dc);<br>	&#125;<br><br>	_dispatch_queue_push(dq, dc);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>从上面的代码中我们看出，dispatch_group_async_f和之前在说queue的时候的dispatch_async_f是类似的。只不过刚开始多了个dispatch_group_enter(dg)的操作。另外在封装dc时，vtable中多了个DISPATCH_OBJ_GROUP_BIT的标志位，说明该dc是group中的任务。既然有enter，那么也有leave，这个leave在哪呢？在我们之前了解queue的时候，在_dispatch_continuation_pop中，有这么一段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs C++">_dispatch_client_callout(dc-&gt;dc_ctxt, dc-&gt;dc_func);<br><span class="hljs-keyword">if</span> (dg) &#123;<br>	<span class="hljs-comment">//group需要进行调用dispatch_group_leave并释放信号</span><br>	<span class="hljs-built_in">dispatch_group_leave</span>(dg);<br>	_dispatch_release(dg);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>原来如此，如果任务是在group中，那么在执行完block之后，会调用leave。</p>
+<p>概括下dispatch_group_async_f的工作流程：</p>
+<ul>
+<li>调用dispatch_group_enter</li>
+<li>将任务和queue封装到dispatch_continuation_t，并将其加入到group的链表中</li>
+<li>_dispatch_continuation_pop会在执行时判断任务是否是group中的任务，若是，则执行dispatch_group_leave以释放信号量</li>
+</ul>
+<h2 id="dispatch-group-enter"><a href="#dispatch-group-enter" class="headerlink" title="dispatch_group_enter"></a>dispatch_group_enter</h2><p>实际就是dispatch_semaphore_wait的封装：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">void</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_enter</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-type">dispatch_semaphore_t</span> dsema = (<span class="hljs-type">dispatch_semaphore_t</span>)dg;<br><br>	(<span class="hljs-type">void</span>)<span class="hljs-built_in">dispatch_semaphore_wait</span>(dsema, DISPATCH_TIME_FOREVER);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="dispatch-group-leave"><a href="#dispatch-group-leave" class="headerlink" title="dispatch_group_leave"></a>dispatch_group_leave</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">void</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_leave</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-type">dispatch_semaphore_t</span> dsema = (<span class="hljs-type">dispatch_semaphore_t</span>)dg;<br>	<span class="hljs-built_in">dispatch_atomic_release_barrier</span>();<br>	<span class="hljs-type">long</span> value = <span class="hljs-built_in">dispatch_atomic_inc2o</span>(dsema, dsema_value);<span class="hljs-comment">//dsema_value原子性加1</span><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">slowpath</span>(value == LONG_MIN)) &#123;<span class="hljs-comment">//内存溢出，由于dispatch_group_leave在dispatch_group_enter之前调用</span><br>		<span class="hljs-built_in">DISPATCH_CLIENT_CRASH</span>(<span class="hljs-string">&quot;Unbalanced call to dispatch_group_leave()&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">slowpath</span>(value == dsema-&gt;dsema_orig)) &#123;<span class="hljs-comment">//表示所有任务已经完成，唤醒group</span><br>		(<span class="hljs-type">void</span>)_dispatch_group_wake(dsema);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>从上面的源码中可以看出，leave就是将信号量值原子加1，若value为LONG_MIN说明leave数量超过enter。如果信号值等于原始值，则说明所有的任务已完成，需要尝试唤醒notify中的任务。</p>
+<p>这里说明下enter和leave的关系</p>
+<ul>
+<li>enter&#x2F;leave需要成对使用，若enter超过leave，则notify不会被唤醒；若enter小于leave，则会崩溃</li>
+<li>enter必须在leave之前出现，否则崩溃</li>
+</ul>
+<h2 id="dispatch-group-notify"><a href="#dispatch-group-notify" class="headerlink" title="dispatch_group_notify"></a>dispatch_group_notify</h2><p>该函数用于我们指定在group中所有任务执行完毕后执行的操作，源码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">void</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_notify</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg, <span class="hljs-type">dispatch_queue_t</span> dq,</span></span><br><span class="hljs-params"><span class="hljs-function">		<span class="hljs-type">dispatch_block_t</span> db)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">dispatch_group_notify_f</span>(dg, dq, _dispatch_Block_copy(db),<br>			_dispatch_call_block_and_release);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>看具体实现</p>
+<h2 id="dispatch-group-notify-f"><a href="#dispatch-group-notify-f" class="headerlink" title="dispatch_group_notify_f"></a>dispatch_group_notify_f</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">void</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_notify_f</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg, <span class="hljs-type">dispatch_queue_t</span> dq, <span class="hljs-type">void</span> *ctxt,</span></span><br><span class="hljs-params"><span class="hljs-function">		<span class="hljs-type">void</span> (*func)(<span class="hljs-type">void</span> *))</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-type">dispatch_semaphore_t</span> dsema = (<span class="hljs-type">dispatch_semaphore_t</span>)dg;<br>	<span class="hljs-keyword">struct</span> <span class="hljs-title class_">dispatch_sema_notify_s</span> *dsn, *prev;<br><br>	<span class="hljs-comment">//封装dispatch_continuation_t结构体</span><br>	<span class="hljs-comment">// FIXME -- this should be updated to use the continuation cache</span><br>	<span class="hljs-keyword">while</span> (!(dsn = <span class="hljs-built_in">calloc</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">sizeof</span>(*dsn)))) &#123;<br>		<span class="hljs-built_in">sleep</span>(<span class="hljs-number">1</span>);<br>	&#125;<br><br>	dsn-&gt;dsn_queue = dq;<br>	dsn-&gt;dsn_ctxt = ctxt;<br>	dsn-&gt;dsn_func = func;<br>	_dispatch_retain(dq);<br>	<span class="hljs-built_in">dispatch_atomic_store_barrier</span>();<br>	<span class="hljs-comment">//将结构体放到链表尾部，如果链表为空同时设置链表头部节点并唤醒group</span><br>	prev = <span class="hljs-built_in">dispatch_atomic_xchg2o</span>(dsema, dsema_notify_tail, dsn);<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">fastpath</span>(prev)) &#123;<br>		prev-&gt;dsn_next = dsn;<br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>		_dispatch_retain(dg);<br>		(<span class="hljs-type">void</span>)<span class="hljs-built_in">dispatch_atomic_xchg2o</span>(dsema, dsema_notify_head, dsn);<br>		<span class="hljs-keyword">if</span> (dsema-&gt;dsema_value == dsema-&gt;dsema_orig) &#123;<span class="hljs-comment">//任务已经完成，唤醒group</span><br>			_dispatch_group_wake(dsema);<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>该函数的主要作用是将传入dc用notify的链表保存到起来（因为可以将多个dc加入到链表中）</p>
+<h2 id="dispatch-group-wake"><a href="#dispatch-group-wake" class="headerlink" title="_dispatch_group_wake"></a>_dispatch_group_wake</h2><p>该函数用于唤醒在notfiy链表上等待的任务</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-type">static</span> <span class="hljs-type">long</span><br>_dispatch_group_wake(<span class="hljs-type">dispatch_semaphore_t</span> dsema)<br>&#123;<br>	<span class="hljs-keyword">struct</span> <span class="hljs-title class_">dispatch_sema_notify_s</span> *next, *head, *tail = <span class="hljs-literal">NULL</span>;<br>	<span class="hljs-type">long</span> rval;<br>	<span class="hljs-comment">//将dsema的dsema_notify_head赋值为NULL，同时将之前的内容赋给head</span><br>	head = <span class="hljs-built_in">dispatch_atomic_xchg2o</span>(dsema, dsema_notify_head, <span class="hljs-literal">NULL</span>);<br>	<span class="hljs-keyword">if</span> (head) &#123;<br>		<span class="hljs-comment">// snapshot before anything is notified/woken &lt;rdar://problem/8554546&gt;</span><br>		<span class="hljs-comment">//将dsema的dsema_notify_tail赋值为NULL，同时将之前的内容赋给tail</span><br>		tail = <span class="hljs-built_in">dispatch_atomic_xchg2o</span>(dsema, dsema_notify_tail, <span class="hljs-literal">NULL</span>);<br>	&#125;<br>	<span class="hljs-comment">//将dsema的dsema_group_waiters设置为0，并返回原来的值</span><br>	rval = <span class="hljs-built_in">dispatch_atomic_xchg2o</span>(dsema, dsema_group_waiters, <span class="hljs-number">0</span>);<br>	<span class="hljs-keyword">if</span> (rval) &#123;<br>		<span class="hljs-comment">//循环调用semaphore_signal唤醒当初等待group的信号量，使得dispatch_group_wait函数返回。</span><br>		<span class="hljs-comment">// wake group waiters</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> USE_MACH_SEM</span><br>		_dispatch_semaphore_create_port(&amp;dsema-&gt;dsema_waiter_port);<br>		<span class="hljs-keyword">do</span> &#123;<br>			<span class="hljs-type">kern_return_t</span> kr = <span class="hljs-built_in">semaphore_signal</span>(dsema-&gt;dsema_waiter_port);<br>			<span class="hljs-built_in">DISPATCH_SEMAPHORE_VERIFY_KR</span>(kr);<br>		&#125; <span class="hljs-keyword">while</span> (--rval);<br><span class="hljs-meta">#<span class="hljs-keyword">elif</span> USE_POSIX_SEM</span><br>		<span class="hljs-keyword">do</span> &#123;<br>			<span class="hljs-type">int</span> ret = <span class="hljs-built_in">sem_post</span>(&amp;dsema-&gt;dsema_sem);<br>			<span class="hljs-built_in">DISPATCH_SEMAPHORE_VERIFY_RET</span>(ret);<br>		&#125; <span class="hljs-keyword">while</span> (--rval);<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>	&#125;<br>	<span class="hljs-keyword">if</span> (head) &#123;<br>		<span class="hljs-comment">//获取链表，依次调用dispatch_async_f异步执行在notify函数中的任务即Block。</span><br>		<span class="hljs-comment">// async group notify blocks</span><br>		<span class="hljs-keyword">do</span> &#123;<br>			<span class="hljs-built_in">dispatch_async_f</span>(head-&gt;dsn_queue, head-&gt;dsn_ctxt, head-&gt;dsn_func);<br>			_dispatch_release(head-&gt;dsn_queue);<br>			next = <span class="hljs-built_in">fastpath</span>(head-&gt;dsn_next);<br>			<span class="hljs-keyword">if</span> (!next &amp;&amp; head != tail) &#123;<br>				<span class="hljs-keyword">while</span> (!(next = <span class="hljs-built_in">fastpath</span>(head-&gt;dsn_next))) &#123;<br>					_dispatch_hardware_pause();<br>				&#125;<br>			&#125;<br>			<span class="hljs-built_in">free</span>(head);<br>		&#125; <span class="hljs-keyword">while</span> ((head = next));<br>		_dispatch_release(dsema);<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>该函数的主要作用：</p>
+<ul>
+<li>用内核函数semaphore_signal来唤醒等待group的信号量，使得dispatch_group_wait返回（因为有可能我们直接调用dispatch_group_wait来等待group中的任务执行完毕，而不是采用notify的方式）</li>
+<li>获取链表，依次调用dispatch_async_f执行在notify聊表中的任务（这是notify的方式）</li>
+</ul>
+<p>PS：除了可以使用dispathc_group_async，我们也可以手动调用enter和leave，实现更加灵活的控制。</p>
+<p>到这里，我们基本上对dispatch_group的工作机制有了更深的认识，一张图表示：<br><img src="/../images/image-50.png" srcset="/img/loading.gif" lazyload alt="Alt text"></p>
+<h2 id="dispatch-group-wait"><a href="#dispatch-group-wait" class="headerlink" title="dispatch_group_wait"></a>dispatch_group_wait</h2><p>这个函数是我们直接等待group执行完毕，不使用notify链表，其源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-function"><span class="hljs-type">long</span></span><br><span class="hljs-function"><span class="hljs-title">dispatch_group_wait</span><span class="hljs-params">(<span class="hljs-type">dispatch_group_t</span> dg, <span class="hljs-type">dispatch_time_t</span> timeout)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-type">dispatch_semaphore_t</span> dsema = (<span class="hljs-type">dispatch_semaphore_t</span>)dg;<br><br>	<span class="hljs-keyword">if</span> (dsema-&gt;dsema_value == dsema-&gt;dsema_orig) &#123;<span class="hljs-comment">//没有需要执行的任务</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (timeout == <span class="hljs-number">0</span>) &#123;<span class="hljs-comment">//返回超时</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> USE_MACH_SEM</span><br>		<span class="hljs-keyword">return</span> KERN_OPERATION_TIMED_OUT;<br><span class="hljs-meta">#<span class="hljs-keyword">elif</span> USE_POSIX_SEM</span><br>		errno = ETIMEDOUT;<br>		<span class="hljs-keyword">return</span> (<span class="hljs-number">-1</span>);<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>	&#125;<br>	<span class="hljs-keyword">return</span> _dispatch_group_wait_slow(dsema, timeout);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>具体逻辑看下面：</p>
+<h2 id="dispatch-group-wait-slow"><a href="#dispatch-group-wait-slow" class="headerlink" title="_dispatch_group_wait_slow"></a>_dispatch_group_wait_slow</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-type">static</span> <span class="hljs-type">long</span><br>_dispatch_group_wait_slow(<span class="hljs-type">dispatch_semaphore_t</span> dsema, <span class="hljs-type">dispatch_time_t</span> timeout)<br>&#123;<br>	<span class="hljs-type">long</span> orig;<br><br>again:<br>	<span class="hljs-comment">// check before we cause another signal to be sent by incrementing</span><br>	<span class="hljs-comment">// dsema-&gt;dsema_group_waiters</span><br>	<span class="hljs-keyword">if</span> (dsema-&gt;dsema_value == dsema-&gt;dsema_orig) &#123;<br>		<span class="hljs-keyword">return</span> _dispatch_group_wake(dsema);<br>	&#125;<br>	<span class="hljs-comment">// Mach semaphores appear to sometimes spuriously wake up. Therefore,</span><br>	<span class="hljs-comment">// we keep a parallel count of the number of times a Mach semaphore is</span><br>	<span class="hljs-comment">// signaled (6880961).</span><br>	(<span class="hljs-type">void</span>)<span class="hljs-built_in">dispatch_atomic_inc2o</span>(dsema, dsema_group_waiters);<br>	<span class="hljs-comment">// check the values again in case we need to wake any threads</span><br>	<span class="hljs-keyword">if</span> (dsema-&gt;dsema_value == dsema-&gt;dsema_orig) &#123;<br>		<span class="hljs-keyword">return</span> _dispatch_group_wake(dsema);<br>	&#125;<br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> USE_MACH_SEM</span><br>	<span class="hljs-type">mach_timespec_t</span> _timeout;<br>	<span class="hljs-type">kern_return_t</span> kr;<br><br>	_dispatch_semaphore_create_port(&amp;dsema-&gt;dsema_waiter_port);<br><br>	<span class="hljs-comment">// From xnu/osfmk/kern/sync_sema.c:</span><br>	<span class="hljs-comment">// wait_semaphore-&gt;count = -1; /* we don&#x27;t keep an actual count */</span><br>	<span class="hljs-comment">//</span><br>	<span class="hljs-comment">// The code above does not match the documentation, and that fact is</span><br>	<span class="hljs-comment">// not surprising. The documented semantics are clumsy to use in any</span><br>	<span class="hljs-comment">// practical way. The above hack effectively tricks the rest of the</span><br>	<span class="hljs-comment">// Mach semaphore logic to behave like the libdispatch algorithm.</span><br><br>	<span class="hljs-keyword">switch</span> (timeout) &#123;<br>	<span class="hljs-keyword">default</span>:<br>		<span class="hljs-keyword">do</span> &#123;<br>			<span class="hljs-type">uint64_t</span> nsec = _dispatch_timeout(timeout);<br>			_timeout.tv_sec = (<span class="hljs-built_in">typeof</span>(_timeout.tv_sec))(nsec / NSEC_PER_SEC);<br>			_timeout.tv_nsec = (<span class="hljs-built_in">typeof</span>(_timeout.tv_nsec))(nsec % NSEC_PER_SEC);<br>			kr = <span class="hljs-built_in">slowpath</span>(<span class="hljs-built_in">semaphore_timedwait</span>(dsema-&gt;dsema_waiter_port,<br>					_timeout));<br>		&#125; <span class="hljs-keyword">while</span> (kr == KERN_ABORTED);<br><br>		<span class="hljs-keyword">if</span> (kr != KERN_OPERATION_TIMED_OUT) &#123;<br>			<span class="hljs-built_in">DISPATCH_SEMAPHORE_VERIFY_KR</span>(kr);<br>			<span class="hljs-keyword">break</span>;<br>		&#125;<br>		<span class="hljs-comment">// Fall through and try to undo the earlier change to</span><br>		<span class="hljs-comment">// dsema-&gt;dsema_group_waiters</span><br>	<span class="hljs-keyword">case</span> DISPATCH_TIME_NOW:<br>		<span class="hljs-keyword">while</span> ((orig = dsema-&gt;dsema_group_waiters)) &#123;<br>			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">dispatch_atomic_cmpxchg2o</span>(dsema, dsema_group_waiters, orig,<br>					orig - <span class="hljs-number">1</span>)) &#123;<br>				<span class="hljs-keyword">return</span> KERN_OPERATION_TIMED_OUT;<br>			&#125;<br>		&#125;<br>		<span class="hljs-comment">// Another thread called semaphore_signal().</span><br>		<span class="hljs-comment">// Fall through and drain the wakeup.</span><br>	<span class="hljs-keyword">case</span> DISPATCH_TIME_FOREVER:<br>		<span class="hljs-keyword">do</span> &#123;<br>			kr = <span class="hljs-built_in">semaphore_wait</span>(dsema-&gt;dsema_waiter_port);<br>		&#125; <span class="hljs-keyword">while</span> (kr == KERN_ABORTED);<br>		<span class="hljs-built_in">DISPATCH_SEMAPHORE_VERIFY_KR</span>(kr);<br>		<span class="hljs-keyword">break</span>;<br>	&#125;<br><span class="hljs-meta">#<span class="hljs-keyword">elif</span> USE_POSIX_SEM</span><br><span class="hljs-comment">//这部分代码省略</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br>	<span class="hljs-keyword">goto</span> again;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看出，该函数和之前在信号量中说到的_dispatch_semaphore_wait_slow非常类似，都是基于mach内核的semaphore_wait。区别在于后者在等待结束后是return，直接继续执行后续逻辑，而group在被唤醒之后是调用_dispatch_group_wake来唤醒整个group（因为semaphore_signal一次只能唤醒一个任务，如果有多个任务，则需要执行多次才能全部唤醒，吐槽：感觉gcd实现的耦合性好高，没有设计思路自己理解真的很难理解他的设计初衷…）</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>dispatch_group实际就是个初始值为LONG_MAX的信号量，判断任务是否完成的条件是看信号量是否恢复为初始值</li>
+<li>enter和levave必须成对出现</li>
+<li>若enter超过leave，则不会被唤醒；若leave超过enter，则会崩溃</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/iOS/" class="print-no-link">#iOS</a>
+      
+        <a href="/tags/GCD/" class="print-no-link">#GCD</a>
+      
+        <a href="/tags/Dispatch-Group/" class="print-no-link">#Dispatch Group</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深入理解GCD-Dispatch Group</div>
+      <div>https://nuko1993.github.io/2024/02/29/think-deep-in-gcd-dispatch-group/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>nuko</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/28/think-deep-in-gcd-dispatch-seamphore/" title="深入理解GCD-Dispatch Semaphore">
+                        <span class="hidden-mobile">深入理解GCD-Dispatch Semaphore</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"rect":"opacity:0.7","log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
