@@ -224,6 +224,92 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/03/07/ios-oc-object-alloc/" target="_self">
+          iOS-对象生成和销毁
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/07/ios-oc-object-alloc/" target="_self">
+        <div>
+          前言在日常iOS开发中，频繁使用+alloc, -init来创建oc对象，我们知道，这个过程本质就是开辟内存空间，并且初始化的构成 +alloc源码： 1234567+ (id)alloc &#123;    return _objc_rootAlloc(self);&#125;id _objc_rootAlloc(Class cls) &#123;    return callAlloc(cls
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-07 21:15" pubdate>
+              2024-03-07
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/alloc/">#alloc</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/03/06/ios-runloop-innterview-question/" target="_self">
+          iOS-RunLoop面试题分析
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/06/ios-runloop-innterview-question/" target="_self">
+        <div>
+          前言在面试中，经常会问一些关于RunLoop的问题，需要做点总结，方便复习 RunLoop的作用 本质是个结构体，结构体的核心函数就是循环 没有事件时，RunLoop会进入休眠状态，有时间时，RunLoop调用对应的item去处理事件 在其他框架中的消息循环  RunLoop与线程之间的关系 一一对应，关系保存在全局字典和线程的tsd中 线程创建时，没有对应runloop，创建发生在第一次获取时，
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-06 21:25" pubdate>
+              2024-03-06
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/RunLoop/">#RunLoop</a>
+            
+              <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">#面试题</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/03/05/ios-runloop-review/" target="_self">
           iOS-RunLoop复习
         </a>
@@ -555,92 +641,6 @@
               <a href="/tags/OC/">#OC</a>
             
               <a href="/tags/Block/">#Block</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/02/19/learn-about-mach-kernel/" target="_self">
-          Mach内核
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/19/learn-about-mach-kernel/" target="_self">
-        <div>
-          前言年过完啦，继续总结，先过渡下，回忆下Mach内核吧~Mach内核是OS X是iOS的核心中的核心，提供了线程调度、内存管理、硬件管理、IPC等重要功能 OS X系统 初代Apple使用的Mac OS和现在的OS X是不同的，初代Mac OS最后一代是Mac OS 9，终结于2001年 现在的OS X基于NeXTSTEP OS，于2001年正式接任 app bundle额interface bu
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-02-19 20:52" pubdate>
-              2024-02-19
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Mach/">#Mach</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/18/think-deep-in-ios-kvc-kvo/" target="_self">
-          iOS KVO和KVC实现原理
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/18/think-deep-in-ios-kvc-kvo/" target="_self">
-        <div>
-          KVO在OC中，我们可以使用KVO机制来监听某个对象的属性值变化；swift中，一般使用属性的willSet和didSet达到类似效果，这里我们主要讨论OC的实现 KVO的使用12345678910111213// 为receiver增加一个observer，从而监听receiver的属性变化- (void)addObserver:(NSObject *)observer          for
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-18 21:39" pubdate>
-              2024-01-18
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/KVC/">#KVC</a>
-            
-              <a href="/tags/KVO/">#KVO</a>
             
           </div>
         

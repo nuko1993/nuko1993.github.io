@@ -224,6 +224,92 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/02/19/learn-about-mach-kernel/" target="_self">
+          Mach内核
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/19/learn-about-mach-kernel/" target="_self">
+        <div>
+          前言年过完啦，继续总结，先过渡下，回忆下Mach内核吧~Mach内核是OS X是iOS的核心中的核心，提供了线程调度、内存管理、硬件管理、IPC等重要功能 OS X系统 初代Apple使用的Mac OS和现在的OS X是不同的，初代Mac OS最后一代是Mac OS 9，终结于2001年 现在的OS X基于NeXTSTEP OS，于2001年正式接任 app bundle额interface bu
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-19 20:52" pubdate>
+              2024-02-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Mach/">#Mach</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/01/18/think-deep-in-ios-kvc-kvo/" target="_self">
+          iOS KVO和KVC实现原理
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/18/think-deep-in-ios-kvc-kvo/" target="_self">
+        <div>
+          KVO在OC中，我们可以使用KVO机制来监听某个对象的属性值变化；swift中，一般使用属性的willSet和didSet达到类似效果，这里我们主要讨论OC的实现 KVO的使用12345678910111213// 为receiver增加一个observer，从而监听receiver的属性变化- (void)addObserver:(NSObject *)observer          for
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-01-18 21:39" pubdate>
+              2024-01-18
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/KVC/">#KVC</a>
+            
+              <a href="/tags/KVO/">#KVO</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/01/17/think-deep-in-ios-runtime/" target="_self">
           深入理解iOS Runtime
         </a>
@@ -545,90 +631,6 @@
               <a href="/tags/iOS/">#iOS</a>
             
               <a href="/tags/Core-Animation/">#Core Animation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/08/ios-core-animation-p1/" target="_self">
-          iOS核心动画-Part1
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/08/ios-core-animation-p1/" target="_self">
-        <div>
-          前言Core Animation实际是由Layer Kit演变而来的，是一个强大的符渲染引擎，通过将独立的layer进行组合成树状结构进行渲染 Layer tree UIKit中，我们使用的是UIView，UIView可以处理事件、CG绘图和简单的动画，UIView之间组成了树状关系 CALayer和UIView类似，只是不支持处理事件 实际上，每个UIView都管理一个CALayer，反之则未必
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-08 21:22" pubdate>
-              2024-01-08
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Core-Animation/">#Core Animation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/06/oc-advance-gcd/" target="_self">
-          OC高级编程-GCD
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/06/oc-advance-gcd/" target="_self">
-        <div>
-          前言这部分主要介绍iOS 4引入了GCD多线程编程模型 GCD概要 概念：是执行异步任务的技术之一，基于线程，但是相比于直接使用线程更加安全和方便，开发者无需关心底层线程的创建 在gcd之前，cooca提供在NSObject类提供了performSelectorInBackground&#x2F;onMainThread来实现 多线程的问题：race condition、dead lock、线程爆
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-06 19:51" pubdate>
-              2024-01-06
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/OC/">#OC</a>
             
           </div>
         

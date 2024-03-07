@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://nuko1993.github.io/images/image-57.png">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-58.png">
 <meta property="article:published_time" content="2024-03-05T14:14:52.000Z">
-<meta property="article:modified_time" content="2024-03-05T15:14:46.343Z">
+<meta property="article:modified_time" content="2024-03-06T12:57:17.617Z">
 <meta property="article:author" content="nuko">
 <meta property="article:tag" content="iOS">
 <meta property="article:tag" content="RunLoop">
@@ -236,7 +236,7 @@
         
         
         
-          129 分钟
+          130 分钟
         
       </span>
     
@@ -381,6 +381,8 @@
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-built_in">dispatch_async</span>(dispatch_get_global_queue(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>), ^&#123;<br>    <span class="hljs-built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;<br>        <span class="hljs-built_in">NSLog</span>(<span class="hljs-string">@&quot;1111111&quot;</span>);<br>    &#125;);<br>&#125;);<br></code></pre></td></tr></table></figure>
 <p>函数调用栈：<br><img src="/../images/image-58.png" srcset="/img/loading.gif" lazyload alt="alt text"></p>
 </li>
+<li><p>PS：如果runloop执行时，gcd中存在未完成的任务，则runloop不会休眠，仍然是调用上述gcd的api执行，休眠和不休眠的调用栈是一样的！</p>
+</li>
 <li><p>runloop休眠<br>当runloop休眠，线程会进入等待被唤醒状态，使用mach_msg进入，等待被系统唤醒（其实就是线程状态切换）</p>
 </li>
 </ul>
@@ -454,6 +456,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2024/03/06/ios-runloop-innterview-question/" title="iOS-RunLoop面试题分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS-RunLoop面试题分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
