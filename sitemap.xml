@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://nuko1993.github.io/2024/03/07/ios-oc-arc/</loc>
+    
+    <lastmod>2024-03-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://nuko1993.github.io/2024/03/07/ios-oc-object-alloc/</loc>
     
     <lastmod>2024-03-07</lastmod>
@@ -555,6 +564,13 @@
   
   <url>
     <loc>https://nuko1993.github.io/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/</loc>
+    <lastmod>2024-03-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://nuko1993.github.io/tags/ARC/</loc>
     <lastmod>2024-03-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

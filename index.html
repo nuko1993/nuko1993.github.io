@@ -224,6 +224,48 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/03/07/ios-oc-arc/" target="_self">
+          iOS-自动引用计数
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/07/ios-oc-arc/" target="_self">
+        <div>
+          前言之前已经深入理解了ARC原理，本文再复习下并查漏补缺 引用计数的存储策略 若对象支持Tagged Pointer，则直接将指针值作为引用计数 若当前设备是64位且使用OC 2.0，那么某些对鞋会使用isa指针来存储引用计数 一般使用hash表管理引用计数  Tagged Pointer 从64bit开始，iOS引入了Tagged Pointer，来优化一些小对象的内存占用 在之前，每个oc对象
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-07 21:55" pubdate>
+              2024-03-07
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/ARC/">#ARC</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/03/07/ios-oc-object-alloc/" target="_self">
           iOS-对象生成和销毁
         </a>
@@ -597,50 +639,6 @@
               <a href="/tags/GCD/">#GCD</a>
             
               <a href="/tags/Dispatch-Queue/">#Dispatch Queue</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/02/20/think-about-oc-block-again/" target="_self">
-          再谈OC Block原理
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/20/think-about-oc-block-again/" target="_self">
-        <div>
-          前言之前已经学习过OC Block的底层原理，这里再次巩固下 Block的实质如下是一个基础的Block使用 12345678int main(int argc, const char * argv[]) &#123;    void (^testBlock)(void) = ^&#123;        printf(&quot;asddasd&quot;);    &#125;;    tes
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-02-20 21:20" pubdate>
-              2024-02-20
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/OC/">#OC</a>
-            
-              <a href="/tags/Block/">#Block</a>
             
           </div>
         
