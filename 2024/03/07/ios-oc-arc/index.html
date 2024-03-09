@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://nuko1993.github.io/images/image-62.png">
 <meta property="article:published_time" content="2024-03-07T13:55:16.000Z">
-<meta property="article:modified_time" content="2024-03-07T15:10:33.533Z">
+<meta property="article:modified_time" content="2024-03-09T05:35:44.342Z">
 <meta property="article:author" content="nuko">
 <meta property="article:tag" content="iOS">
 <meta property="article:tag" content="ARC">
@@ -383,7 +383,7 @@
 <li>引用计数减成0，则调用dealloc</li>
 </ul>
 </li>
-<li><h2 id="isa：-oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged-pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确-tagged-pointer并没有isa指针，本身就是用isa-t来表示-其他对象的isa还是类指针"><a href="#isa：-oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged-pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确-tagged-pointer并没有isa指针，本身就是用isa-t来表示-其他对象的isa还是类指针" class="headerlink" title="isa：  - oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确  - tagged pointer并没有isa指针，本身就是用isa_t来表示  - 其他对象的isa还是类指针"></a>isa：<br>  - oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确<br>  - tagged pointer并没有isa指针，本身就是用isa_t来表示<br>  - 其他对象的isa还是类指针</h2></li>
+<li><h2 id="isa-oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged-pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确-tagged-pointer并没有isa指针，本身就是用isa-t来表示-其他对象的isa还是类指针"><a href="#isa-oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged-pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确-tagged-pointer并没有isa指针，本身就是用isa-t来表示-其他对象的isa还是类指针" class="headerlink" title="isa  - oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确  - tagged pointer并没有isa指针，本身就是用isa_t来表示  - 其他对象的isa还是类指针"></a>isa<br>  - oc对象的isa是个union，可能是class，也可能是个struct，包含额外信息（当然也包含class指针，只不过需要通过shiftcls获取），由于oc对象也可能是个tagged pointer，其本事就是一串bit，bit中包含类信息，所以不能直接通过访问isa的方式获取类指针，而是需要通过系统api才正确<br>  - tagged pointer并没有isa指针，本身就是用isa_t来表示<br>  - 其他对象的isa还是类指针</h2></li>
 <li>对象的值是什么：<ul>
 <li>若是tagged pointer，则对象值是指针本身</li>
 <li>若不是，对象值是指针指向的内存区域</li>
