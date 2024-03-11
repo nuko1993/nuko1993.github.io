@@ -224,6 +224,90 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2023/12/30/swift-advance-concurrency/" target="_self">
+          Swift进阶-并发
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/30/swift-advance-concurrency/" target="_self">
+        <div>
+          前言Swift 5.5引入了async&#x2F;await特性，类似于go的go func。本质上是用户级线程，即在线程之上又抽象了自己的任务调度。 Async&#x2F;Await 之前，一般通过回调编写异步代码，缺点就是有可能导致深度嵌套，可读性差，并且，也无法使用Swift的错误处理和defer 每个await都有可能导致任务被suspend，在await的函数返回之后再执行之后的代码 S
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-30 16:26" pubdate>
+              2023-12-30
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Swift/">#Swift</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/12/28/swift-advance-collection-protocol/" target="_self">
+          Swift进阶-集合协议类型
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/28/swift-advance-collection-protocol/" target="_self">
+        <div>
+          前言Swift中的集合，如Array、Dictionary、Set是建立在Swift标准库提供的协议之上的。这部分主要介绍Sequence和Collection协议，他们的关系如图：  Sequence: 提供迭代方法，但是不保证能够支持多次迭代 Collection: 继承自Sequence，可以支持多次遍历，允许使用索引访问元素，通过SubSequence提供切片能力 MutableColle
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-28 22:08" pubdate>
+              2023-12-28
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Swift/">#Swift</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2023/12/26/swift-advance-protocol/" target="_self">
           Swift进阶-协议
         </a>
@@ -547,90 +631,6 @@
               <a href="/tags/iOS/">#iOS</a>
             
               <a href="/tags/Swift/">#Swift</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/12/19/swift-advance-built-in-collection/" target="_self">
-          Swift进阶-内建集合类型
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/19/swift-advance-built-in-collection/" target="_self">
-        <div>
-          前言虽然在工作中已经大量使用了Swift了，但总感觉自己停留在使用的层面。从今天开始，开始复习Swift Adavance，回忆、理解、总结。 本章重点介绍了Swift内建的几种集合类型，并讨论如何高效使用。 Array 值语义： Swift中所有的内建集合类型都具有值语义，数组当然也不例外。值语义的典型表现是当其被赋值给一个变量时，将发生复制。 使用let和var来表示数组是不可变数组or可变数
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-19 21:54" pubdate>
-              2023-12-19
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Swift/">#Swift</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/12/03/hexo-add-live2d/" target="_self">
-          Hexo添加Live2D看板娘
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/03/hexo-add-live2d/" target="_self">
-        <div>
-          前言我们在浏览别人的blog时，有时可以看到一个类似于下面这个萌萌哒的玩意，这其实是通过Live2D Widget插件实现的。方法也很简单，follow me~ Step1 安装live 2d插件注意，下面的指令都是在Hexo项目目录中使用的 1npm install --save hexo-helper-live2d  Step2 下载live 2d模型通过下载不同的live 2d模型，就可以获
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-12-03 23:22" pubdate>
-              2023-12-03
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hexo/">#Hexo</a>
-            
-              <a href="/tags/Live2D/">#Live2D</a>
             
           </div>
         

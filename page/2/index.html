@@ -224,6 +224,94 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/02/28/think-deep-in-gcd-dispatch-seamphore/" target="_self">
+          深入理解GCD-Dispatch Semaphore
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/28/think-deep-in-gcd-dispatch-seamphore/" target="_self">
+        <div>
+          前言之前我们了解了gcd queue的实现，现在来回忆下gcd中的信号量机制，gcd的group基本是围绕着seamphore实现的 信号量，使用都说烂了，可以就认为是共享资源的数量，数量大于0时，则可以获取到，直接执行，执行完后归还获取的数量，如有必要唤醒其他等待线程；数量小于0时，资源不够用要等待 gcd的信号量机制实际仍然是基于mach kernel的系统调用和mach port dispa
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-28 21:04" pubdate>
+              2024-02-28
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/GCD/">#GCD</a>
+            
+              <a href="/tags/Dispatch-Seamphore/">#Dispatch Seamphore</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/02/21/think-deep-in-gcd-dispatch-queue/" target="_self">
+          深入理解GCD-Dispatch Queue
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/21/think-deep-in-gcd-dispatch-queue/" target="_self">
+        <div>
+          前言之前在OC高级中，已经对GCD有了了解，这里通过深入libdispatch的源码进行理解，源码传送门：https://github.com/apple-oss-distributions/libdispatch/tags queue和线程之间的关系 之前我们知道，queue负责存放任务，queue中任务的具体执行最终需要线程执行 不同的queue中的任务可以放到同一个线程上，每个线程在执行qu
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-21 21:31" pubdate>
+              2024-02-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/GCD/">#GCD</a>
+            
+              <a href="/tags/Dispatch-Queue/">#Dispatch Queue</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/02/20/think-about-oc-block-again/" target="_self">
           再谈OC Block原理
         </a>
@@ -538,90 +626,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2024-01-13 16:02" pubdate>
               2024-01-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Core-Animation/">#Core Animation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/13/ios-core-animation-p4/" target="_self">
-          iOS核心动画-Part4
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/13/ios-core-animation-p4/" target="_self">
-        <div>
-          隐式动画 CALayer的属性改变默认是带有自动动画的，比如颜色切换时会发生过渡，这就是所谓的隐式动画 隐式动画的时长取决于事务，动画类型取决于layer关联的CAAction 事务会将属性变化打包并做动画，通过CATransaction进行管理 类似于autorelease pool，事务也是类似stack的设计，当前属性的改变会被添加到最内层的事务，也可以通过begin、commit手动入栈和
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-13 14:37" pubdate>
-              2024-01-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Core-Animation/">#Core Animation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/11/ios-core-animation-p3/" target="_self">
-          iOS核心动画-Part3
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/11/ios-core-animation-p3/" target="_self">
-        <div>
-          transform 仿射变换：即旋转、缩放、平移。仿射变换的特定是在变换前后，两条平行直线依然保持平行 可以使用CGAffineTransformMakeXXX函数来创建一个变换 UIView中的transform属性对应于CALayer的affineTransform属性 可以通过CGAffineTransformXXX属性来和另一个transform进行合成新的transform 也可以使用c
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-11 22:18" pubdate>
-              2024-01-11
             </time>
           </div>
         

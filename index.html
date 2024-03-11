@@ -224,6 +224,90 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/03/11/ios-oc-memory-size/" target="_self">
+          iOS-内存大小相关计算
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/11/ios-oc-memory-size/" target="_self">
+        <div>
+          前言本文主要介绍OC中计算类占用大小的方法 测试代码： 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859struct A &#123;&#125; TestA;struct AA &#123;    char a;&#125; T
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-11 22:59" pubdate>
+              2024-03-11
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Memory-Size/">#Memory Size</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/03/11/ios-oc-autorelasepool/" target="_self">
+          iOS-Autorelease Pool
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/11/ios-oc-autorelasepool/" target="_self">
+        <div>
+          前言之前已经学习过iOS中的autorelease pool，这里再回忆下。  在MRC中，手动调用[obj autorelease]来延迟对象向内存释放 在ARC中，调用auotorelease方法，会将其添加到最近的pool，当pool被销毁时才执行release  AutoreleasePool在main.m中一般是这样 12345int main(int argc, char * argv
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-11 21:10" pubdate>
+              2024-03-11
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Autorelase-Pool/">#Autorelase Pool</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/03/07/ios-oc-arc/" target="_self">
           iOS-自动引用计数
         </a>
@@ -551,94 +635,6 @@
               <a href="/tags/GCD/">#GCD</a>
             
               <a href="/tags/Dispatch-Group/">#Dispatch Group</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/02/28/think-deep-in-gcd-dispatch-seamphore/" target="_self">
-          深入理解GCD-Dispatch Semaphore
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/28/think-deep-in-gcd-dispatch-seamphore/" target="_self">
-        <div>
-          前言之前我们了解了gcd queue的实现，现在来回忆下gcd中的信号量机制，gcd的group基本是围绕着seamphore实现的 信号量，使用都说烂了，可以就认为是共享资源的数量，数量大于0时，则可以获取到，直接执行，执行完后归还获取的数量，如有必要唤醒其他等待线程；数量小于0时，资源不够用要等待 gcd的信号量机制实际仍然是基于mach kernel的系统调用和mach port dispa
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-02-28 21:04" pubdate>
-              2024-02-28
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/GCD/">#GCD</a>
-            
-              <a href="/tags/Dispatch-Seamphore/">#Dispatch Seamphore</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/02/21/think-deep-in-gcd-dispatch-queue/" target="_self">
-          深入理解GCD-Dispatch Queue
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/21/think-deep-in-gcd-dispatch-queue/" target="_self">
-        <div>
-          前言之前在OC高级中，已经对GCD有了了解，这里通过深入libdispatch的源码进行理解，源码传送门：https://github.com/apple-oss-distributions/libdispatch/tags queue和线程之间的关系 之前我们知道，queue负责存放任务，queue中任务的具体执行最终需要线程执行 不同的queue中的任务可以放到同一个线程上，每个线程在执行qu
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-02-21 21:31" pubdate>
-              2024-02-21
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/GCD/">#GCD</a>
-            
-              <a href="/tags/Dispatch-Queue/">#Dispatch Queue</a>
             
           </div>
         
