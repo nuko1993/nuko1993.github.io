@@ -1,0 +1,892 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="nuko">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言iOS的基础知识前面已经复习过一轮了，但要应对面试，还是需要记录下一些常问的问题。书本上的知识还是得用于实战，在总结中也能够加深自己的印象和认识~ OC基础在类中使用@property声明属性，发生了什么 增加实例变量 增加对应的setter&#x2F;getter方法声明 提供setter&#x2F;getter的默认实现  OC中的属性修饰符有哪些？ 所有权修饰符：控制对象的内存管理，st">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS面试题总结-p1">
+<meta property="og:url" content="https://nuko1993.github.io/2024/03/19/ios-interview-p1/index.html">
+<meta property="og:site_name" content="nuko的小站">
+<meta property="og:description" content="前言iOS的基础知识前面已经复习过一轮了，但要应对面试，还是需要记录下一些常问的问题。书本上的知识还是得用于实战，在总结中也能够加深自己的印象和认识~ OC基础在类中使用@property声明属性，发生了什么 增加实例变量 增加对应的setter&#x2F;getter方法声明 提供setter&#x2F;getter的默认实现  OC中的属性修饰符有哪些？ 所有权修饰符：控制对象的内存管理，st">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-19T13:21:23.000Z">
+<meta property="article:modified_time" content="2024-03-22T13:43:19.416Z">
+<meta property="article:author" content="nuko">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="面试总结">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>iOS面试题总结-p1 - nuko的小站</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"nuko1993.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":21854623,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+    <!-- 51.la Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('//js.users.51.la/21854623.js');
+      }
+    </script>
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>nuko的小站</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="iOS面试题总结-p1"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-19 21:21" pubdate>
+          2024年3月19日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          52 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">iOS面试题总结-p1</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>iOS的基础知识前面已经复习过一轮了，但要应对面试，还是需要记录下一些常问的问题。书本上的知识还是得用于实战，在总结中也能够加深自己的印象和认识~</p>
+<h1 id="OC基础"><a href="#OC基础" class="headerlink" title="OC基础"></a>OC基础</h1><h3 id="在类中使用-property声明属性，发生了什么"><a href="#在类中使用-property声明属性，发生了什么" class="headerlink" title="在类中使用@property声明属性，发生了什么"></a>在类中使用@property声明属性，发生了什么</h3><ul>
+<li>增加实例变量</li>
+<li>增加对应的setter&#x2F;getter方法声明</li>
+<li>提供setter&#x2F;getter的默认实现</li>
+</ul>
+<h3 id="OC中的属性修饰符有哪些？"><a href="#OC中的属性修饰符有哪些？" class="headerlink" title="OC中的属性修饰符有哪些？"></a>OC中的属性修饰符有哪些？</h3><ul>
+<li>所有权修饰符：控制对象的内存管理，strong、weak、assign、copy、unsafe_unretained</li>
+<li>读写修饰符：控制对象的读写权限，readonly、readwrite</li>
+<li>线程安全修饰符：控制对象线程安全访问，atomic、nonatomic</li>
+</ul>
+<h3 id="OC中都有哪些引用类型"><a href="#OC中都有哪些引用类型" class="headerlink" title="OC中都有哪些引用类型"></a>OC中都有哪些引用类型</h3><ul>
+<li>强引用：strong</li>
+<li>弱引用：weak</li>
+<li>不安全的弱引用：assign、unsafe_unretrained</li>
+</ul>
+<h3 id="weak、assign、unsafe-unretained的区别"><a href="#weak、assign、unsafe-unretained的区别" class="headerlink" title="weak、assign、unsafe_unretained的区别"></a>weak、assign、unsafe_unretained的区别</h3><ul>
+<li>weak、unsafe_unreatined用于引用类型，并且不会增加对象的引用计数，weak在对象释放后会自动设置为nil，但后者不会，可能造成野指针</li>
+<li>assign一般用于基本类型</li>
+</ul>
+<h3 id="ARC下声明属性，属性修饰符默认是什么"><a href="#ARC下声明属性，属性修饰符默认是什么" class="headerlink" title="ARC下声明属性，属性修饰符默认是什么"></a>ARC下声明属性，属性修饰符默认是什么</h3><ul>
+<li>基本类型：atomic、readwrite、assign</li>
+<li>引用类型：atomic、readwrite、strong</li>
+</ul>
+<h3 id="atomic和nonatomic的区别，使用atomic一定线程安全么"><a href="#atomic和nonatomic的区别，使用atomic一定线程安全么" class="headerlink" title="atomic和nonatomic的区别，使用atomic一定线程安全么"></a>atomic和nonatomic的区别，使用atomic一定线程安全么</h3><ul>
+<li>属性默认是atomic</li>
+<li>atomic更慢，nonatomic更快</li>
+<li>atomic修饰的属性，编译器会为生成的stter&#x2F;getter的原子性</li>
+<li>atomic只能保证setter&#x2F;getter的安全，但并不能保证其他业务逻辑的安全；例如一个atomic的int，开100个线程，每个线程先取出int，加1后，在赋值回去，那么显然这整个增加的操作并不是原子操作，A线程赋值的结果可能被B线程覆盖，因而最终的结果大概率不是100</li>
+</ul>
+<h3 id="简述ARC的原理"><a href="#简述ARC的原理" class="headerlink" title="简述ARC的原理"></a>简述ARC的原理</h3><ul>
+<li>ARC即自动引用计数，通过编译器和runtime的协作来跟踪对象的引用计数来管理对象的生命周期</li>
+<li>当使用强引用时，引用计数+1，强引用销毁时，引用计数-1，当引用计数为0时，对象自动被销毁释放内存</li>
+<li>编译期：编译器会在适当的地方插入retain、release</li>
+<li>runtime：使用引用计数表来管理每个对象的引用计数，当引用计数减到0时自动销毁对象</li>
+</ul>
+<h3 id="copy的语义，何时需要使用，注意点"><a href="#copy的语义，何时需要使用，注意点" class="headerlink" title="copy的语义，何时需要使用，注意点"></a>copy的语义，何时需要使用，注意点</h3><ul>
+<li>copy：当将变量赋值给copy属性时，会将属性对象创建一份副本，属性对象并不会随着原对象改变</li>
+<li>使用：当不想让属性和赋值的变量共享对象时，使用该修饰符</li>
+<li>注意点：copy属性生成的对象都是不可变的，考虑以下代码<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-keyword">@property</span> (<span class="hljs-keyword">nonatomic</span>, <span class="hljs-keyword">copy</span>) <span class="hljs-built_in">NSMutableString</span> *test;<br>[test appenendString:<span class="hljs-string">@&quot;xxx&quot;</span>]; <span class="hljs-comment">// 崩溃！！！</span><br></code></pre></td></tr></table></figure>
+<code>不仅是NSMutableString，其他的Mutable对象如Set、Array使用copy修饰时第一次被赋值时都会成为不可变的！</code></li>
+</ul>
+<h3 id="浅拷贝、深拷贝总结"><a href="#浅拷贝、深拷贝总结" class="headerlink" title="浅拷贝、深拷贝总结"></a>浅拷贝、深拷贝总结</h3><ul>
+<li>浅拷贝：仅拷贝指针，不产生新对象；深拷贝：创建新的对象</li>
+<li>copy方法：可能是浅拷贝，如NSString；也可能是深拷贝，如对Mutable容器；但是对象调用copy后一定会变为不可变对象（<code>所以copy属性修饰的属性首次被赋值后就称为了不可变对象，这点谨记，不然会崩溃！</code>）</li>
+<li>mutableCopy方法：一定是深拷贝，创建新的可变对象，不管原对象是否可变</li>
+<li>mutable对象调用copy方法：一定产生新对象，创建新的不可变对象</li>
+</ul>
+<h3 id="深拷贝是什么，直接调用copy方法是创建浅拷贝还是深拷贝"><a href="#深拷贝是什么，直接调用copy方法是创建浅拷贝还是深拷贝" class="headerlink" title="深拷贝是什么，直接调用copy方法是创建浅拷贝还是深拷贝"></a>深拷贝是什么，直接调用copy方法是创建浅拷贝还是深拷贝</h3><ul>
+<li>深拷贝：创建一个原对象的副本</li>
+<li>copy方法：可能是深拷贝（如Mutable容器），也可能是浅拷贝（如NSString），但是调用copy方法后一定会变为不可变对象</li>
+</ul>
+<h3 id="属性懒加载用在什么地方，需要注意什么"><a href="#属性懒加载用在什么地方，需要注意什么" class="headerlink" title="属性懒加载用在什么地方，需要注意什么"></a>属性懒加载用在什么地方，需要注意什么</h3><ul>
+<li>本质是重写getter，在用到时在进行加载，主要是节省内存空间</li>
+<li>注意：懒加载的属性在多线程下同时访问可能会造成重复加载，甚至可能崩溃，eg.<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC">- (<span class="hljs-built_in">NSObject</span> *)lazyObject &#123;<br>    <span class="hljs-keyword">if</span> (!_lazyObject) &#123;<br>        <span class="hljs-comment">// 多线程情况下，可能A、B线程都会访问到此处</span><br>        <span class="hljs-comment">// 若A先生成了_lazyObject并使用，B又生成了一个，同时赋值操作会造成A生成的对象被释放</span><br>        <span class="hljs-comment">// 若A使用了被释放的指针，则造成BAD ACCESS</span><br>        _lazyObject = [<span class="hljs-built_in">NSObject</span> new];<br>    &#125;<br>    <span class="hljs-keyword">return</span> _lazyObject;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Block的使用"><a href="#Block的使用" class="headerlink" title="Block的使用"></a>Block的使用</h3><ul>
+<li>block定义语法<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-comment">// 完整写法，其中返回类型参数列表可省略</span><br>^(返回类型)(参数列表) &#123;表达式&#125;<br></code></pre></td></tr></table></figure></li>
+<li>block类型声明<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-comment">// 和C函数指针类似 int (*ptr)(type..)</span><br><span class="hljs-comment">// 当作为函数参数时，省略变量名，并且可空修饰符只能使用_Nullable/_Nonnull</span><br>返回类型 (^变量名)(参数类型列表)<br></code></pre></td></tr></table></figure></li>
+<li>和typedef结合<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-keyword">typedef</span> 返回类型 (^类型名)(参数类型列表)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="Block的存储位置"><a href="#Block的存储位置" class="headerlink" title="Block的存储位置"></a>Block的存储位置</h3><ul>
+<li>栈: 一般使用外部变量的block</li>
+<li>堆: 对栈block使用copy</li>
+<li>global: 全局block或者不捕获变量外部变量的block</li>
+</ul>
+<h3 id="Block中捕获变量的方式"><a href="#Block中捕获变量的方式" class="headerlink" title="Block中捕获变量的方式"></a>Block中捕获变量的方式</h3><ul>
+<li>普通变量捕获：<ul>
+<li>局部普通变量：复制一份到block的struct中</li>
+<li>局部静态变量：复制其指针到block的struct中</li>
+<li>全局普通变量&amp;全局静态变量：不复制，而是直接使用</li>
+</ul>
+</li>
+<li>OC对象捕获：<ul>
+<li>连同对象指针及其所有权修饰符</li>
+<li>在block被copy和销毁时自动调用内置函数增加&#x2F;减少oc对象的引用计数</li>
+</ul>
+</li>
+</ul>
+<h3 id="Block中如何修改外部变量，原理是什么"><a href="#Block中如何修改外部变量，原理是什么" class="headerlink" title="Block中如何修改外部变量，原理是什么"></a>Block中如何修改外部变量，原理是什么</h3><ul>
+<li>使用__block，此时编译器会将__block翻译为struct，将外部变量封装在该struct中</li>
+<li>Block通过指针访问该struct，从而修改外部变量</li>
+<li>当block变量被复制时，__block也会连同被复制&#x2F;增加引用计数</li>
+</ul>
+<h3 id="Block中的循环引用问题-如何解决"><a href="#Block中的循环引用问题-如何解决" class="headerlink" title="Block中的循环引用问题&amp;如何解决"></a>Block中的循环引用问题&amp;如何解决</h3><ul>
+<li>循环引用：若self也有了了block，block通过self使用成员变量，此时就会形成循环引用，self和block引用计数永远不会为0，因而永远不会释放</li>
+<li>解决：block中使用weak self，避免循环引用；同时，为了防止在block在执行时self被释放，可以使用strong self再引用weak self，block执行完毕后自动释放</li>
+</ul>
+<h3 id="Category和类扩展的区别"><a href="#Category和类扩展的区别" class="headerlink" title="Category和类扩展的区别"></a>Category和类扩展的区别</h3><ul>
+<li>Category和类扩展写法上类似，Category的括号中有分类名，类扩展括号中没有</li>
+<li>Category中只能扩展方法，类扩展可以扩展属性</li>
+<li>类扩展更像是一种私有Category</li>
+<li>类扩展在编译期时就将属性和方法添加到了主类，但是Category是在dyld加载期间通过runtime将属性和方法添加到主类中的</li>
+</ul>
+<h3 id="Category中是否可以自定义属性-如何实现"><a href="#Category中是否可以自定义属性-如何实现" class="headerlink" title="Category中是否可以自定义属性&amp;如何实现"></a>Category中是否可以自定义属性&amp;如何实现</h3><ul>
+<li>Category中无法自定义属性，在其中声明属性编译器只会为其合成对应的getter&#x2F;setter声明（不是实现，实现也需要自己实现）</li>
+<li>如果需要在Category中实现属性的语义，需要借助于关联对象，通过objc_setAssociatedObject和objc_setAssociatedObject</li>
+</ul>
+<h3 id="Category中关联对象的实现"><a href="#Category中关联对象的实现" class="headerlink" title="Category中关联对象的实现"></a>Category中关联对象的实现</h3><ul>
+<li>实际上就是runtime提供了map容器进行关联</li>
+<li>AssocaitionManager-&gt;以类为key-&gt;类的关联map-&gt;以对象为key-&gt;对象关联map-&gt;以自定义key-&gt;该对象关联值</li>
+</ul>
+<h3 id="UICollectionView和UITableView的Cell重用机制"><a href="#UICollectionView和UITableView的Cell重用机制" class="headerlink" title="UICollectionView和UITableView的Cell重用机制"></a>UICollectionView和UITableView的Cell重用机制</h3><ul>
+<li>实现：只创建屏幕中可显示的cell的最大数量，当cell从屏幕中消失时，将其放回到复用池，若需要展示新cell，则优先从复用池获取，获取不到则创建新cell</li>
+<li>优点：实现数据和UI的分离，不会为每个item新建一个cell，减少内存开销</li>
+</ul>
+<h3 id="如何自定义UICollectionView的布局"><a href="#如何自定义UICollectionView的布局" class="headerlink" title="如何自定义UICollectionView的布局"></a>如何自定义UICollectionView的布局</h3><ul>
+<li>创建UICollectionViewFlowLayout，设置其属性，如item大小、item间距、行间距、section间距等等</li>
+</ul>
+<h3 id="VC的生命周期及其作用"><a href="#VC的生命周期及其作用" class="headerlink" title="VC的生命周期及其作用"></a>VC的生命周期及其作用</h3><ul>
+<li>init: 初始化</li>
+<li>loadView：当首次使用vc的view时触发，此处可自定义vc的view</li>
+<li>viewDidLoad：loadView之后触发，一般此处可添加子view、初始化数据</li>
+<li>viewWillAppear：vc的view即将展现，此处可做视图展示前的处理</li>
+<li>viewWillLayoutSubViews：将要布局子view，显示前对子view布局</li>
+<li>viewDidLayoutSubViews：完成布局子view</li>
+<li>viewDidAppear: vc的view已经展示</li>
+<li>viewWillDisappaer：vc的view即将消失</li>
+<li>viewDidDisappear：vc的view已经消失</li>
+<li>dealloc：销毁</li>
+</ul>
+<h3 id="屏幕适配如何做，1pt和px的换算"><a href="#屏幕适配如何做，1pt和px的换算" class="headerlink" title="屏幕适配如何做，1pt和px的换算"></a>屏幕适配如何做，1pt和px的换算</h3><ul>
+<li>iOS屏幕适配<ul>
+<li>尺寸：以标准屏(414x896)为标准，不同屏幕的宽度&#x2F;414作为系数进行尺寸缩放</li>
+<li>自动布局：使用AutoLayout自动布局</li>
+<li>资源适配：使用2x和3x图以在不同屏幕展示</li>
+<li>安全区：使用系统API可以获得安全区域高度、状态栏高度</li>
+</ul>
+</li>
+<li>不同机型上，1pt和像素换算关系不同，可能是3px，也可能是2px</li>
+</ul>
+<h3 id="UITableView实现一个list，至少需要实现几个方法"><a href="#UITableView实现一个list，至少需要实现几个方法" class="headerlink" title="UITableView实现一个list，至少需要实现几个方法"></a>UITableView实现一个list，至少需要实现几个方法</h3><ul>
+<li>两个，需要实现numberOfRowsInSection和cellForRowAtIndexPath</li>
+</ul>
+<h3 id="iOS中多行文本如何处理"><a href="#iOS中多行文本如何处理" class="headerlink" title="iOS中多行文本如何处理"></a>iOS中多行文本如何处理</h3><ul>
+<li>使用UILabel<ul>
+<li>numberOfLines:0表示自动换行</li>
+<li>lineBreakMode: 表示如何换行</li>
+</ul>
+</li>
+<li>使用UITextView：可以展示任意数量文本并支持滚动</li>
+</ul>
+<h3 id="UIView、UIViewController的父类是什么"><a href="#UIView、UIViewController的父类是什么" class="headerlink" title="UIView、UIViewController的父类是什么"></a>UIView、UIViewController的父类是什么</h3><ul>
+<li>父类都是UIResponder</li>
+</ul>
+<h3 id="触摸屏幕后，系统是如何将事件传递给Responder的"><a href="#触摸屏幕后，系统是如何将事件传递给Responder的" class="headerlink" title="触摸屏幕后，系统是如何将事件传递给Responder的"></a>触摸屏幕后，系统是如何将事件传递给Responder的</h3><ul>
+<li>用户触摸屏幕-&gt;OS捕获生成事件-&gt;通过mach port传递给app进程并唤醒runloop-&gt;调用source1处理-&gt;source0分发-&gt;UIApplication-&gt;UIWindow，调用hitTest寻找响应view</li>
+<li>hitTest：返回自身区域内的响应的view，递归思想<ul>
+<li>内部调用pointInside判断是否落在自己<ul>
+<li>若是，判断是否有子view<ul>
+<li>有子view，调用子view的hitTest并返回第一个找到的view</li>
+<li>无子view，说明自身时响应者</li>
+</ul>
+</li>
+<li>若否，返回nil，代表自身区域内没有响应者</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>找到hitTestView后：<ul>
+<li>若绑定了GestureRecognizer：开始识别，识别成功调用hitTestView的cancel事件，此后hitTestView不会再收到事件</li>
+<li>hitTestView执行对应的UITouch回调（如touchesBegan），若不响应UITouch回调，则沿着Responder Chain向上传递事件，直到有Responder或者传到UIApplication被消耗掉</li>
+</ul>
+</li>
+</ul>
+<h3 id="Responder-Chain的机制"><a href="#Responder-Chain的机制" class="headerlink" title="Responder Chain的机制"></a>Responder Chain的机制</h3><h3 id="如何扩大一个UIView的响应区域"><a href="#如何扩大一个UIView的响应区域" class="headerlink" title="如何扩大一个UIView的响应区域"></a>如何扩大一个UIView的响应区域</h3><ul>
+<li>重写UIView的pointInside方法，强行返回true</li>
+</ul>
+<h3 id="frame和bounds的区别，分别用于什么场景"><a href="#frame和bounds的区别，分别用于什么场景" class="headerlink" title="frame和bounds的区别，分别用于什么场景"></a>frame和bounds的区别，分别用于什么场景</h3><ul>
+<li>frame：<ul>
+<li>子view相对于<code>父view坐标系</code>的位置和大小</li>
+<li>用于添加子view到父view，调整子view在父view中的位置和大小</li>
+</ul>
+</li>
+<li>bounds：<ul>
+<li>view相对于<code>自身坐标系</code>的位置和大小</li>
+<li>修改view中的子view的位置时，可以通过修改bounds的原点，使得view中的内容整体移动。比如修改UITableView的contentInset，本质也是修改了bounds的origin</li>
+</ul>
+</li>
+<li>当发生旋转时，frame和bounds的size可能不同</li>
+</ul>
+<h3 id="如何检查页面的流畅度-优化方式"><a href="#如何检查页面的流畅度-优化方式" class="headerlink" title="如何检查页面的流畅度&amp;优化方式"></a>如何检查页面的流畅度&amp;优化方式</h3><ul>
+<li>使用Instruments中的CoreAnimation工具，可以查看帧率</li>
+<li>使用Color Blended Layers检测哪些发生了图层混合，混合处会使用红色标记</li>
+<li>优化：减少图层混合和离屏渲染</li>
+</ul>
+<h3 id="图层混合是什么-如何优化"><a href="#图层混合是什么-如何优化" class="headerlink" title="图层混合是什么&amp;如何优化"></a>图层混合是什么&amp;如何优化</h3><ul>
+<li>图层混合：当存在大量重叠的透明layer，gpu就需要消耗更多的资源去计算混合，对于每个透明像素都需要绘制一次；而gpu每一帧的像素绘制次数是存在限制的，即填充率存在限制，所以需要尽量减少这种过度绘制</li>
+<li>优化：<ul>
+<li>设置不透明的色值</li>
+<li>避免透明图片</li>
+<li>设置opaque为YES</li>
+</ul>
+</li>
+</ul>
+<h3 id="离屏渲染是什么，如何优化"><a href="#离屏渲染是什么，如何优化" class="headerlink" title="离屏渲染是什么，如何优化"></a>离屏渲染是什么，如何优化</h3><ul>
+<li>离屏渲染：当不能直接在当前屏幕的framebuffer上绘制时，就需要开辟额外的framebuffer进行绘制，增加开销</li>
+<li>圆角、图层蒙版、阴影均会触发、drawRect、shouldRasterize&#x3D;YES</li>
+<li>优化：<ul>
+<li>圆角矩形可以优化为CAShapeLayer+Path或圆角背景图片</li>
+<li>shaodow可以优化为使用shadowPath</li>
+</ul>
+</li>
+</ul>
+<h3 id="静态库和动态库的区别，framework是动态库还是静态库"><a href="#静态库和动态库的区别，framework是动态库还是静态库" class="headerlink" title="静态库和动态库的区别，framework是动态库还是静态库"></a>静态库和动态库的区别，framework是动态库还是静态库</h3><ul>
+<li>静态库：链接时二进制被复制到可执行文件中，如有多个可执行文件，就会复制多次</li>
+<li>动态库：链接时不复制，程序运行时由加载器加载到内存，供程序调用，多个二进制文件可以共享</li>
+<li>库的形式：<ul>
+<li>静态库：.a和framework</li>
+<li>动态库:.dylib和framework</li>
+<li>从iOS 8开始，Apple允许使用动态framework，这允许在不同的extension之间共享代码</li>
+</ul>
+</li>
+</ul>
+<h3 id="UIImage的加载方法"><a href="#UIImage的加载方法" class="headerlink" title="UIImage的加载方法"></a>UIImage的加载方法</h3><ul>
+<li>imageNamed：在应用bundle中查找图片，找到后会缓存到内存</li>
+<li>imageWidthContentsOfFile：在文件中查找，不会缓存，一旦销毁就释放内存</li>
+</ul>
+<h3 id="OC-Runtime的消息转发机制"><a href="#OC-Runtime的消息转发机制" class="headerlink" title="OC Runtime的消息转发机制"></a>OC Runtime的消息转发机制</h3><ul>
+<li>方法调用会被转换为objc_msgSend方法</li>
+<li>方法派发：<ul>
+<li>查找类实例方法-&gt;查找父类实例方法-&gt;进入动态方法解析</li>
+<li>动态方法解析：resolveIntanceMethod决定是否动态添加方法，并调用，返回NO则next-&gt;forwardingTargetForSelector决定是否转发给别的对象，返回对象，转发给别的对象；返回nil，则next-&gt;methodSignatureForSelector,返回nil，无法处理，否则返回签名进行next（该方法和next紧密相关）-&gt;forwardInvocation: 可以根据传来的invocation决定调用invokeWithTarget来修改调用对象或者其他自定义逻辑或者调用doesNotRecognizeSelctor</li>
+<li>forwardingTargetForSelector和forwardInvocation区别：后者更加灵活，能够通过invocation获取到参数信息；前者只能返回要转发的对象，但后者可以根据invocation实现自定义的转发逻辑</li>
+</ul>
+</li>
+</ul>
+<h3 id="Apple-APNS的原理"><a href="#Apple-APNS的原理" class="headerlink" title="Apple APNS的原理"></a>Apple APNS的原理</h3><h3 id="iOS中数据持久化方案有几种"><a href="#iOS中数据持久化方案有几种" class="headerlink" title="iOS中数据持久化方案有几种"></a>iOS中数据持久化方案有几种</h3><h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO:"></a>TODO:</h2><ul>
+<li>atomic的语义，真的能保证线程安全么</li>
+<li>method\invocation\signature使用</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/iOS/" class="print-no-link">#iOS</a>
+      
+        <a href="/tags/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="print-no-link">#面试总结</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>iOS面试题总结-p1</div>
+      <div>https://nuko1993.github.io/2024/03/19/ios-interview-p1/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>nuko</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/03/22/ios-responder-chain/" title="iOS-响应者链">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">iOS-响应者链</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/03/11/ios-oc-memory-size/" title="iOS-内存大小相关计算">
+                        <span class="hidden-mobile">iOS-内存大小相关计算</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"rect":"opacity:0.7","log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

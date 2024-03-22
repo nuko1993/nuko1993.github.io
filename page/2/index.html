@@ -258,6 +258,92 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/03/04/oc-runtime-message-super/" target="_self">
+          OC Runtime-消息机制和super关键字
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/04/oc-runtime-message-super/" target="_self">
+        <div>
+          前言本文主要回忆下OC Runtime中消息机制和super关键字的实现 消息发送我们知道，在OC中调用方法，不是直接调用函数地址，而是通过Runtime的消息机制，在调用[object method]时，编译器会将其转换为对objc_msgSend(id self, SEL op, …)的函数调用具体的消息发送机制，可以翻看之前的深入理解OC Runtime 关于super关键字直接看下面的问题
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-04 21:18" pubdate>
+              2024-03-04
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Runtime/">#Runtime</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/02/29/think-deep-in-gcd-dispatch-group/" target="_self">
+          深入理解GCD-Dispatch Group
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/29/think-deep-in-gcd-dispatch-group/" target="_self">
+        <div>
+          前言之前已经了解了dispatch_semaphore的底层实现，而dispatch_group的实现时基于前者。dispatch_group通常应用在控制并发任务的执行顺序。例如：有A、B、C三个并发任务，要求在A、B、C都执行完毕后后，才能刷新页面，此时就可以使用dispatch_group控制： 123456789101112131415161718192021222324252627282
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-29 21:07" pubdate>
+              2024-02-29
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/GCD/">#GCD</a>
+            
+              <a href="/tags/Dispatch-Group/">#Dispatch Group</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/02/28/think-deep-in-gcd-dispatch-seamphore/" target="_self">
           深入理解GCD-Dispatch Semaphore
         </a>
@@ -575,90 +661,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2024-01-13 17:27" pubdate>
-              2024-01-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Core-Animation/">#Core Animation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/13/ios-core-animation-p6/" target="_self">
-          iOS核心动画-Part6
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/13/ios-core-animation-p6/" target="_self">
-        <div>
-          基于定时器的动画 NSTimer：普通的计时器，但是存在不准确、受到的runloop事件处理耗时的影响，我们可以修改为使用CADisplayLink和基于真实时间流逝进行计算 CADisplayLink：基于屏幕刷新进行回调，CADisplayLink因为是基于帧的，如果发生丢帧，那么丢帧时将不会调用回调，但是NSTimer总是会执行，即使延迟 计算帧耗时：在回调时记录当前时间，和上次时间进行对比
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-13 16:44" pubdate>
-              2024-01-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Core-Animation/">#Core Animation</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/01/13/ios-core-animation-p5/" target="_self">
-          iOS核心动画-Part5
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/01/13/ios-core-animation-p5/" target="_self">
-        <div>
-          layer时间 CAMediaTiming：该协议定义了在一段时间内用于控制时间流逝的属性，如duration、repatCount，CALayer和CAAnimation都实现了该协议，所以时间可以被任意基于layer或者animation控制 duration实际是动画重复一次的事件，还有repeatCount控制重复次数 repatDuration:指定动画重复指定时长 autorevere
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-01-13 16:02" pubdate>
               2024-01-13
             </time>
           </div>

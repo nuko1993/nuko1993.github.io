@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="nuko">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言之前在学习Android的事后，学习过Android的触摸事件分发机制以及拦截，iOS中也存在类似的机制，之前也学习总结过，这里再回忆下 触摸事件的生命周期 用户在屏幕上触摸之后，事件就产生了，事件被分发到App的过程如下图所示 系统响应阶段： 手指触摸屏幕，屏幕感应到触碰，将事件交给IOKit IOKit将触摸事件封装给IOHIDEvent，并通过mach port传递给SpringBoar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-响应者链">
+<meta property="og:url" content="https://nuko1993.github.io/2024/03/22/ios-responder-chain/index.html">
+<meta property="og:site_name" content="nuko的小站">
+<meta property="og:description" content="前言之前在学习Android的事后，学习过Android的触摸事件分发机制以及拦截，iOS中也存在类似的机制，之前也学习总结过，这里再回忆下 触摸事件的生命周期 用户在屏幕上触摸之后，事件就产生了，事件被分发到App的过程如下图所示 系统响应阶段： 手指触摸屏幕，屏幕感应到触碰，将事件交给IOKit IOKit将触摸事件封装给IOHIDEvent，并通过mach port传递给SpringBoar">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-72.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-73.png">
+<meta property="article:published_time" content="2024-03-22T13:44:03.000Z">
+<meta property="article:modified_time" content="2024-03-22T15:41:53.329Z">
+<meta property="article:author" content="nuko">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Responder Chain">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nuko1993.github.io/images/image-72.png">
+  
+  
+  
+  <title>iOS-响应者链 - nuko的小站</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"nuko1993.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":21854623,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+    <!-- 51.la Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('//js.users.51.la/21854623.js');
+      }
+    </script>
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>nuko的小站</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="iOS-响应者链"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-22 21:44" pubdate>
+          2024年3月22日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">iOS-响应者链</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前在学习Android的事后，学习过Android的触摸事件分发机制以及拦截，iOS中也存在类似的机制，之前也学习总结过，这里再回忆下</p>
+<h1 id="触摸事件的生命周期"><a href="#触摸事件的生命周期" class="headerlink" title="触摸事件的生命周期"></a>触摸事件的生命周期</h1><ul>
+<li>用户在屏幕上触摸之后，事件就产生了，事件被分发到App的过程如下图所示<br><img src="/../images/image-72.png" srcset="/img/loading.gif" lazyload alt="alt text"></li>
+<li>系统响应阶段：<ul>
+<li>手指触摸屏幕，屏幕感应到触碰，将事件交给IOKit</li>
+<li>IOKit将触摸事件封装给IOHIDEvent，并通过mach port传递给SpringBoard</li>
+<li>SpringBoard接受到触摸事件，通过mach port将事件传递给App进程</li>
+<li>App进程被唤醒，使用source1回调处理</li>
+</ul>
+</li>
+<li>App响应阶段：<ul>
+<li>source1回调触发source0回调，将接受到的IOHIDEvent封装为UIEvent，App开始处理</li>
+<li>source0回调将触摸事件添加到UIApplcation的事件队列，事件出队后，UIApplication开始寻找最佳Responder，又称为hit testing</li>
+<li>找到最佳Responder之后，根据Responder Chain机制处理和传递事件。持剑可以被Responder消耗，或者被Gesture、Target-Action机制消耗</li>
+<li>事件最终要么被处理，要么最终抛给UIApplication被吃掉，然后等待新的事件，开始下一个循环</li>
+</ul>
+</li>
+</ul>
+<h1 id="触摸、事件、Responder"><a href="#触摸、事件、Responder" class="headerlink" title="触摸、事件、Responder"></a>触摸、事件、Responder</h1><ul>
+<li>UITouch：<ul>
+<li>每个UITouch都代表一个手指的触摸，多指触控生成多个UITouch</li>
+<li>系统会根据触摸位置、触摸时序决定生成一个或多个UITouch</li>
+<li>每个UITouch会记录触摸的信息，包括事件、位置、阶段、所处view、窗口</li>
+</ul>
+</li>
+<li>UIEvent：<ul>
+<li>触摸的目的是生成对应事件UIEvent，如单击、双击</li>
+<li>UIEvent包含了触发该时间的所有UITouch，通过allTouches获取</li>
+</ul>
+</li>
+<li>UIResponder：<ul>
+<li>所有能处理事件的对象都是UIResponder</li>
+<li>包括UIView、UIViewController、UIApplication、AppDelegate</li>
+<li>Responder之所以能响应事件，因为其提供了4个处理事件的方法  <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC"><span class="hljs-comment">//手指触碰屏幕，触摸开始</span><br>- (<span class="hljs-type">void</span>)touchesBegan:(<span class="hljs-built_in">NSSet</span>&lt;<span class="hljs-built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br><span class="hljs-comment">//手指在屏幕上移动</span><br>- (<span class="hljs-type">void</span>)touchesMoved:(<span class="hljs-built_in">NSSet</span>&lt;<span class="hljs-built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br><span class="hljs-comment">//手指离开屏幕，触摸结束</span><br>- (<span class="hljs-type">void</span>)touchesEnded:(<span class="hljs-built_in">NSSet</span>&lt;<span class="hljs-built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br><span class="hljs-comment">//触摸结束前，某个系统事件中断了触摸，例如电话呼入</span><br>- (<span class="hljs-type">void</span>)touchesCancelled:(<span class="hljs-built_in">NSSet</span>&lt;<span class="hljs-built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h1 id="寻找事件的最佳响应者（Hit-Testing）"><a href="#寻找事件的最佳响应者（Hit-Testing）" class="headerlink" title="寻找事件的最佳响应者（Hit Testing）"></a>寻找事件的最佳响应者（Hit Testing）</h1><ul>
+<li>事件的传递过程：当App收到事件后，按照UIWindow-&gt;UIApplication-&gt;View-&gt;Sub View的过程传递</li>
+<li>实际上，这只是寻找最佳Responder的方式，一旦找到了最佳Responder，则后续事件将直接分发到最佳Responder，而不用按照上面的链路传递</li>
+<li>以下几种状态的View无法响应事件：<ul>
+<li>不允许交互：userInteractionEnabled &#x3D; NO</li>
+<li>隐藏：hidden &#x3D; YES</li>
+<li>透明度：alpha &lt; 0.01</li>
+</ul>
+</li>
+<li>通过hitTest:withEvent+pointInside来找到最佳Responder<ul>
+<li>hitTest:withEvent：含义是寻找本view里的最佳响应者，若返回nil代表没有，返回self代表自身</li>
+<li>pointInside：含义是判断点是否落在自身，不在自身范围内则hitTest:withEvent直接返回nil</li>
+<li>view如果包含子view，则会遍历子view，调用hitTest:withEvent：，返回第一个不为nil的view</li>
+</ul>
+</li>
+<li>pointInside的妙用&#x2F;hit test的拦截：<ul>
+<li>常见问题1:如何扩大按钮热区：我们主要重写pointInside，让其在满足扩大范围内返回true即可</li>
+<li>常见问题2：Button超出了父view的范围，由于父view在执行pointInside时判断不在自身范围内，因而也不会将事件传递给Button，导致Button无法响应；解决方式是重写父view的pointInside，让其在Button范围时返回true</li>
+<li>hitTest的链路是自顶向下进行</li>
+</ul>
+</li>
+</ul>
+<h1 id="事件的响应以及在Responder-Chain中的传递"><a href="#事件的响应以及在Responder-Chain中的传递" class="headerlink" title="事件的响应以及在Responder Chain中的传递"></a>事件的响应以及在Responder Chain中的传递</h1><ul>
+<li>在经历hit test之后，UIApplication已经知道事件的最佳Responder，后续直接将事件传递给最佳Responder，传递过程为UIApplication-&gt;UIWindow-&gt;最佳Responder</li>
+<li>事件响应：即调用对应的touchesXXX方法</li>
+<li>Responder Chain传递：<ul>
+<li>最佳Responder有着对事件的优先处理权</li>
+<li>最佳Responder可以决定事件是否交给next Responder</li>
+<li>Responder处理事件的方式：<ul>
+<li>不处理，即不实现touchesXXX方法，则默认传给next Responder</li>
+<li>处理，但交给nextResponder，即调用[super touchesXXX]方法</li>
+<li>处理，但不交给next Responder，即调用[super touchesXXX]方法</li>
+<li>注意，上面指的是没有重写过touchesXXX的Responder的方式，如UIView，注入UIButton这些自己本身就实现了touchesXXX方法，默认是不交给next Responder的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>next Responder：<ul>
+<li>UIView: 若是vc的view，则next为vc，否则next为父view</li>
+<li>UIViewController：<ul>
+<li>若vc是window的root VC，则next是window</li>
+<li>若vc是别的vc present出来的，则next为presenting vc</li>
+</ul>
+</li>
+<li>UIWindow: next为UIApplication</li>
+<li>UIApplication: next为AppDelegate</li>
+<li>调用nextResponder方法可以获取，并且如有需要可以重写nextResponder方法</li>
+</ul>
+</li>
+</ul>
+<h1 id="UIResponder、UIGestureRecognizer、UIControl"><a href="#UIResponder、UIGestureRecognizer、UIControl" class="headerlink" title="UIResponder、UIGestureRecognizer、UIControl"></a>UIResponder、UIGestureRecognizer、UIControl</h1><ul>
+<li><p>上面说的是UIResponder相关的链路，但是在iOS中gesture和UIControl同样能处理事件，同时存在时会有影响</p>
+</li>
+<li><p>Gesture：</p>
+<ul>
+<li>Gesture和UIResponder的优先级：Gesture优先于UIResponder，手势识别成功则取消调用UIResponder的touchesCancel，后续直接由Gesture处理，在手势成功识别之前，UIResponder也能收到事件</li>
+<li>Gesture的三个属性：<ul>
+<li>cancelsTouchesInView：默认true，手势识别成功后会取消将事件分发给UIResponder，设置false，则分发</li>
+<li>delayTouchesBegan：默认false，即手势识别期间也会将事件分发给UIResponder，设置false则不分发</li>
+<li>delayTouchesEnded：默认true，当手势识别失败后，会延迟0.15s再调用UIResponder的touchesEnded，设置为false，则立即调用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>UIControl：</p>
+<ul>
+<li>UIControl是UIView的子类，其本身也是UIResponder</li>
+<li>UIControl只接受单点触控，其自身独特的回调如下：</li>
+</ul>
+  <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ObjectiveC">- (<span class="hljs-type">BOOL</span>)beginTrackingWithTouch:(<span class="hljs-built_in">UITouch</span> *)touch withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br>- (<span class="hljs-type">BOOL</span>)continueTrackingWithTouch:(<span class="hljs-built_in">UITouch</span> *)touch withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br>- (<span class="hljs-type">void</span>)endTrackingWithTouch:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UITouch</span> *)touch withEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br>- (<span class="hljs-type">void</span>)cancelTrackingWithEvent:(<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">UIEvent</span> *)event;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>实际上，由于UIControl是UIResponder，它的独特的回调也是在touchesXXX方法中调用的</li>
+<li>当UIControl识别出符合响应条件时，就会触发target action，焦勇sendAction发送到UIApplication，再由UIApplication调用对应action；若不指定target，即addTarget为nil时，那么UIApplication会在Responder Chain上寻找能够响应action的对象</li>
+<li>系统的UIControl，如UIButton、UISwitch优先级高于<code>父视图的Gesture</code>，低于其内部的Gesture，而自定义的UIControl，优先级低于Getsture</li>
+</ul>
+</li>
+</ul>
+<h1 id="UIControl场景测试"><a href="#UIControl场景测试" class="headerlink" title="UIControl场景测试"></a>UIControl场景测试</h1><ul>
+<li>BlueView上添加一个button，同时给button添加target action<br><img src="/../images/image-73.png" srcset="/img/loading.gif" lazyload alt="alt text"></li>
+<li>若在BlueView上添加Gesture：则button响应，说明UIControl优先于<code>父view的Gesture</code></li>
+<li>若在button上添加Getsure：则button的Gesture响应，说明UIControl低于其内部的Gesture</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/iOS/" class="print-no-link">#iOS</a>
+      
+        <a href="/tags/Responder-Chain/" class="print-no-link">#Responder Chain</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>iOS-响应者链</div>
+      <div>https://nuko1993.github.io/2024/03/22/ios-responder-chain/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>nuko</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/03/19/ios-interview-p1/" title="iOS面试题总结-p1">
+                        <span class="hidden-mobile">iOS面试题总结-p1</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":300,"height":600},"mobile":{"show":false},"rect":"opacity:0.7","log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

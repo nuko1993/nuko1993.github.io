@@ -258,6 +258,90 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/03/22/ios-responder-chain/" target="_self">
+          iOS-响应者链
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/22/ios-responder-chain/" target="_self">
+        <div>
+          前言之前在学习Android的事后，学习过Android的触摸事件分发机制以及拦截，iOS中也存在类似的机制，之前也学习总结过，这里再回忆下 触摸事件的生命周期 用户在屏幕上触摸之后，事件就产生了，事件被分发到App的过程如下图所示 系统响应阶段： 手指触摸屏幕，屏幕感应到触碰，将事件交给IOKit IOKit将触摸事件封装给IOHIDEvent，并通过mach port传递给SpringBoar
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-22 21:44" pubdate>
+              2024-03-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/Responder-Chain/">#Responder Chain</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/03/19/ios-interview-p1/" target="_self">
+          iOS面试题总结-p1
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/19/ios-interview-p1/" target="_self">
+        <div>
+          前言iOS的基础知识前面已经复习过一轮了，但要应对面试，还是需要记录下一些常问的问题。书本上的知识还是得用于实战，在总结中也能够加深自己的印象和认识~ OC基础在类中使用@property声明属性，发生了什么 增加实例变量 增加对应的setter&#x2F;getter方法声明 提供setter&#x2F;getter的默认实现  OC中的属性修饰符有哪些？ 所有权修饰符：控制对象的内存管理，st
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-19 21:21" pubdate>
+              2024-03-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/">#面试总结</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/03/11/ios-oc-memory-size/" target="_self">
           iOS-内存大小相关计算
         </a>
@@ -583,92 +667,6 @@
               <a href="/tags/iOS/">#iOS</a>
             
               <a href="/tags/Runtime/">#Runtime</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/03/04/oc-runtime-message-super/" target="_self">
-          OC Runtime-消息机制和super关键字
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/04/oc-runtime-message-super/" target="_self">
-        <div>
-          前言本文主要回忆下OC Runtime中消息机制和super关键字的实现 消息发送我们知道，在OC中调用方法，不是直接调用函数地址，而是通过Runtime的消息机制，在调用[object method]时，编译器会将其转换为对objc_msgSend(id self, SEL op, …)的函数调用具体的消息发送机制，可以翻看之前的深入理解OC Runtime 关于super关键字直接看下面的问题
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-03-04 21:18" pubdate>
-              2024-03-04
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Runtime/">#Runtime</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/02/29/think-deep-in-gcd-dispatch-group/" target="_self">
-          深入理解GCD-Dispatch Group
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/29/think-deep-in-gcd-dispatch-group/" target="_self">
-        <div>
-          前言之前已经了解了dispatch_semaphore的底层实现，而dispatch_group的实现时基于前者。dispatch_group通常应用在控制并发任务的执行顺序。例如：有A、B、C三个并发任务，要求在A、B、C都执行完毕后后，才能刷新页面，此时就可以使用dispatch_group控制： 123456789101112131415161718192021222324252627282
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-02-29 21:07" pubdate>
-              2024-02-29
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/GCD/">#GCD</a>
-            
-              <a href="/tags/Dispatch-Group/">#Dispatch Group</a>
             
           </div>
         
