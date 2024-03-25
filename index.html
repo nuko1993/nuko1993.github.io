@@ -258,6 +258,48 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/03/25/ios-multithread-lock/" target="_self">
+          iOS-多线程常用的锁
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/25/ios-multithread-lock/" target="_self">
+        <div>
+          前言多线程情况下的对共享数据的同时读写可能造成race condition问题，对共享数据可以通过加锁的方式来保证安全访问 按功能对锁进行分类 互斥锁：只有获得锁的线程可以对数据访问，其他线程在访问时进入阻塞状态 自旋锁：只有获得锁的线程可以对数据访问，其他线程在访问时循环争用锁并及时抢占  常见的锁类型 OSSpinLock 自旋锁 问题：可能发生优先级反转，即低优先级线程拿到锁，此时高优先级线
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-03-25 20:45" pubdate>
+              2024-03-25
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iOS/">#iOS</a>
+            
+              <a href="/tags/%E5%8A%A0%E9%94%81/">#加锁</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/03/22/ios-responder-chain/" target="_self">
           iOS-响应者链
         </a>
@@ -614,48 +656,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2024-03-05 21:35" pubdate>
               2024-03-05
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/iOS/">#iOS</a>
-            
-              <a href="/tags/Runtime/">#Runtime</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/03/04/oc-runtime-category-load-initialize/" target="_self">
-          OC Runtime-Category、+load、+initialize的原理
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/03/04/oc-runtime-category-load-initialize/" target="_self">
-        <div>
-          前言本文回忆下Category、+load和+initialize的内部实现 CategoryCategory一般用于给已有的类，在不改变原有类的情况下，对类动态添加methods，它实际是一种装饰模式的实现 先看代码： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-03-04 22:17" pubdate>
-              2024-03-04
             </time>
           </div>
         
