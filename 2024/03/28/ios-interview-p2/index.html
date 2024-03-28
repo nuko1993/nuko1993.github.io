@@ -16,23 +16,23 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言多线程情况下的对共享数据的同时读写可能造成race condition问题，对共享数据可以通过加锁的方式来保证安全访问 按功能对锁进行分类 互斥锁：只有获得锁的线程可以对数据访问，其他线程在访问时进入阻塞状态 自旋锁：只有获得锁的线程可以对数据访问，其他线程在访问时循环争用锁并及时抢占  常见的锁类型 OSSpinLock 自旋锁 问题：可能发生优先级反转，即低优先级线程拿到锁，此时高优先级线">
+    <meta name="description" content="前言之前面试总结了一些OC的基础知识，本篇主要总结swift相关 swift中struct和class的区别 继承不同：class可以继承，struct不能 类型不同：struct和值类型，class是引用类型 内存管理不同：struct离开作用域销毁，而class则是使用ARC管理 可变性不同：struct默认不可变，class可变，需要修改需采用mutaing关键字定义，对于struct的修改">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS-多线程常用的锁">
-<meta property="og:url" content="https://nuko1993.github.io/2024/03/25/ios-multithread-lock/index.html">
+<meta property="og:title" content="iOS面试题总结-p2">
+<meta property="og:url" content="https://nuko1993.github.io/2024/03/28/ios-interview-p2/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言多线程情况下的对共享数据的同时读写可能造成race condition问题，对共享数据可以通过加锁的方式来保证安全访问 按功能对锁进行分类 互斥锁：只有获得锁的线程可以对数据访问，其他线程在访问时进入阻塞状态 自旋锁：只有获得锁的线程可以对数据访问，其他线程在访问时循环争用锁并及时抢占  常见的锁类型 OSSpinLock 自旋锁 问题：可能发生优先级反转，即低优先级线程拿到锁，此时高优先级线">
+<meta property="og:description" content="前言之前面试总结了一些OC的基础知识，本篇主要总结swift相关 swift中struct和class的区别 继承不同：class可以继承，struct不能 类型不同：struct和值类型，class是引用类型 内存管理不同：struct离开作用域销毁，而class则是使用ARC管理 可变性不同：struct默认不可变，class可变，需要修改需采用mutaing关键字定义，对于struct的修改">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-03-25T12:45:04.000Z">
-<meta property="article:modified_time" content="2024-03-25T13:48:57.599Z">
+<meta property="article:published_time" content="2024-03-28T13:36:37.000Z">
+<meta property="article:modified_time" content="2024-03-28T14:50:52.587Z">
 <meta property="article:author" content="nuko">
 <meta property="article:tag" content="iOS">
-<meta property="article:tag" content="加锁">
+<meta property="article:tag" content="面试总结">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>iOS-多线程常用的锁 - nuko的小站</title>
+  <title>iOS面试题总结-p2 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -232,7 +232,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="iOS-多线程常用的锁"></span>
+            <span id="subtitle" data-typed-text="iOS面试题总结-p2"></span>
           
         </div>
 
@@ -243,8 +243,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-25 20:45" pubdate>
-          2024年3月25日 晚上
+        <time datetime="2024-03-28 21:36" pubdate>
+          2024年3月28日 晚上
         </time>
       </span>
     
@@ -255,7 +255,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1k 字
+          1.9k 字
         
       </span>
     
@@ -266,7 +266,7 @@
         
         
         
-          9 分钟
+          17 分钟
         
       </span>
     
@@ -303,73 +303,96 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">iOS-多线程常用的锁</h1>
+            <h1 id="seo-header">iOS面试题总结-p2</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>多线程情况下的对共享数据的同时读写可能造成race condition问题，对共享数据可以通过加锁的方式来保证安全访问</p>
-<h2 id="按功能对锁进行分类"><a href="#按功能对锁进行分类" class="headerlink" title="按功能对锁进行分类"></a>按功能对锁进行分类</h2><ul>
-<li>互斥锁：只有获得锁的线程可以对数据访问，其他线程在访问时进入阻塞状态</li>
-<li>自旋锁：只有获得锁的线程可以对数据访问，其他线程在访问时<code>循环争用锁并及时抢占</code></li>
-</ul>
-<h2 id="常见的锁类型"><a href="#常见的锁类型" class="headerlink" title="常见的锁类型"></a>常见的锁类型</h2><ul>
-<li>OSSpinLock<ul>
-<li>自旋锁</li>
-<li>问题：可能发生优先级反转，即低优先级线程拿到锁，此时高优先级线程进入忙等，由于高优先级的线程优先级更高，可能造成低优先级不能完成任务，一直持有锁</li>
-</ul>
-</li>
-<li>pthread_mutext<ul>
-<li>互斥锁</li>
-<li>获取不到则进入阻塞</li>
-<li>可以设置非递归锁&amp;递归锁</li>
-<li>递归锁：即允许同一个线程多次重复获取同一个锁</li>
-</ul>
-</li>
-<li>NSLock：<ul>
-<li>互斥锁</li>
-<li>调用lock&amp;unlock进行加锁和解锁</li>
-<li>内部是封装pthread_mutext的<code>非递归锁</code></li>
-</ul>
-</li>
-<li>NSRecursiveLock<ul>
-<li>互斥锁</li>
-<li>内部是封装pthread_mutext的<code>递归锁</code></li>
-</ul>
-</li>
-<li>dispatch_semaphore<ul>
-<li>用于GCD中</li>
-<li>信号量</li>
-<li>通过wait&#x2F;signal来获取和释放锁<ul>
-<li>wait用于减少信号量值，若值小于等于0，则阻塞</li>
-<li>signal用于增加信号量值，并尝试唤醒由于wait而阻塞的线程</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前面试总结了一些OC的基础知识，本篇主要总结swift相关</p>
+<h3 id="swift中struct和class的区别"><a href="#swift中struct和class的区别" class="headerlink" title="swift中struct和class的区别"></a>swift中struct和class的区别</h3><ul>
+<li>继承不同：class可以继承，struct不能</li>
+<li>类型不同：struct和值类型，class是引用类型</li>
+<li>内存管理不同：struct离开作用域销毁，而class则是使用ARC管理</li>
+<li>可变性不同：struct默认不可变，class可变，需要修改需采用mutaing关键字定义，对于struct的修改实际会生成新的struct</li>
+<li>初始化不同：struct没有默认初始化和deinit，而class有；</li>
+<li>选择：<ul>
+<li>轻量级、无需继承、用完即丢的类型，如widget中的数据model</li>
+<li>若需要可继承、需被多个地方引用的类型，用class</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>NSCondition<ul>
-<li>pthread_mutext+信号量</li>
-<li>lock和unlock仍然是加解锁</li>
-<li>当自定义条件不满足时，手动调用wait，则<code>立即释放锁</code>，并进入阻塞</li>
-<li>调用signal，则会唤醒因wait而阻塞的线程，但还需unlock，被唤醒的线程才能得到锁执行</li>
+<h3 id="指定构造函数和便利构造函数关系"><a href="#指定构造函数和便利构造函数关系" class="headerlink" title="指定构造函数和便利构造函数关系"></a>指定构造函数和便利构造函数关系</h3><h3 id="swift初始化过程"><a href="#swift初始化过程" class="headerlink" title="swift初始化过程"></a>swift初始化过程</h3><h3 id="oc和swift如何分别实现内部可读写，但外部只读的属性"><a href="#oc和swift如何分别实现内部可读写，但外部只读的属性" class="headerlink" title="oc和swift如何分别实现内部可读写，但外部只读的属性"></a>oc和swift如何分别实现内部可读写，但外部只读的属性</h3><ul>
+<li>oc：interface中声明为readonly属性，内部extension中重新声明为readwrite</li>
+<li>swift：使用private(set)关键字</li>
+</ul>
+<h3 id="oc和swift代码的相互调用"><a href="#oc和swift代码的相互调用" class="headerlink" title="oc和swift代码的相互调用"></a>oc和swift代码的相互调用</h3><ul>
+<li>oc调用swift：导入编译器生成的Module-Swift.h，要暴露给oc的swift类需用@objc public修饰</li>
+<li>swift调用oc：需将oc头文件放到public header目录中，将对应的.h文件加入到umberal header文件中，swift import对应的伞头文件定义的oc moudle</li>
+</ul>
+<h3 id="oc的NSString和swift的String有何区别"><a href="#oc的NSString和swift的String有何区别" class="headerlink" title="oc的NSString和swift的String有何区别"></a>oc的NSString和swift的String有何区别</h3><ul>
+<li>String保留了很多NSString的api，并且可以相互转换</li>
+<li>类型不同:String是值类型，NSString是引用类型</li>
+<li>Unicode支持：Swift原生支持unicode，NSString也支持，但可能需要额外设置编解码</li>
+<li>字符串计算方式不同：NSString直接使用length，而String需要去除characters.count</li>
+</ul>
+<h3 id="swift中单例的实现方式，为何static是线程安全的"><a href="#swift中单例的实现方式，为何static是线程安全的" class="headerlink" title="swift中单例的实现方式，为何static是线程安全的"></a>swift中单例的实现方式，为何static是线程安全的</h3><ul>
+<li>直接使用static shared &#x3D; Class()</li>
+<li>被satic修饰的属性都是线程安全的，swift runtime在第一次访问该属性时才会创建，并且使用swift_once保证线程安全，全局只有一份copy</li>
+</ul>
+<h3 id="swift中计算属性和存储属性的区别以及使用场景"><a href="#swift中计算属性和存储属性的区别以及使用场景" class="headerlink" title="swift中计算属性和存储属性的区别以及使用场景"></a>swift中计算属性和存储属性的区别以及使用场景</h3><ul>
+<li>计算属性：<ul>
+<li>不存储值，而是通过setter&#x2F;getter来存取</li>
+<li>只能使用var声明</li>
+<li>使用场景：当需要在实例中保存数据时</li>
 </ul>
 </li>
-<li>NSConditionLock<ul>
-<li>实际是NSCondition的进一步封装</li>
-<li>使用很简单，传入初始condition值，支持比较condition进行加锁&amp;解锁</li>
-<li>比如当condition&#x3D;value1时获得锁，若此时condition不为value1，则阻塞</li>
-<li>解锁时重新condition设置为value2，并唤醒等待在condition&#x3D;value2的上的阻塞线程</li>
-</ul>
-</li>
-<li>@synchronized<ul>
-<li>可重入</li>
-<li>不需要手动加解锁</li>
-<li>性能最差</li>
-<li>将对象作为锁，oc内部将对象作为key维护一个互斥锁数组</li>
+<li>存储属性：<ul>
+<li>存储为实例的一部分</li>
+<li>可以使用var&#x2F;let声明</li>
+<li>可以使用lazy var标记为首次访问时才初始化值</li>
+<li>使用场景：当需要间接计算一些信息或执行一些逻辑来获取、设置值，或需要节省内存</li>
 </ul>
 </li>
 </ul>
-<h2 id="锁的性能比较"><a href="#锁的性能比较" class="headerlink" title="锁的性能比较"></a>锁的性能比较</h2><p>OSSpinLock（不推荐）&gt;dispatch_semaphore&gt;pthread_mutexte&gt;NSLock&gt;NSCondition&gt;NSRecursiveLock&gt;NSConditionLock&gt;@synnchronized</p>
+<h3 id="swift中protocol如何实现可选方法"><a href="#swift中protocol如何实现可选方法" class="headerlink" title="swift中protocol如何实现可选方法"></a>swift中protocol如何实现可选方法</h3><ul>
+<li>让protocol继承NSObjectProtocol，看代码<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">@objc</span> <span class="hljs-keyword">protocol</span> <span class="hljs-title class_">OptionalProtocol</span>: <span class="hljs-title class_">NSObjectProtocol</span> &#123;<br>    <span class="hljs-keyword">optional</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">optionalMethod</span>()<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="swift和oc的switch语句有何区别"><a href="#swift和oc的switch语句有何区别" class="headerlink" title="swift和oc的switch语句有何区别"></a>swift和oc的switch语句有何区别</h3><ul>
+<li>oc switch<ul>
+<li>每个case后需要有break</li>
+<li>只能匹配整数和枚举</li>
+<li>可以不写default</li>
+<li>可以不覆盖所有case</li>
+</ul>
+</li>
+<li>swift switch<ul>
+<li>默认每个case都是break的，并提供fallthrough关键字实现oc不写break的效果</li>
+<li>可以匹配任意数据类型</li>
+<li>必须有default</li>
+<li>必须覆盖所有case</li>
+<li>更加强大，支持匹配区间、值绑定（将解构值绑定到变量）、where条件</li>
+</ul>
+</li>
+</ul>
+<h3 id="oc和swift中block对于外部变量捕获的方式有何区别"><a href="#oc和swift中block对于外部变量捕获的方式有何区别" class="headerlink" title="oc和swift中block对于外部变量捕获的方式有何区别"></a>oc和swift中block对于外部变量捕获的方式有何区别</h3><ul>
+<li>swift：默认捕获变量的引用，内部修改影响外部</li>
+<li>oc:默认是copy的，内部修改不影响外部（对值类型来说）</li>
+<li>若是对于引用类型，捕获都会造成强引用，需要使用weak避免循环引用</li>
+</ul>
+<h3 id="swift中如何用枚举表示一个二叉树节点"><a href="#swift中如何用枚举表示一个二叉树节点" class="headerlink" title="swift中如何用枚举表示一个二叉树节点"></a>swift中如何用枚举表示一个二叉树节点</h3><p>看代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-comment">// indirect让枚举转换为引用类型，避免无限嵌套</span><br><span class="hljs-keyword">indirect</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Tree</span>&lt;<span class="hljs-title class_">Element</span>: <span class="hljs-title class_">Comparable</span>&gt; &#123;<br><span class="hljs-keyword">case</span> <span class="hljs-type">Empty</span><br><span class="hljs-keyword">case</span> <span class="hljs-type">Node</span>(<span class="hljs-type">Tree</span>&lt;<span class="hljs-type">Element</span>&gt;,<span class="hljs-type">Element</span>,<span class="hljs-type">Tree</span>&lt;<span class="hljs-type">Element</span>&gt;)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="swift中使用尾随闭包的情况"><a href="#swift中使用尾随闭包的情况" class="headerlink" title="swift中使用尾随闭包的情况"></a>swift中使用尾随闭包的情况</h3><ul>
+<li>尾随闭包：当闭包作为函数的最后一个参数</li>
+<li>场景：回调函数、高阶函数（如map、filter）</li>
+</ul>
+<h3 id="swift中有哪些访问权限关键字，分别阐述"><a href="#swift中有哪些访问权限关键字，分别阐述" class="headerlink" title="swift中有哪些访问权限关键字，分别阐述"></a>swift中有哪些访问权限关键字，分别阐述</h3><ul>
+<li>open：本模块和其他模块均可访问，用在类或类成员，允许其他模块继承或重写</li>
+<li>public: 同open，但不允许其他模块继承和重写</li>
+<li>internal：仅本模块可访问，<code>默认级别</code></li>
+<li>fileprivate: 仅本文件可访问</li>
+<li>private：仅当前定义体内可用</li>
+</ul>
 
                 
               </div>
@@ -384,7 +407,7 @@
       
         <a href="/tags/iOS/" class="print-no-link">#iOS</a>
       
-        <a href="/tags/%E5%8A%A0%E9%94%81/" class="print-no-link">#加锁</a>
+        <a href="/tags/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="print-no-link">#面试总结</a>
       
     </div>
   
@@ -396,8 +419,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>iOS-多线程常用的锁</div>
-      <div>https://nuko1993.github.io/2024/03/25/ios-multithread-lock/</div>
+      <div>iOS面试题总结-p2</div>
+      <div>https://nuko1993.github.io/2024/03/28/ios-interview-p2/</div>
     </div>
     <div class="license-meta">
       
@@ -409,7 +432,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年3月25日</div>
+          <div>2024年3月28日</div>
         </div>
       
       
@@ -441,18 +464,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/03/28/ios-interview-p2/" title="iOS面试题总结-p2">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">iOS面试题总结-p2</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/03/22/ios-responder-chain/" title="iOS-响应者链">
-                        <span class="hidden-mobile">iOS-响应者链</span>
+                      <a href="/2024/03/25/ios-multithread-lock/" title="iOS-多线程常用的锁">
+                        <span class="hidden-mobile">iOS-多线程常用的锁</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
