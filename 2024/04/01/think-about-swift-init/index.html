@@ -16,23 +16,27 @@
   <meta name="author" content="nuko">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言之前面试总结了一些OC的基础知识，本篇主要总结swift相关 swift中struct和class的区别 继承不同：class可以继承，struct不能 类型不同：struct和值类型，class是引用类型 内存管理不同：struct离开作用域销毁，而class则是使用ARC管理 可变性不同：struct默认不可变，class可变，需要修改需采用mutaing关键字定义，对于struct的修改">
+    <meta name="description" content="前言Swift的初始化和其他语言有些不一样，之前也都学习过一遍，这里再总结下吧 初始化 初始化时为class、struct和enum准备实例的过程 该过程需要给实例中的所有存储属性设置初始值并且执行其他必须的初始化过程 不同于oc初始化，swift初始化没有返回值，swift初始化器的任务就是保证使用之前能够正确初始化 class类型有deinit  存储属性设置初始化 实例化后存储属性必须被确定">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS面试题总结-p2">
-<meta property="og:url" content="https://nuko1993.github.io/2024/03/28/ios-interview-p2/index.html">
+<meta property="og:title" content="Swift-初始化相关">
+<meta property="og:url" content="https://nuko1993.github.io/2024/04/01/think-about-swift-init/index.html">
 <meta property="og:site_name" content="nuko的小站">
-<meta property="og:description" content="前言之前面试总结了一些OC的基础知识，本篇主要总结swift相关 swift中struct和class的区别 继承不同：class可以继承，struct不能 类型不同：struct和值类型，class是引用类型 内存管理不同：struct离开作用域销毁，而class则是使用ARC管理 可变性不同：struct默认不可变，class可变，需要修改需采用mutaing关键字定义，对于struct的修改">
+<meta property="og:description" content="前言Swift的初始化和其他语言有些不一样，之前也都学习过一遍，这里再总结下吧 初始化 初始化时为class、struct和enum准备实例的过程 该过程需要给实例中的所有存储属性设置初始值并且执行其他必须的初始化过程 不同于oc初始化，swift初始化没有返回值，swift初始化器的任务就是保证使用之前能够正确初始化 class类型有deinit  存储属性设置初始化 实例化后存储属性必须被确定">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-03-28T13:36:37.000Z">
-<meta property="article:modified_time" content="2024-03-28T14:50:52.587Z">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-74.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-75.png">
+<meta property="og:image" content="https://nuko1993.github.io/images/image-76.png">
+<meta property="article:published_time" content="2024-04-01T13:09:11.000Z">
+<meta property="article:modified_time" content="2024-04-02T13:37:24.742Z">
 <meta property="article:author" content="nuko">
-<meta property="article:tag" content="iOS">
-<meta property="article:tag" content="面试总结">
+<meta property="article:tag" content="Swift">
+<meta property="article:tag" content="初始化">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nuko1993.github.io/images/image-74.png">
   
   
   
-  <title>iOS面试题总结-p2 - nuko的小站</title>
+  <title>Swift-初始化相关 - nuko的小站</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -232,7 +236,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="iOS面试题总结-p2"></span>
+            <span id="subtitle" data-typed-text="Swift-初始化相关"></span>
           
         </div>
 
@@ -243,8 +247,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-28 21:36" pubdate>
-          2024年3月28日 晚上
+        <time datetime="2024-04-01 21:09" pubdate>
+          2024年4月1日 晚上
         </time>
       </span>
     
@@ -255,7 +259,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k 字
+          2.6k 字
         
       </span>
     
@@ -266,7 +270,7 @@
         
         
         
-          17 分钟
+          22 分钟
         
       </span>
     
@@ -303,97 +307,125 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">iOS面试题总结-p2</h1>
+            <h1 id="seo-header">Swift-初始化相关</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前面试总结了一些OC的基础知识，本篇主要总结swift相关</p>
-<h3 id="swift中struct和class的区别"><a href="#swift中struct和class的区别" class="headerlink" title="swift中struct和class的区别"></a>swift中struct和class的区别</h3><ul>
-<li>继承不同：class可以继承，struct不能</li>
-<li>类型不同：struct和值类型，class是引用类型</li>
-<li>内存管理不同：struct离开作用域销毁，而class则是使用ARC管理</li>
-<li>可变性不同：struct默认不可变，class可变，需要修改需采用mutaing关键字定义，对于struct的修改实际会生成新的struct</li>
-<li>初始化不同：struct没有默认初始化和deinit，而class有；</li>
-<li>选择：<ul>
-<li>轻量级、无需继承、用完即丢的类型，如widget中的数据model</li>
-<li>若需要可继承、需被多个地方引用的类型，用class</li>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Swift的初始化和其他语言有些不一样，之前也都学习过一遍，这里再总结下吧</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><ul>
+<li>初始化时为class、struct和enum准备实例的过程</li>
+<li>该过程需要给实例中的所有存储属性设置初始值并且执行其他必须的初始化过程</li>
+<li>不同于oc初始化，swift初始化没有返回值，swift初始化器的任务就是保证使用之前能够正确初始化</li>
+<li>class类型有deinit</li>
+</ul>
+<h2 id="存储属性设置初始化"><a href="#存储属性设置初始化" class="headerlink" title="存储属性设置初始化"></a>存储属性设置初始化</h2><ul>
+<li>实例化后存储属性必须被确定</li>
+<li>存储属性可以有默认值</li>
+<li>初始化器中设置属性值不会触发属性监听</li>
+<li>初始化器：init</li>
+<li>可以为存储属性提供默认值</li>
+</ul>
+<h2 id="自定义初始化"><a href="#自定义初始化" class="headerlink" title="自定义初始化"></a>自定义初始化</h2><ul>
+<li>可以为init提供参数</li>
+<li>在自定义init中，只能通过形参数量和类型区别不同的init（嘛，毕竟大家都是init），外部调用默认不能省略实参名称（实参名称通常swift编译器自动合成），除非显示使用下划线_表示省略实参名称</li>
+<li>初始化时，如果有可选类型，则不必传入，默认会被初始化为nil</li>
+<li>init中可以设置let属性，但一旦初始化后则不能修改</li>
+</ul>
+<h2 id="默认init"><a href="#默认init" class="headerlink" title="默认init"></a>默认init</h2><ul>
+<li>若class和struct没有提供init的实现，则swift会提供默认init，该init为所有属性提供默认值(前提是swift能够确定所有属性的默认值)</li>
+<li>若struct没有提供init，则编译器会实现，该init会接受所有成员参数，并且可省略具有默认值的成员参数（注意class并没有）<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Size</span> &#123;<br>    <span class="hljs-keyword">var</span> width <span class="hljs-operator">=</span> <span class="hljs-number">0.0</span>, height <span class="hljs-operator">=</span> <span class="hljs-number">0.0</span><br>&#125;<br><span class="hljs-keyword">let</span> twoByTwo <span class="hljs-operator">=</span> <span class="hljs-type">Size</span>(width: <span class="hljs-number">2.0</span>, height: <span class="hljs-number">2.0</span>)<br><br><span class="hljs-keyword">let</span> zeroByTwo <span class="hljs-operator">=</span> <span class="hljs-type">Size</span>(height: <span class="hljs-number">2.0</span>)<br><span class="hljs-built_in">print</span>(zeroByTwo.width, zeroByTwo.height)<br><span class="hljs-comment">// Prints &quot;0.0 2.0&quot;</span><br> <br><span class="hljs-keyword">let</span> zeroByZero <span class="hljs-operator">=</span> <span class="hljs-type">Size</span>()<br><span class="hljs-built_in">print</span>(zeroByZero.width, zeroByZero.height)<br><span class="hljs-comment">// Prints &quot;0.0 0.0&quot;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="值类型的init委托"><a href="#值类型的init委托" class="headerlink" title="值类型的init委托"></a>值类型的init委托</h2><ul>
+<li>init委托：某个init调用其他init，就是所谓的init委托，避免多个init重复冗余</li>
+<li>值类型和class类型的init委托规则不同</li>
+<li>值类型：<ul>
+<li>在定义的init中调用内部自己其他的init，并且只能在init中调用</li>
+<li>若提供了自定义的init，则编译器将不会合成默认init，防止误用</li>
+<li>若将自定义的init卸载extension中，则仍然可以使用默认init</li>
 </ul>
 </li>
 </ul>
-<h3 id="指定构造函数和便利构造函数关系"><a href="#指定构造函数和便利构造函数关系" class="headerlink" title="指定构造函数和便利构造函数关系"></a>指定构造函数和便利构造函数关系</h3><h3 id="swift初始化过程"><a href="#swift初始化过程" class="headerlink" title="swift初始化过程"></a>swift初始化过程</h3><h3 id="oc和swift如何分别实现内部可读写，但外部只读的属性"><a href="#oc和swift如何分别实现内部可读写，但外部只读的属性" class="headerlink" title="oc和swift如何分别实现内部可读写，但外部只读的属性"></a>oc和swift如何分别实现内部可读写，但外部只读的属性</h3><ul>
-<li>oc：interface中声明为readonly属性，内部extension中重新声明为readwrite</li>
-<li>swift：使用private(set)关键字</li>
-</ul>
-<h3 id="oc和swift代码的相互调用"><a href="#oc和swift代码的相互调用" class="headerlink" title="oc和swift代码的相互调用"></a>oc和swift代码的相互调用</h3><ul>
-<li>oc调用swift：导入编译器生成的Module-Swift.h，要暴露给oc的swift类需用@objc public修饰</li>
-<li>swift调用oc：需将oc头文件放到public header目录中，将对应的.h文件加入到umberal header文件中，swift import对应的伞头文件定义的oc moudle</li>
-</ul>
-<h3 id="oc的NSString和swift的String有何区别"><a href="#oc的NSString和swift的String有何区别" class="headerlink" title="oc的NSString和swift的String有何区别"></a>oc的NSString和swift的String有何区别</h3><ul>
-<li>String保留了很多NSString的api，并且可以相互转换</li>
-<li>类型不同:String是值类型，NSString是引用类型</li>
-<li>Unicode支持：Swift原生支持unicode，NSString也支持，但可能需要额外设置编解码</li>
-<li>字符串计算方式不同：NSString直接使用length，而String需要去除characters.count</li>
-</ul>
-<h3 id="swift中单例的实现方式，为何static是线程安全的"><a href="#swift中单例的实现方式，为何static是线程安全的" class="headerlink" title="swift中单例的实现方式，为何static是线程安全的"></a>swift中单例的实现方式，为何static是线程安全的</h3><ul>
-<li>直接使用static shared &#x3D; Class()</li>
-<li>被satic修饰的属性都是线程安全的，swift runtime在第一次访问该属性时才会创建，并且使用swift_once保证线程安全，全局只有一份copy</li>
-</ul>
-<h3 id="swift中计算属性和存储属性的区别以及使用场景"><a href="#swift中计算属性和存储属性的区别以及使用场景" class="headerlink" title="swift中计算属性和存储属性的区别以及使用场景"></a>swift中计算属性和存储属性的区别以及使用场景</h3><ul>
-<li>计算属性：<ul>
-<li>不存储值，而是通过setter&#x2F;getter来存取</li>
-<li>只能使用var声明</li>
-<li>使用场景：当需要在实例中保存数据时</li>
+<h2 id="类的继承和初始化"><a href="#类的继承和初始化" class="headerlink" title="类的继承和初始化"></a>类的继承和初始化</h2><ul>
+<li>所有类的存储属性，包括继承得来的属性，必须在init期间被分配值</li>
+<li>swift为class提供了两种init，就是<code>指定init和便利init</code></li>
+<li>指定init：<ul>
+<li>是主要的init，该init负责初始化所有该类的属性，并调用合适的父类init</li>
+<li>class的指定init尽量少，一个class通常只有一个，并且照烧有1个</li>
 </ul>
 </li>
-<li>存储属性：<ul>
-<li>存储为实例的一部分</li>
-<li>可以使用var&#x2F;let声明</li>
-<li>可以使用lazy var标记为首次访问时才初始化值</li>
-<li>使用场景：当需要间接计算一些信息或执行一些逻辑来获取、设置值，或需要节省内存</li>
+<li>便利init：<ul>
+<li>是次要init</li>
+<li>不必要</li>
+</ul>
+</li>
+<li>指定init和便利init的语法：<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-comment">// 指定init</span><br><span class="hljs-keyword">init</span>(parameters) &#123;<br>    statements<br>&#125;<br><br><span class="hljs-comment">// 便利init</span><br><span class="hljs-keyword">convenience</span> <span class="hljs-keyword">init</span>(parameters) &#123;<br>    statements<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>class的init委托规则<ul>
+<li>指定init必须调用父类的指定init</li>
+<li>便利init必须在相同的类中调用另一个init</li>
+<li>便利init最终会调用指定init</li>
+<li>规则总结：指定init必定是向上委托，便利init必须是横向委托<br><img src="/../images/image-74.png" srcset="/img/loading.gif" lazyload alt="alt text"></li>
 </ul>
 </li>
 </ul>
-<h3 id="swift中protocol如何实现可选方法"><a href="#swift中protocol如何实现可选方法" class="headerlink" title="swift中protocol如何实现可选方法"></a>swift中protocol如何实现可选方法</h3><ul>
-<li>让protocol继承NSObjectProtocol，看代码<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-keyword">@objc</span> <span class="hljs-keyword">protocol</span> <span class="hljs-title class_">OptionalProtocol</span>: <span class="hljs-title class_">NSObjectProtocol</span> &#123;<br>    <span class="hljs-keyword">optional</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">optionalMethod</span>()<br>&#125;<br></code></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="swift和oc的switch语句有何区别"><a href="#swift和oc的switch语句有何区别" class="headerlink" title="swift和oc的switch语句有何区别"></a>swift和oc的switch语句有何区别</h3><ul>
-<li>oc switch<ul>
-<li>每个case后需要有break</li>
-<li>只能匹配整数和枚举</li>
-<li>可以不写default</li>
-<li>可以不覆盖所有case</li>
+<h2 id="两阶段init"><a href="#两阶段init" class="headerlink" title="两阶段init"></a>两阶段init</h2><ul>
+<li>init有两个阶段：<ul>
+<li>所有存储属性分配初始值</li>
+<li>在实例准备使用之前修改存储属性</li>
+<li>该规则保证了实例属性在初始化之前被访问</li>
 </ul>
 </li>
-<li>swift switch<ul>
-<li>默认每个case都是break的，并提供fallthrough关键字实现oc不写break的效果</li>
-<li>可以匹配任意数据类型</li>
-<li>必须有default</li>
-<li>必须覆盖所有case</li>
-<li>更加强大，支持匹配区间、值绑定（将解构值绑定到变量）、where条件</li>
+<li>安全检查：<ul>
+<li>指定init在调用父类的init之前，需要保证引入的属性初始化完成</li>
+<li>指定init必须先调用父类的init，才能重新设置父类的很随性</li>
+<li>遍历init必须先横向委托，然后在更新属性（这个容易理解，不然自己设置的值可能就被其他init覆盖了）</li>
+<li>init在第一阶段完成之前，不能调用任何实例方法，不能读取实例属性</li>
+</ul>
+</li>
+<li>阶段1：<ul>
+<li>调用指定init或便利init</li>
+<li>为该类实例分配内存</li>
+<li>该类指定init确保该类的所有属性都有值，即初始化该类引入的内存</li>
+<li>父类的init也执行相同任务</li>
+<li>所有的存储属性都被初始化<br>  <img src="/../images/image-75.png" srcset="/img/loading.gif" lazyload alt="alt text"></li>
+</ul>
+</li>
+<li>阶段2：<ul>
+<li>自顶向下，每一个指定init可以进一步修改属性，此时可以访问self</li>
+<li>每个便利init也哦度可以访问self<br>  <img src="/../images/image-76.png" srcset="/img/loading.gif" lazyload alt="alt text"></li>
 </ul>
 </li>
 </ul>
-<h3 id="oc和swift中block对于外部变量捕获的方式有何区别"><a href="#oc和swift中block对于外部变量捕获的方式有何区别" class="headerlink" title="oc和swift中block对于外部变量捕获的方式有何区别"></a>oc和swift中block对于外部变量捕获的方式有何区别</h3><ul>
-<li>swift：默认捕获变量的引用，内部修改影响外部</li>
-<li>oc:默认是copy的，内部修改不影响外部（对值类型来说）</li>
-<li>若是对于引用类型，捕获都会造成强引用，需要使用weak避免循环引用</li>
+<h2 id="init的继承和重写"><a href="#init的继承和重写" class="headerlink" title="init的继承和重写"></a>init的继承和重写</h2><ul>
+<li>swift<code>默认情况下</code>子类不会自动继承父类的init（但是有某些情况是可以自动继承的）</li>
+<li>当向自定义子类实现1个或多个和父类相同的init时，你可以在子类中为那些init提供定制实现</li>
+<li>当子类init匹配父类的<code>指定init</code>时，实际可以重写该init，因而，子类的init必须写override修饰符，即使是默认提供的init也可以重写</li>
+<li><code>可以将父类的指定init重写为便利init，不过要加override</code></li>
+<li>override会让swift检查父类是否有匹配的指定init</li>
+<li>但是，如果子类的init匹配父类<code>便利init</code>时，则无需加override，并且子类init中是不能直接调用父类的便利init的</li>
+<li>init的自动继承条件：<ul>
+<li>当子类没有定义任何指定init时</li>
+<li>当子类提供了所有父类的指定init的实现</li>
 </ul>
-<h3 id="swift中如何用枚举表示一个二叉树节点"><a href="#swift中如何用枚举表示一个二叉树节点" class="headerlink" title="swift中如何用枚举表示一个二叉树节点"></a>swift中如何用枚举表示一个二叉树节点</h3><p>看代码：</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-comment">// indirect让枚举转换为引用类型，避免无限嵌套</span><br><span class="hljs-keyword">indirect</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Tree</span>&lt;<span class="hljs-title class_">Element</span>: <span class="hljs-title class_">Comparable</span>&gt; &#123;<br><span class="hljs-keyword">case</span> <span class="hljs-type">Empty</span><br><span class="hljs-keyword">case</span> <span class="hljs-type">Node</span>(<span class="hljs-type">Tree</span>&lt;<span class="hljs-type">Element</span>&gt;,<span class="hljs-type">Element</span>,<span class="hljs-type">Tree</span>&lt;<span class="hljs-type">Element</span>&gt;)<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h3 id="swift中使用尾随闭包的情况"><a href="#swift中使用尾随闭包的情况" class="headerlink" title="swift中使用尾随闭包的情况"></a>swift中使用尾随闭包的情况</h3><ul>
-<li>尾随闭包：当闭包作为函数的最后一个参数</li>
-<li>场景：回调函数、高阶函数（如map、filter）</li>
+</li>
 </ul>
-<h3 id="swift中有哪些访问权限关键字，分别阐述"><a href="#swift中有哪些访问权限关键字，分别阐述" class="headerlink" title="swift中有哪些访问权限关键字，分别阐述"></a>swift中有哪些访问权限关键字，分别阐述</h3><ul>
-<li>open：本模块和其他模块均可访问，用在类或类成员，允许其他模块继承或重写</li>
-<li>public: 同open，但不允许其他模块继承和重写</li>
-<li>internal：仅本模块可访问，<code>默认级别</code></li>
-<li>fileprivate: 仅本文件可访问</li>
-<li>private：仅当前定义体内可用</li>
+<h2 id="可失败的init"><a href="#可失败的init" class="headerlink" title="可失败的init"></a>可失败的init</h2><ul>
+<li>使用init?来定义可失败的初始化（init?和init不能有相同的形参和名称）</li>
+<li>init?中返回nil表示初始化失败</li>
+<li>枚举可以定义init?以决定是何种枚举，并且带有rawValue的枚举自动具有init?</li>
+<li>init?可以横向委托到本类的init?和向上委托到父类的init?，某个环节失败将会导致立刻失败，后续代码将不会执行</li>
+<li>子类可以重写父类的init?，并且子类可以将init?修改为init（注意不能将父类的init修改为init?）</li>
+<li>init!同样是可失败的，但是这种失败会导致程序崩溃</li>
 </ul>
-
+<h2 id="必要init"><a href="#必要init" class="headerlink" title="必要init"></a>必要init</h2><ul>
+<li>在init前加required关键字表示所有子类必须实现该init</li>
+<li>子类重写父类的required init时，必须也加required关键字，确保代代相传</li>
+<li>子类重写父类的required init，不需要加override</li>
+</ul>
+<h2 id="通过闭包和函数来设置属性的默认值"><a href="#通过闭包和函数来设置属性的默认值" class="headerlink" title="通过闭包和函数来设置属性的默认值"></a>通过闭包和函数来设置属性的默认值</h2><ul>
+<li>可以通过闭包为属性提供默认值，但不要在闭包中使用self，因为此时self还没有初始化</li>
+</ul>
+<h2 id="指定init和便利init的实战"><a href="#指定init和便利init的实战" class="headerlink" title="指定init和便利init的实战"></a>指定init和便利init的实战</h2>
                 
               </div>
             
@@ -405,9 +437,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/iOS/" class="print-no-link">#iOS</a>
+        <a href="/tags/Swift/" class="print-no-link">#Swift</a>
       
-        <a href="/tags/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" class="print-no-link">#面试总结</a>
+        <a href="/tags/%E5%88%9D%E5%A7%8B%E5%8C%96/" class="print-no-link">#初始化</a>
       
     </div>
   
@@ -419,8 +451,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>iOS面试题总结-p2</div>
-      <div>https://nuko1993.github.io/2024/03/28/ios-interview-p2/</div>
+      <div>Swift-初始化相关</div>
+      <div>https://nuko1993.github.io/2024/04/01/think-about-swift-init/</div>
     </div>
     <div class="license-meta">
       
@@ -432,7 +464,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年3月28日</div>
+          <div>2024年4月1日</div>
         </div>
       
       
@@ -464,18 +496,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/04/01/think-about-swift-init/" title="Swift-初始化相关">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Swift-初始化相关</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/03/25/ios-multithread-lock/" title="iOS-多线程常用的锁">
-                        <span class="hidden-mobile">iOS-多线程常用的锁</span>
+                      <a href="/2024/03/28/ios-interview-p2/" title="iOS面试题总结-p2">
+                        <span class="hidden-mobile">iOS面试题总结-p2</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
