@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f6f1">
+<title>小日子 · 只有我们的角落</title><meta name="description" content="把普通的一天，过成我们的小日子。双人空间交互演示。">
+<link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
+</head>
+<body>
+<header class="header"><a class="brand" href="#home"><span class="brand-icon">⌂</span> 小日子<span class="brand-dot">.</span></a><nav aria-label="空间导航"><a class="active" href="#home">我们的小家</a><a href="#notes">小纸条</a><a href="#memories">回忆簿</a></nav><button id="profile" class="profile" aria-label="切换演示身份"><span class="avatar a">我</span><span id="profile-name">我的视角</span><span class="chevron">⌄</span></button></header>
+<main id="home">
+<div class="topline"><span id="today"></span><span class="demo-label"><i></i> 浏览器演示 · 内容仅保存在本机</span></div>
+<section class="hero"><div class="hero-copy"><span class="eyebrow">A LITTLE PLACE FOR TWO</span><h1>世界很大，<br>这里<span>刚好有我们。</span></h1><p>留一句想念，接住一份心情。<br>把平凡的每一天，慢慢收藏成我们的小日子。</p><button class="primary" id="hero-write">写张小纸条 <span>↗</span></button></div><div class="home-art" role="img" aria-label="温暖的小屋，有窗户、台灯和两个人的相框"><div class="art-sun"></div><div class="art-window"><div></div><i></i><b></b></div><div class="art-wall-note">有你在，<br>就是好天气。<span>♡</span></div><div class="art-frame"><span>♡</span><div>YOU & ME</div></div><div class="art-table"></div><div class="art-lamp"><i></i><b></b><span></span></div><div class="art-mug"></div><div class="art-book"></div><div class="art-plant"><span>✦</span><i></i></div><div class="art-caption">our little corner / 我们的角落</div></div></section>
+<section class="together"><div class="pair"><span class="avatar a">我</span><span class="pair-heart">♡</span><span class="avatar b">你</span></div><div><span class="tiny">OUR STORY</span><p>这是我们一起走过的第 <button id="days" title="设置在一起的日期">1</button> 天</p></div><button id="set-date" class="text-button">设置我们的纪念日 ↗</button><div class="together-side">不赶时间，慢慢相爱。</div></section>
+<div class="section-intro"><div><span class="eyebrow">LITTLE THINGS, BIG LOVE</span><h2>今天，也想靠近你一点</h2></div><span>让爱发生在每件小事里 ♡</span></div>
+<div class="grid">
+<section class="card weather-card" id="weather"><div class="card-heading"><span class="card-icon">☀</span><h3>心情天气</h3><span class="tag">此刻的我们</span></div><p class="card-subtitle">不用每次都说“我很好”，这里可以说实话。</p><div class="weather-pair" id="weather-pair"></div><button id="set-mood" class="soft-button">更新我的心情 <span>↗</span></button></section>
+<section class="card note-card" id="notes"><div class="card-heading"><span class="card-icon">✉</span><h3>给你的小纸条</h3><button class="text-button" id="all-notes">查看全部 ↗</button></div><div id="latest-note"></div><button class="note-compose" id="write-note"><span>＋</span> 把想说的话，留在这里</button></section>
+<section class="card question-card" id="questions"><div class="card-heading"><span class="card-icon">♧</span><h3>我们的默契问答</h3><span class="tag">每日一问</span></div><div class="question-label" id="question-number"></div><h4 id="question-text"></h4><p class="card-subtitle">各自写下答案，都回答后才能揭晓。</p><div id="answer-status"></div><div class="question-actions"><button class="primary small" id="answer-question">写下我的答案 ↗</button><button class="text-button" id="next-question">换一道题</button></div></section>
+<section class="card memory-card" id="memories"><div class="card-heading"><span class="card-icon">▧</span><h3>我们的回忆簿</h3><button class="text-button" id="all-memories">翻开回忆簿 ↗</button></div><div id="latest-memory"></div><button id="add-memory" class="soft-button">＋ 收藏一个小瞬间</button></section>
+</div>
+<div class="closing"><span>“</span><p>爱不是某个盛大的瞬间，<br>是所有想要分享给你的日常。</p><div>JUST YOU, JUST ME, JUST US.</div></div>
+<footer><a class="brand" href="#home">小日子<span class="brand-dot">.</span></a><span>为两个人，留一盏灯。</span><button id="settings" class="text-button">空间设置</button></footer>
+</main>
+<dialog id="modal"><div class="modal-header"><h2 id="modal-title"></h2><button id="close-modal" class="close" aria-label="关闭">×</button></div><div id="modal-body"></div></dialog><div id="toast" role="status" aria-live="polite"></div>
+</body></html>
